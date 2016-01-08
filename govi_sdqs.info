@@ -1,0 +1,6 @@
+name = Govi SDQS
+description = Módulo que implementa el mecanismo para realizar peticiones anonimas haciendo uso del API del SDQS
+package = Govimentum
+core = 7.x
+project = govi_sdqs
+version = 7.x-1.0

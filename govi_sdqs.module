@@ -1,0 +1,48 @@
+<?php
+
+function govi_sdqs_block_info() {
+    $block = array();
+
+    $block['govi_sdqs_block'] = array(
+        'info' => 'Govi SDQS',
+        'cache' => DRUPAL_CACHE_PER_PAGE,
+    );
+
+    return $block;
+}
+
+function govi_sdqs_block_view($delta = '') {
+
+    $block = array();
+
+    $block['subject'] = '';
+    $block['content'] = govi_sdqs_block_content();
+
+    return $block;
+}
+
+function govi_sdqs_block_content() {
+
+    return theme('govi_sdqs_display');
+}
+
+function govi_sdqs_theme($existing, $type, $theme, $path) {
+
+    return array(
+        'govi_sdqs_display' => array(
+            'variables' => array('uno' => '1', 'dos' => '2', 'tres' => '3'),
+            'template' => 'templates/sdqs',
+        ),
+    );
+}
+
+function theme_govi_sdqs_display($variables) {
+
+    $output = array();
+
+    $output['#theme'] = 'govi_sdqs';
+    $output['#type'] = 'markup';
+    $output['#variables'] = $variables;
+
+    return $output;
+}
