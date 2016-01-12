@@ -1,5 +1,6 @@
 <?php
-  //dsm(get_defined_vars());
+$service = wsclient_service_load('sdqs');
+dsm($service);
 ?>
 
 <h1>SDQS</h1>

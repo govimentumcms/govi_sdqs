@@ -15,7 +15,7 @@ function govi_sdqs_block_view($delta = '') {
 
     $block = array();
 
-    $block['subject'] = '';
+    $block['subject'] = 'Servicio al ciudadano';
     $block['content'] = govi_sdqs_block_content();
 
     return $block;
@@ -45,4 +45,25 @@ function theme_govi_sdqs_display($variables) {
     $output['#variables'] = $variables;
 
     return $output;
+}
+
+function govi_sdqs_default_wsclient_service() {
+
+    $service = new WSClientServiceDescription();
+
+    $service->name = 'sdqs';
+    $service->label = 'Descripción del web service proporcionado por el Sistema Distrital de Quejas y Soluciones';
+    // URL Temporal mientras se conoce el origen del recurso del SDQS
+    $service->url = 'http://graphical.weather.gov/xml/SOAP_server/ndfdXMLserver.php?wsdl';
+    $service->type = 'soap';
+
+    try {
+        $service->endpoint()->initializeMetaData();
+        $services[$service->name] = $service;
+    }
+    catch (WSClientException $e) {
+        watchdog('wsclient', $e->__toString());
+    }
+
+    return $services;
 }
