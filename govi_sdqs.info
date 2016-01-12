@@ -4,5 +4,6 @@ package = Govimentum
 core = 7.x
 dependencies[] = wsclient_soap
 dependencies[] = wsclient_rest
+dependencies[] = colorbox
 project = govi_sdqs
 version = 7.x-1.0
