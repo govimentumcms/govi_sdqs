@@ -70,15 +70,18 @@ function govi_sdqs_menu() {
 
     $items['govi-sdqs/crear'] = array(
         'title' => 'Crear petición',
-        'page callback' => 'govi_sdqs_crear_peticion_form',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('govi_sdqs_crear_peticion_form'),
         'access arguments' => array('access content'),
+        'access callback' => TRUE,
+        'theme callback' => 'govi_form_popup',
         'type' => MENU_CALLBACK
     );
 
     return $items;
 }
 
-function govi_sdqs_crear_peticion_form() {
+function govi_sdqs_crear_peticion_form($form, &$form_state) {
 
     $form = array();
 
@@ -122,15 +125,31 @@ function govi_sdqs_crear_peticion_form() {
         '#title' => 'Seleccione un archivo',
     );
 
-    $form['submit'] = 'govi_sdqs_crear_peticion_form_submit';
+    $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => 'Enviar',
+        '#ajax' => array(
+            'callback' => 'govi_sdqs_crear_peticion_ajax_submit',
+            'wrapper' => 'govi-sdqs-crear-peticion-form',
+            'method' => 'replaceWith',
+            'effect' => 'fade',
+        ),
+    );
 
     $form['#popup'] = TRUE;
 
     return $form;
 }
 
-function govi_sdqs_crear_peticion_form_submit($form, &$form_state) {
-    var_dump("ENVIANDO");
+function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
+
+    $html = '<h1>Enviado!</h1>';
+
+    $commands = array();
+
+    $commands[] = ajax_command_html('#govi-sdqs-crear-peticion-form', $html);
+
+    return array('#type' => 'ajax', '#commands' => $commands);
 }
 
 // Define operaciones para la gestión del web service del SDQS

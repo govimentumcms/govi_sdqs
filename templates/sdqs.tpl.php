@@ -1,7 +1,7 @@
 <div id="controles-sdqs">
 
     <div class="boton crear">
-	<a href="/govi-sdqs/crear?width=500&height=500" class="colorbox colorbox-load" >Crear Petición</a>
+	<a href="/govi-sdqs/crear?width=500&height=500" class="colorbox-node" >Crear Petición</a>
     </div>
 
     <div class="boton consultar">
@@ -16,4 +16,3 @@
 	Más Servicios
     </div>
 </div>
-
