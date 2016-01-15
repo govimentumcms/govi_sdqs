@@ -51,7 +51,12 @@ function govi_sdqs_theme($existing, $type, $theme, $path) {
 
         'govi_form_popup' => array(
             'render element' => 'page',
-            'template' => 'templates/popup'
+            'template' => 'templates/popup',
+        ),
+
+        'govi_sdqs_details' => array(
+            'variables' => array('uno' => 'dato 1', 'dos' => 'dato 2', 'tres' => 'dato 3'),
+            'template' => 'templates/details',
         ),
     );
 }
@@ -78,6 +83,16 @@ function govi_sdqs_menu() {
         'type' => MENU_CALLBACK
     );
 
+    $items['govi-sdqs/consultar'] = array(
+        'title' => 'Consultar petición',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('govi_sdqs_consultar_peticion_form'),
+        'access arguments' => array('access content'),
+        'access callback' => TRUE,
+        'theme callback' => 'govi_form_popup',
+        'type' => MENU_CALLBACK
+    );
+
     return $items;
 }
 
@@ -88,7 +103,6 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     $form['pqr_crear'] = array(
         '#type' => 'fieldset',
         '#title' => 'Crear petición',
-        ''
     );
 
     $form['pqr_crear']['tipo_peticion'] = array(
@@ -157,12 +171,57 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     return $form;
 }
 
+function govi_sdqs_consultar_peticion_form($form, &$form_state) {
+
+    $form = array();
+
+    $form['pqr_consultar'] = array(
+        '#type' => 'fieldset',
+        '#title' => 'Consultar petición',
+    );
+
+    $form['pqr_consultar']['tipo_peticion'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Número de radicado',
+        '#required' => TRUE
+    );
+
+    $form['pqr_consultar']['submit'] = array(
+        '#type' => 'submit',
+        '#value' => 'Consultar',
+        '#ajax' => array(
+            'callback' => 'govi_sdqs_consultar_peticion_ajax_submit',
+            'wrapper' => 'govi-sdqs-consultar-peticion-form',
+            'method' => 'replaceWith',
+            'effect' => 'fade',
+        ),
+        '#attributes' => array(
+            'class' => array(
+                'pure-button',
+                'pure-button-primary'
+            ),
+        ),
+    );
+
+    $form['#popup'] = TRUE;
+    $form['#attributes']['class'][] = 'pure-form';
+    $form['#attributes']['class'][] = 'pure-form-stacked';
+
+    return $form;
+}
+
 function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
     if ($form_state['executed']) {
         $output = '<h1>Enviado con éxito!</h1>';
     } else {
         $output = $form;
     }
+
+    return $output;
+}
+
+function govi_sdqs_consultar_peticion_ajax_submit($form, &$form_state) {
+    $output = 'Mostrando Datos';
 
     return $output;
 }

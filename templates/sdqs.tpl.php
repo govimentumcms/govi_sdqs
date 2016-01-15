@@ -5,7 +5,7 @@
     </div>
 
     <div class="boton consultar">
-	<a href="">Consultar Petición</a>
+	<a href="/govi-sdqs/consultar?width=600&height=200" class="colorbox-node">Consultar Petición</a>
     </div>
 
     <div class="info">
