@@ -93,6 +93,15 @@ function govi_sdqs_menu() {
         'type' => MENU_CALLBACK
     );
 
+    $items['govi-sdqs/detalle-peticion'] = array(
+        'title' => 'Detalles de la consulta',
+        'page callback' => 'govi_sdqs_ver_detalles',
+        'access arguments' => array('access content'),
+        'access callback' => TRUE,
+        'theme callback' => 'govi_sdqs_details',
+        'type' => MENU_CALLBACK
+    );
+
     return $items;
 }
 
@@ -210,6 +219,11 @@ function govi_sdqs_consultar_peticion_form($form, &$form_state) {
     return $form;
 }
 
+function govi_sdqs_ver_detalles() {
+    $output = '<h1>Mostrando detalles</h1>';
+    return $output;
+}
+
 function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
     if ($form_state['executed']) {
         $output = '<h1>Enviado con éxito!</h1>';
@@ -221,9 +235,17 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
 }
 
 function govi_sdqs_consultar_peticion_ajax_submit($form, &$form_state) {
-    $output = 'Mostrando Datos';
 
-    return $output;
+    // Se envian las variables de la respuesta del ws a la página que
+    // mostrará la información relacionada con la consulta
+    $vars = array();
+    $vars['var1'] = 'var 1';
+    $vars['var2'] = 'var 2';
+    $vars['var3'] = array('var1.1' => '1', 'var1.2' => '2');
+
+    $url = url('govi-sdqs/detalle-peticion', array('query' => $vars));
+
+    return '<script type="text/javascript">parent.window.location="'.$url.'";</script>';
 }
 
 // Define operaciones para la gestión del web service del SDQS
