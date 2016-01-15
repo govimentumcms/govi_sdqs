@@ -85,10 +85,15 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
 
     $form = array();
 
-    $form['pqr_tipo_peticion'] = array(
+    $form['pqr_crear'] = array(
+        '#type' => 'fieldset',
+        '#title' => 'Crear petición',
+        ''
+    );
+
+    $form['pqr_crear']['tipo_peticion'] = array(
         '#type' => 'select',
         '#title' => 'Tipo de petición',
-        '#description' => 'Lorem ipsum dolor sit amet',
         '#options' => array(
             0 => 'tipo 1',
             1 => 'tipo 2',
@@ -96,10 +101,9 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#required' => TRUE
     );
 
-    $form['pqr_tema'] = array(
+    $form['pqr_crear']['tema'] = array(
         '#type' => 'select',
         '#title' => 'Tema',
-        '#description' => 'Lorem ipsum dolor sit amet',
         '#options' => array(
             0 => 'tema 1',
             1 => 'tema 2',
@@ -108,24 +112,28 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     );
 
     // Debería seleccionar los términos de una taxonomía
-    $form['pqr_entidad'] = array(
+    $form['pqr_crear']['entidad'] = array(
         '#type' => 'select',
         '#title' => 'Entidad',
-        '#description' => 'Lorem ipsum dolor sit amet',
         '#options' => array(
             0 => 'Entidad 1',
             1 => 'Entidad 2',
         ),
         '#required' => TRUE
-        
     );
 
-    $form['pqr_archivo'] = array(
+    $form['pqr_crear']['asunto'] = array(
+        '#type' => 'textarea',
+        '#title' => 'Asunto',
+        '#cols' => 30,
+    );
+
+    $form['pqr_crear']['archivo'] = array(
         '#type' => 'file',
         '#title' => 'Seleccione un archivo',
     );
 
-    $form['submit'] = array(
+    $form['pqr_crear']['submit'] = array(
         '#type' => 'submit',
         '#value' => 'Enviar',
         '#ajax' => array(
@@ -134,9 +142,17 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
             'method' => 'replaceWith',
             'effect' => 'fade',
         ),
+        '#attributes' => array(
+            'class' => array(
+                'pure-button',
+                'pure-button-primary'
+            ),
+        ),
     );
 
     $form['#popup'] = TRUE;
+    $form['#attributes']['class'][] = 'pure-form';
+    $form['#attributes']['class'][] = 'pure-form-stacked';
 
     return $form;
 }
