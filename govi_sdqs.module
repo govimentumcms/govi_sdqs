@@ -234,19 +234,34 @@ function govi_sdqs_ver_detalles() {
 }
 
 function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
-    if ($form_state['executed']) {
-        $output = '<h1>Enviado con éxito!</h1>';
-    } else {
-        $output = $form;
-    }
 
-    return $output;
+    // TODO: Se obtienen los valores de los campos del formulario y se parametrizan
+    // de tal forma que puedan ser manejados por el web service durante el
+    // request
+
+    // TODO: Obtener la definición del webservice con wsclient_service_load('machine_name')
+    // y utilizar sus propiedades en a través de un parametro.
+
+
+    // TODO: Dependiendo de la respuesta del web service se organiza el $output y
+    // se maneja el error
+
+    // if ($form_state['executed']) {
+    //    $output = '<h1>Enviado con éxito!</h1>';
+    // } else {
+    //    $output = $form;
+    // }
+
+    //return $output;
 }
 
 function govi_sdqs_consultar_peticion_ajax_submit($form, &$form_state) {
 
+
+    // TODO: Realizar la peticioń al WS con el numero SDQS
+
     if ($form_state['executed']) { 
-        // Se envian las variables de la respuesta del ws a la página que
+        // FIXME: Se envian las variables de la respuesta del ws a la página que
         // mostrará la información relacionada con la consulta
         $vars = array();
         $vars['var1'] = 'var 1';
@@ -261,26 +276,4 @@ function govi_sdqs_consultar_peticion_ajax_submit($form, &$form_state) {
     }
 
     return $output;
-}
-
-// Define operaciones para la gestión del web service del SDQS
-function govi_sdqs_default_wsclient_service() {
-
-    $service = new WSClientServiceDescription();
-
-    $service->name = 'sdqs';
-    $service->label = 'Descripción del web service proporcionado por el Sistema Distrital de Quejas y Soluciones';
-    // URL Temporal mientras se conoce el origen del recurso del SDQS
-    $service->url = 'http://graphical.weather.gov/xml/SOAP_server/ndfdXMLserver.php?wsdl';
-    $service->type = 'soap';
-
-    try {
-        $service->endpoint()->initializeMetaData();
-        $services[$service->name] = $service;
-    }
-    catch (WSClientException $e) {
-        watchdog('wsclient', $e->__toString());
-    }
-
-    return $services;
 }

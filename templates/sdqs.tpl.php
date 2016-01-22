@@ -1,11 +1,13 @@
+<?php //dsm(get_defined_vars()); ?>
+
 <div id="controles-sdqs">
 
     <div class="boton crear">
-	<a href="/govi-sdqs/crear?width=600&height=500" class="colorbox-node" >Crear Petición</a>
+	<a href="govi-sdqs/crear" class="colorbox-load colorbox-node" >Crear Petición</a>
     </div>
 
     <div class="boton consultar">
-	<a href="/govi-sdqs/consultar?width=600&height=200" class="colorbox-node">Consultar Petición</a>
+	<a href="/govi-sdqs/consultar" class="colorbox-node">Consultar Petición</a>
     </div>
 
     <div class="info">
