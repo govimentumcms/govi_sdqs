@@ -142,7 +142,7 @@ function _create_services_descriptions($user, $passwd, $env) {
         } else {
             // Notificar validación de existencia y redireccionar a la 
             // administración del WS en el modulo wsclient
-            drupal_set_message('Existe una descripción de '. $service->name .' en la base de datos, diríjase a <a href = "'. WSCLIENT_UI_PATH .'/manage/'. $service->name .'">la administración</a> del webservice para mayor información.', 'warning');
+            drupal_set_message('Existe una descripción de '. $service->name .' en la base de datos, diríjase a la <b><a href = "'. WSCLIENT_UI_PATH .'/manage/'. $service->name .'">administración del webservice</a></b> para mayor información.', 'warning');
 
             // TODO: Actualizar la descripción del WS con los datos del 
             // formulario y notificar
