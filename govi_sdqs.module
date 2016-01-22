@@ -73,11 +73,20 @@ function govi_sdqs_menu() {
 
     $items = array();
 
+    $items['admin/config/features/sdqs-client'] = array(
+        'title' => 'Cliente Sistema Distrital de Quejas y Soluciones',
+        'descriptión' => 'Configuración del Cliente SOAP del SDQS',
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('govi_sdqs_admin_config_main'),
+        'access arguments' => array('administer'),
+        'file' => 'includes/govi-sdqs.admin.inc'
+    );
+
     $items['govi-sdqs/crear'] = array(
         'title' => 'Crear petición',
         'page callback' => 'drupal_get_form',
         'page arguments' => array('govi_sdqs_crear_peticion_form'),
-        'access arguments' => array('access content'),
+        'access arguments' => array('access callback'),
         'access callback' => TRUE,
         'theme callback' => 'govi_form_popup',
         'type' => MENU_CALLBACK
