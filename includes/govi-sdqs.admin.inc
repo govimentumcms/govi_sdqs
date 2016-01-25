@@ -1,6 +1,6 @@
 <?php
 
-function govi_sdqs_admin_config_main($form, &$form_state) {
+function govi_sdqs_admin_config_main_form($form, &$form_state) {
 
     $form = array();
 
@@ -19,16 +19,40 @@ function govi_sdqs_admin_config_main($form, &$form_state) {
         '#title' => 'Usuario',
         '#description' => 'Nombre del usuario SDQS asignado para la autenticación básica en el ambiente de producción del web service',
         '#required' => TRUE,
+        '#default_value' => variable_get('sdqs_user', ''),
     );
 
+    // TODO: Encontrar el modo de usar el ampo tipo password y validar si se ha definido
+    // la contraseña del webservice, por el momento se maneja un campo de texto
+
     $form['wsdl_config']['auth_password'] = array(
-        '#type' => 'password',
+        '#type' => 'textfield',
         '#title' => 'Contraseña',
         '#description' => 'Contraseña del usuario SDQS asignado para la autenticación básica en el ambiente de producción del web service',
         '#required' => TRUE,
+        '#default_value' => variable_get('sdqs_password'),
     );
 
-    $form['wsdl_config']['ws_env'] = array(
+    /**
+    // TODO: Encontrar el modo de usar el ampo tipo password y validar si se ha definido
+    // la contraseña del webservice
+
+    $form['wsdl_config']['auth_password_button'] = array(
+        '#type' => 'button',
+        '#prefix' => '<div id="change-password-btn">',
+        '#suffix' => '</div>',
+        '#value' => 'Cambiar contraseña',
+        '#ajax' => array(
+            'callback' => 'password_button_ajax',
+            'event' => 'click',
+            'method' => 'replace',
+            'effect' => 'fade',
+            'wrapper' => 'change-password-btn'
+        ),
+    );
+    **/
+
+    $form['wsdl_config']['sdqs_env'] = array(
         '#type' => 'radios',
         '#title' => 'Seleccione el ambiente del webservice que desea usar',
         '#description' => 'Utilize el ambiente de pruebas para efectos de depuración y mantenimiento del cliente',
@@ -36,7 +60,8 @@ function govi_sdqs_admin_config_main($form, &$form_state) {
             'prod' => 'Producción',
             'test' => 'Pruebas',
         ),
-        '#required' => TRUE
+        '#required' => TRUE,
+        '#default_value' => variable_get('sdqs_env', 'test'),
     );
 
     $form['wsdl_config']['get_codes'] = array(
@@ -57,19 +82,31 @@ function govi_sdqs_admin_config_main($form, &$form_state) {
     return $form;
 }
 
-function govi_sdqs_admin_config_main_submit($form, &$form_state) {
+function govi_sdqs_admin_config_main_form_submit($form, &$form_state) {
 
     $user = $form_state['values']['auth_user'];
     $passwd = $form_state['values']['auth_password'];
-    $env = $form_state['values']['ws_env'];
+    $env = $form_state['values']['sdqs_env'];
 
     variable_set('sdqs_user', $user);
     variable_set('sdqs_password', $passwd);
+    variable_set('sdqs_env', $env);
 
     _create_services_descriptions($user, $passwd, $env);
-
-    dsm($form_state);   
+ 
 }
+
+/**
+ // TODO: Encontrar el modo de usar el ampo tipo password y validar si se ha definido
+ // la contraseña del webservice, por el momento se maneja un campo de texto
+
+ function password_button_ajax ($form, &$form_state) {
+ 
+    $form['wsdl_config']['auth_password']['#access'] = TRUE;
+
+    return $form['wsdl_config']['auth_password'];
+}
+*/
 
 function _create_services_descriptions($user, $passwd, $env) {
 
