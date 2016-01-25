@@ -67,11 +67,11 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
     $form['wsdl_config']['get_codes'] = array(
         '#type' => 'checkboxes',
         '#options' => drupal_map_assoc(array(
-            'Tipo Petición',
-            'Temas',
-            'Entidades'
+            'getListaTipoPetición',
+            'getListaTema',
+            'getListaEntidadesDistritales'
         )),
-        '#title' => 'Seleccione los elementos en los cuales desea actualizar la codificación del Web Service (Estos valores serán almacendados como variables enel sistema de Drupal)',
+        '#title' => 'Seleccione las operaciones en los cuales desea actualizar la codificación del Web Service (Estos valores serán almacendados como variables enel sistema de Drupal)',
     );
 
     $form['wsdl_config']['submit'] = array(
@@ -87,13 +87,18 @@ function govi_sdqs_admin_config_main_form_submit($form, &$form_state) {
     $user = $form_state['values']['auth_user'];
     $passwd = $form_state['values']['auth_password'];
     $env = $form_state['values']['sdqs_env'];
+    $opts = $form_state['values']['get_codes'];
 
     variable_set('sdqs_user', $user);
     variable_set('sdqs_password', $passwd);
     variable_set('sdqs_env', $env);
 
-    _create_services_descriptions($user, $passwd, $env);
- 
+    $services = _create_services_descriptions($user, $passwd, $env);
+
+    // TODO: Services debería ser una variable con la lista de 
+    // servicios disponibles
+
+    _update_operations($opts, $services);
 }
 
 /**
@@ -187,4 +192,23 @@ function _create_services_descriptions($user, $passwd, $env) {
     }
 
     return $services;
+}
+
+function _update_operations($opts, $services) {
+
+    $consultaWS = wsclient_service_load($services['sdqs_consulta']->name);
+    dsm($consultaWS);
+
+    foreach ($opts as $opt) {
+        if ($opt) {
+
+            try {
+                $result = $consultaWS->invoke($opt, array());
+            } catch (WSClientexception $e) {
+                watchdog('wsclient', $e->__toString());
+                dsm($e);
+                drupal_set_message('Ha ocurrido un error', 'error');
+            }
+        }
+    }
 }
