@@ -5,7 +5,7 @@ drupal_add_css($css);
 
 <div id="servicio-ciudadano">
     <div id="sdqs">
-	<div class="title"><h3><i class="logo"></i>Sistema Distrital de Quejas y Soluciones</h3></div>
+	<div class="title"><h3><i class="logo"></i>Sistema Distrital de Quejas y Soluciones -SDQS-</h3></div>
 	<div class="controles">
 	    <div class="boton crear">
 		<i></i>
@@ -18,7 +18,7 @@ drupal_add_css($css);
 	    </div>
 	    
 	    <div class="info">
-		<p>Si usted quiere registrarse en el Sistema Distrital de Quejas y Soluciones, ingrese <a href="#">AQUI</a></p>
+		<p>Si usted desea registrarse en el SDQS, <a href="http://sdqs.bogota.gov.co/sdqs/login" target="_blank">ingrese aquí</a></p>
 	    </div>
 	    <div class="select servicios">
 		Más Servicios
