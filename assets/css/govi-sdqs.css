@@ -5,6 +5,7 @@
 #sdqs .title h3{
     color: #F3A82B;
     font-size: 0.9em;
+    font-style: italic;
     font-weight: bolder;
     letter-spacing: -1px;
     line-height: 1.4em;
@@ -29,6 +30,8 @@
     color: #FFFFFF;
     border-radius: 8px;
     background-clip: padding-box;
+    background-repeat: repeat-x;
+    background-position: left bottom;
     display: block;
     padding: 10px;
     font-family: roboto bold;
@@ -39,6 +42,8 @@
 
 #sdqs .boton i {
     background-color: red;
+    background-repeat: no-repeat;
+    background-position: 17px center;
     border-radius: 30px;
     display: block;
     float: left;
@@ -52,18 +57,23 @@
 
 #sdqs .boton.crear i {
     background-color: #2E579D;
+    background-image: url("../imgs/icono1.png");
 }
 
 #sdqs .boton.consultar i {
     background-color: #F3A82B;
+    background-image: url("../imgs/icono2.png");
 }
 
 #sdqs .boton.crear a {
     background-color: #2E579D;
+    background-image: url("../imgs/ciudad1.png");
+
 }
 
 #sdqs .boton.consultar a {
     background-color: #F3A82B;
+    background-image: url("../imgs/ciudad1.png");
 }
 
 #sdqs .boton.crear span {
