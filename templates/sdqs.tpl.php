@@ -21,7 +21,7 @@ drupal_add_css($css);
 		<p>Si usted desea registrarse en el SDQS, <a href="http://sdqs.bogota.gov.co/sdqs/login" target="_blank">ingrese aquí</a></p>
 	    </div>
 	    <div class="select servicios">
-		Más Servicios
+		<?php echo views_embed_view('enlaces_servicio_ciudadania','block'); ?>
 	    </div>
 	</div>
     </div>
