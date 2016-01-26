@@ -197,7 +197,7 @@ function _create_services_descriptions($user, $passwd, $env) {
 function _update_operations($opts, $services) {
 
     $consultaWS = wsclient_service_load($services['sdqs_consulta']->name);
-    dsm($consultaWS);
+    //dsm($consultaWS);
 
     foreach ($opts as $opt) {
         if ($opt) {
@@ -206,8 +206,7 @@ function _update_operations($opts, $services) {
                 $result = $consultaWS->invoke($opt, array());
             } catch (WSClientexception $e) {
                 watchdog('wsclient', $e->__toString());
-                dsm($e);
-                drupal_set_message('Ha ocurrido un error', 'error');
+                drupal_set_message('Ha ocurrido un error, verifique el log de errores para obtener mayor detalle', 'error');
             }
         }
     }
