@@ -1,6 +1,9 @@
 <?php //dsm(get_defined_vars()); 
-$css = drupal_get_path('module', 'govi_sdqs') . '/assets/css/govi-sdqs.css';
+$path = drupal_get_path('module', 'govi_sdqs');
+$css = $path . '/assets/css/govi-sdqs.css';
+$js = $path . '/assets/js/govi-sdqs.js';
 drupal_add_css($css);
+drupal_add_js($js);
 ?>
 
 <div id="servicio-ciudadano">
@@ -21,7 +24,7 @@ drupal_add_css($css);
 		<p>Si usted desea registrarse en el SDQS, <a href="http://sdqs.bogota.gov.co/sdqs/login" target="_blank">ingrese aquí</a></p>
 	    </div>
 	    <div class="select servicios">
-		<?php echo views_embed_view('enlaces_servicio_ciudadania','block'); ?>
+		<?php print views_embed_view('enlaces_servicio_ciudadania','block'); ?>
 	    </div>
 	</div>
     </div>

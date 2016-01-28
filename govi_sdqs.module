@@ -45,7 +45,6 @@ function govi_sdqs_theme($existing, $type, $theme, $path) {
 
     return array(
         'govi_sdqs_display' => array(
-            'variables' => array('uno' => '1', 'dos' => '2', 'tres' => '3'),
             'template' => 'templates/sdqs',
         ),
 
@@ -86,7 +85,7 @@ function govi_sdqs_menu() {
         'title' => 'Crear petición',
         'page callback' => 'drupal_get_form',
         'page arguments' => array('govi_sdqs_crear_peticion_form'),
-        'access arguments' => array('access callback'),
+        'access arguments' => array('access content'),
         'access callback' => TRUE,
         'theme callback' => 'govi_form_popup',
         'type' => MENU_CALLBACK
