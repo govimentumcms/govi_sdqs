@@ -77,7 +77,7 @@ function govi_sdqs_menu() {
         'descriptión' => 'Configuración del Cliente SOAP del SDQS',
         'page callback' => 'drupal_get_form',
         'page arguments' => array('govi_sdqs_admin_config_main_form'),
-        'access arguments' => array('administer'),
+        'access arguments' => array('access administration pages'),
         'file' => 'includes/govi-sdqs.admin.inc'
     );
 
