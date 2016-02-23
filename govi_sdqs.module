@@ -122,34 +122,47 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#title' => 'Crear petición',
     );
 
+    $opts_peticion = array();
+    $tipos_peticion = variable_get('govi_sdqs_lista_tipo_peticion');
+
+    foreach ($tipos_peticion as $tipo) {
+        $opts_peticion[$tipo['id']] = $tipo['nombre'];
+    }
+
     $form['pqr_crear']['tipo_peticion'] = array(
         '#type' => 'select',
         '#title' => 'Tipo de petición',
-        '#options' => array(
-            0 => 'tipo 1',
-            1 => 'tipo 2',
-        ),
+        '#options' => $opts_peticion,
         '#required' => TRUE
     );
+
+    $opts_temas = array();
+    $temas = variable_get('govi_sdqs_lista_tema');
+
+    foreach ($temas as $tema) {
+        $opts_temas[$tema['id']] = $tema['nombre'];
+    }
 
     $form['pqr_crear']['tema'] = array(
         '#type' => 'select',
         '#title' => 'Tema',
-        '#options' => array(
-            0 => 'tema 1',
-            1 => 'tema 2',
-        ),
+        '#options' => $opts_temas,
         '#required' => TRUE
     );
 
-    // Debería seleccionar los términos de una taxonomía
+    // TODO: implementar autocomletado controlado desde el cliente
+    // con JavaScript
+    $opts_entidades = array();
+    $entidades = variable_get('govi_sdqs_lista_entidades');
+
+    foreach ($entidades as $entidad) {
+        $opts_entidades[$entidad['id']] = $entidad['nombre'];
+    }
+
     $form['pqr_crear']['entidad'] = array(
         '#type' => 'select',
         '#title' => 'Entidad',
-        '#options' => array(
-            0 => 'Entidad 1',
-            1 => 'Entidad 2',
-        ),
+        '#options' => $opts_entidades,
         '#required' => TRUE
     );
 

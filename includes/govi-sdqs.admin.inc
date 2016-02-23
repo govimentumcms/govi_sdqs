@@ -22,7 +22,7 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
         '#default_value' => variable_get('sdqs_user', ''),
     );
 
-    // TODO: Encontrar el modo de usar el ampo tipo password y validar si se ha definido
+    // TODO: Encontrar el modo de usar el campo tipo password y validar si se ha definido
     // la contraseña del webservice, por el momento se maneja un campo de texto
 
     $form['wsdl_config']['auth_password'] = array(
@@ -34,7 +34,7 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
     );
 
     /**
-    // TODO: Encontrar el modo de usar el ampo tipo password y validar si se ha definido
+    // TODO: Encontrar el modo de usar el campo tipo password y validar si se ha definido
     // la contraseña del webservice
 
     $form['wsdl_config']['auth_password_button'] = array(
@@ -67,9 +67,9 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
     $form['wsdl_config']['get_codes'] = array(
         '#type' => 'checkboxes',
         '#options' => drupal_map_assoc(array(
-            'getListaTipoPetición',
+            'getListaEntidadesDistritales',
+            'getListaTipoPeticion',
             'getListaTema',
-            'getListaEntidadesDistritales'
         )),
         '#title' => 'Seleccione las operaciones en los cuales desea actualizar la codificación del Web Service (Estos valores serán almacendados como variables enel sistema de Drupal)',
     );
@@ -78,6 +78,7 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
         '#type' => 'submit',
         '#value' => 'Guardar',
     );
+
 
     return $form;
 }
@@ -98,7 +99,9 @@ function govi_sdqs_admin_config_main_form_submit($form, &$form_state) {
     // TODO: Services debería ser una variable con la lista de 
     // servicios disponibles
 
-    _update_operations($opts, $services);
+    if (!empty($opts)) {
+        _get_operations_data($opts, $services);
+    }
 }
 
 /**
@@ -126,7 +129,7 @@ function _create_services_descriptions($user, $passwd, $env) {
  
     $service = new WSClientServiceDescription();
 
-    $service->name = 'sdqs_consulta';
+    $service->name = 'service_consulta';
     $service->label = 'Descripción del Webservice SDQS con los bindings para las consultas';
     if ($env == 'prod') {
         $service->url = 'http://sdqs.bogota.gov.co/sdqs/servicios/WSConsultasService?wsdl';
@@ -145,7 +148,7 @@ function _create_services_descriptions($user, $passwd, $env) {
 
     $service = new WSClientServiceDescription();
 
-    $service->name = 'sdqs_radicacion';
+    $service->name = 'service_radicacion';
     $service->label = 'Descripción del Webservice SDQS para efectuar las operaciones de radicación';
 
     if ($env == 'prod') {
@@ -194,20 +197,54 @@ function _create_services_descriptions($user, $passwd, $env) {
     return $services;
 }
 
-function _update_operations($opts, $services) {
+function _get_operations_data($opts, $services) {
 
-    $consultaWS = wsclient_service_load($services['sdqs_consulta']->name);
+    $consultaWS = wsclient_service_load($services['service_consulta']->name);
     //dsm($consultaWS);
 
-    foreach ($opts as $opt) {
-        if ($opt) {
+    foreach ($opts as $op) {
+        if (!empty($op)) {
 
             try {
-                $result = $consultaWS->invoke($opt, array());
+                $results = $consultaWS->invoke($op, array());
+                _save_results_as_drupal($results, $op);
             } catch (WSClientexception $e) {
                 watchdog('wsclient', $e->__toString());
                 drupal_set_message('Ha ocurrido un error, verifique el log de errores para obtener mayor detalle', 'error');
             }
         }
+    }
+}
+
+function _save_results_as_drupal($data, $op) {
+
+    $data = object_to_array($data);
+
+    if ($op === 'getListaEntidadesDistritales') $op = 'lista_entidades';
+    if ($op === 'getListaTipoPeticion') $op = 'lista_tipo_peticion';
+    if ($op === 'getListaTema') $op = 'lista_tema';
+
+    variable_set('govi_sdqs_'.$op, $data['return']);
+
+}
+
+/**
+ * Función que transforma objetos multidimensionales
+ * en arrays
+ *
+ * @ver http://www.if-not-true-then-false.com/2009/php-tip-convert-stdclass-object-to-multidimensional-array-and-convert-multidimensional-array-to-stdclass-object/
+ */
+function object_to_array ($o) {
+    if(is_object($o)) {
+
+        $o = get_object_vars($o);
+    }
+
+    if(is_array($o)){
+
+        return array_map(__FUNCTION__, $o);
+    } else {
+
+        return $o;
     }
 }
