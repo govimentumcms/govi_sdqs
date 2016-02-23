@@ -122,8 +122,24 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#title' => 'Crear petición',
     );
 
-    $opts_peticion = array();
+    $temas = variable_get('govi_sdqs_lista_tema');
+    $entidades = variable_get('govi_sdqs_lista_entidades');
     $tipos_peticion = variable_get('govi_sdqs_lista_tipo_peticion');
+
+    if (empty($temas) || empty($entidades) || empty($tipos_peticion)) {
+
+        $msg = '<p>Uno o varios códigos del SDQS no se han cargado en el sistema. <br/>';
+        $msg .= 'Ingrese a la configuración del Webservice del módulo ';
+        $msg .= '<a href="/admin/config/features/sdqs-client" title="Configurar SDQS">govi_sdqs</a> para ';
+        $msg .= 'configurar las descripciones y obtener los datos de los selectores de ';
+        $msg .= 'este formulario.';
+
+        $form['pqr_crear']['aviso_sdqs'] = array(
+            '#prefix' => '<div class="sdqs-form-msg">',
+            '#markup' => $msg,
+            '#suffix' => '</div>'
+        );
+    }
 
     foreach ($tipos_peticion as $tipo) {
         $opts_peticion[$tipo['id']] = $tipo['nombre'];
@@ -137,7 +153,6 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     );
 
     $opts_temas = array();
-    $temas = variable_get('govi_sdqs_lista_tema');
 
     foreach ($temas as $tema) {
         $opts_temas[$tema['id']] = $tema['nombre'];
@@ -153,7 +168,6 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     // TODO: implementar autocomletado controlado desde el cliente
     // con JavaScript
     $opts_entidades = array();
-    $entidades = variable_get('govi_sdqs_lista_entidades');
 
     foreach ($entidades as $entidad) {
         $opts_entidades[$entidad['id']] = $entidad['nombre'];
