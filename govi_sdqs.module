@@ -148,7 +148,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     $form['pqr_crear']['tipo_peticion'] = array(
         '#type' => 'select',
         '#title' => 'Tipo de petición',
-        '#options' => $opts_peticion,
+        '#options' => !empty($opts_peticion) ? $opts_peticion : array(),
         '#required' => TRUE
     );
 
@@ -161,7 +161,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     $form['pqr_crear']['tema'] = array(
         '#type' => 'select',
         '#title' => 'Tema',
-        '#options' => $opts_temas,
+        '#options' => !empty($opts_temas) ? $opts_temas : array(),
         '#required' => TRUE
     );
 
@@ -176,7 +176,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     $form['pqr_crear']['entidad'] = array(
         '#type' => 'select',
         '#title' => 'Entidad',
-        '#options' => $opts_entidades,
+        '#options' => !empty($opts_entidades) ? $opts_entidades : array(),
         '#required' => TRUE
     );
 
