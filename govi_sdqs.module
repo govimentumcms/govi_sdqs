@@ -117,16 +117,15 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
 
     $form = array();
 
-    $form['pqr_crear'] = array(
-        '#type' => 'fieldset',
-        '#title' => 'Crear petición',
-    );
-
     $temas = variable_get('govi_sdqs_lista_tema');
     $entidades = variable_get('govi_sdqs_lista_entidades');
     $tipos_peticion = variable_get('govi_sdqs_lista_tipo_peticion');
+    $tipos_id = variable_get('govi_sdqs_lista_tipos_id');
 
-    if (empty($temas) || empty($entidades) || empty($tipos_peticion)) {
+    if (empty($temas)
+        || empty($entidades)
+        || empty($tipos_peticion)
+        || empty($tipos_id)) {
 
         $msg = '<p>Uno o varios códigos del SDQS no se han cargado en el sistema. <br/>';
         $msg .= 'Ingrese a la configuración del Webservice del módulo ';
@@ -140,6 +139,60 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
             '#suffix' => '</div>'
         );
     }
+
+    $form['datos_personales'] = array(
+        '#type' => 'fieldset',
+        '#title' => 'Datos persona natural',
+        '#weight' => -1
+    );
+
+    $form['datos_personales']['nombre'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Nombre',
+        '#description' => 'Ingrese su primer nombre',
+        '#required' => TRUE,
+        '#size' => 60,
+    );
+
+    $form['datos_personales']['apellido'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Apellido',
+        '#description' => 'Ingrese su primer apellido',
+        '#required' => TRUE,
+        '#size' => 60
+    );
+
+    $opts_ids = array();
+
+    foreach ($tipos_id as $tipo) {
+        $opts_ids[$tipo['id']] = $tipo['nombre'];
+    }
+
+    $form['datos_personales']['tipo_identificacion'] = array(
+        '#type' => 'select',
+        '#title' => 'Tipo de identificación',
+        '#options' => !empty($opts_ids) ? $opts_ids : array(),
+        '#required' => TRUE
+    );
+
+    $form['datos_personales']['numero_identificacion'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Numero identificación',
+        '#required' => TRUE
+    );
+
+    $form['datos_personales']['correo_electrónico'] = array(
+        '#type' => 'textfield',
+        '#title' => 'Correo electrónico',
+        '#required' => TRUE
+    );
+
+    $form['pqr_crear'] = array(
+        '#type' => 'fieldset',
+        '#title' => 'Crear petición',
+    );
+
+    $opts_peticion = array();
 
     foreach ($tipos_peticion as $tipo) {
         $opts_peticion[$tipo['id']] = $tipo['nombre'];
