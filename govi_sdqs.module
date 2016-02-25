@@ -25,20 +25,8 @@ function govi_sdqs_block_view($delta = '') {
 
 function govi_sdqs_block_content() {
 
-    return theme('govi_sdqs_display');
+        return theme('govi_sdqs_display');
 }
-
-function theme_govi_sdqs_display($variables) {
-
-    $output = array();
-
-    $output['#theme'] = 'govi_sdqs';
-    $output['#type'] = 'markup';
-    $output['#variables'] = $variables;
-
-    return $output;
-}
-
 
 // Manejador de templates del módulo
 function govi_sdqs_theme($existing, $type, $theme, $path) {
@@ -48,22 +36,16 @@ function govi_sdqs_theme($existing, $type, $theme, $path) {
             'template' => 'templates/sdqs',
         ),
 
-        'govi_form_popup' => array(
-            'render element' => 'page',
-            'template' => 'templates/popup',
-        ),
-
-        'govi_sdqs_details' => array(
-            'variables' => array('uno' => 'dato 1', 'dos' => 'dato 2', 'tres' => 'dato 3'),
-            'template' => 'templates/details',
+        'govi_sdqs_form' => array(
+            'render element' => 'form',
+            'template' => 'templates/form',
         ),
     );
 }
 
-function govi_sdqs_page_alter(&$page) {
-    if (isset($page['content']['system_main']['#popup'])) {
-        $page['#theme'] = 'govi_form_popup';
-    }
+function theme_govi_sdqs_form ($variables) {
+    $form = $variables['form'];
+    return $form;
 }
 
 // Define recursos para manejar las operaciones del módulo
@@ -85,21 +67,24 @@ function govi_sdqs_menu() {
         'title' => 'Crear petición',
         'page callback' => 'drupal_get_form',
         'page arguments' => array('govi_sdqs_crear_peticion_form'),
-        'access arguments' => array('access content'),
         'access callback' => TRUE,
-        'theme callback' => 'govi_form_popup',
-        'type' => MENU_CALLBACK
     );
 
+    // Deshabilita recurso debido que el alcance para la
+    // primera versión redireccionará directamente al SDQS
+    // hasta que exista un servicio que permita consultar
+    // el detalle de la petición
+    /*
     $items['govi-sdqs/consultar'] = array(
         'title' => 'Consultar petición',
         'page callback' => 'drupal_get_form',
         'page arguments' => array('govi_sdqs_consultar_peticion_form'),
         'access arguments' => array('access content'),
         'access callback' => TRUE,
-        'theme callback' => 'govi_form_popup',
-        'type' => MENU_CALLBACK
+        //'theme callback' => 'govi_form_popup',
+        //'type' => MENU_CALLBACK
     );
+
 
     $items['govi-sdqs/detalle-peticion'] = array(
         'title' => 'Detalles de la consulta',
@@ -109,6 +94,7 @@ function govi_sdqs_menu() {
         'theme callback' => 'govi_sdqs_details',
         'type' => MENU_CALLBACK
     );
+    */
 
     return $items;
 }
@@ -116,6 +102,8 @@ function govi_sdqs_menu() {
 function govi_sdqs_crear_peticion_form($form, &$form_state) {
 
     $form = array();
+
+    $form['#theme'] = 'govi_sdqs_form';
 
     $temas = variable_get('govi_sdqs_lista_tema');
     $entidades = variable_get('govi_sdqs_lista_entidades');
@@ -150,6 +138,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#type' => 'textfield',
         '#title' => 'Nombre',
         '#description' => 'Ingrese su primer nombre',
+        '#attributes' => array('class' => array('pure-u-23-24')),
         '#required' => TRUE,
         '#size' => 60,
     );
@@ -157,6 +146,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     $form['datos_personales']['apellido'] = array(
         '#type' => 'textfield',
         '#title' => 'Apellido',
+        '#attributes' => array('class' => array('pure-u-23-24')),
         '#description' => 'Ingrese su primer apellido',
         '#required' => TRUE,
         '#size' => 60
@@ -171,19 +161,22 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     $form['datos_personales']['tipo_identificacion'] = array(
         '#type' => 'select',
         '#title' => 'Tipo de identificación',
+        '#attributes' => array('class' => array('pure-u-23-24')),
         '#options' => !empty($opts_ids) ? $opts_ids : array(),
         '#required' => TRUE
     );
 
     $form['datos_personales']['numero_identificacion'] = array(
         '#type' => 'textfield',
+        '#attributes' => array('class' => array('pure-u-23-24')),
         '#title' => 'Numero identificación',
         '#required' => TRUE
     );
 
-    $form['datos_personales']['correo_electrónico'] = array(
+    $form['datos_personales']['correo_electronico'] = array(
         '#type' => 'textfield',
         '#title' => 'Correo electrónico',
+        '#attributes' => array('class' => array('pure-u-23-24')),
         '#required' => TRUE
     );
 
@@ -201,6 +194,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     $form['pqr_crear']['tipo_peticion'] = array(
         '#type' => 'select',
         '#title' => 'Tipo de petición',
+        '#attributes' => array('class' => array('pure-u-23-24')),
         '#options' => !empty($opts_peticion) ? $opts_peticion : array(),
         '#required' => TRUE
     );
@@ -214,6 +208,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     $form['pqr_crear']['tema'] = array(
         '#type' => 'select',
         '#title' => 'Tema',
+        '#attributes' => array('class' => array('pure-u-23-24')),
         '#options' => !empty($opts_temas) ? $opts_temas : array(),
         '#required' => TRUE
     );
@@ -229,6 +224,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     $form['pqr_crear']['entidad'] = array(
         '#type' => 'select',
         '#title' => 'Entidad',
+        '#attributes' => array('class' => array('pure-u-23-24')),
         '#options' => !empty($opts_entidades) ? $opts_entidades : array(),
         '#required' => TRUE
     );
@@ -237,14 +233,16 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#type' => 'textarea',
         '#title' => 'Asunto',
         '#cols' => 30,
+        '#attributes' => array('class' => array('pure-u-1')),
     );
 
     $form['pqr_crear']['archivo'] = array(
         '#type' => 'file',
         '#title' => 'Seleccione un archivo',
+        '#attributes' => array('class' => array('pure-u-23-24')),
     );
 
-    $form['pqr_crear']['submit'] = array(
+    $form['submit'] = array(
         '#type' => 'submit',
         '#value' => 'Enviar',
         '#ajax' => array(
@@ -261,13 +259,17 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         ),
     );
 
-    $form['#popup'] = TRUE;
     $form['#attributes']['class'][] = 'pure-form';
     $form['#attributes']['class'][] = 'pure-form-stacked';
 
     return $form;
 }
 
+// Deshabilita formularios debido que el alcance para la 
+// primera versión redireccionará directamente al SDQS
+// hasta que exista un servicio que permita consultar
+// el detalle de la petición
+/*
 function govi_sdqs_consultar_peticion_form($form, &$form_state) {
 
     $form = array();
@@ -311,6 +313,7 @@ function govi_sdqs_ver_detalles() {
     $output = '<h1>Mostrando detalles</h1>';
     return $output;
 }
+*/
 
 function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
 
@@ -332,27 +335,4 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
     // }
 
     //return $output;
-}
-
-function govi_sdqs_consultar_peticion_ajax_submit($form, &$form_state) {
-
-
-    // TODO: Realizar la peticioń al WS con el numero SDQS
-
-    if ($form_state['executed']) { 
-        // FIXME: Se envian las variables de la respuesta del ws a la página que
-        // mostrará la información relacionada con la consulta
-        $vars = array();
-        $vars['var1'] = 'var 1';
-        $vars['var2'] = 'var 2';
-        $vars['var3'] = array('var1.1' => '1', 'var1.2' => '2');
-
-        $url = url('govi-sdqs/detalle-peticion', array('query' => $vars));
-
-        $output = '<script type="text/javascript">parent.window.location="'.$url.'";</script>';
-    } else {
-        $output = $form;
-    }
-
-    return $output;
 }
