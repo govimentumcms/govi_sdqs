@@ -139,7 +139,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     $opts_ids = array();
 
     foreach ($tipos_id as $tipo) {
-        $opts_ids[$tipo['id']] = $tipo['nombre'];
+        $opts_ids[$tipo['abreviatura']] = $tipo['nombre'];
     }
 
     $form['datos_personales']['tipo_identificacion'] = array(

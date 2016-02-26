@@ -70,6 +70,7 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
             'getListaEntidadesDistritales',
             'getListaTipoPeticion',
             'getListaTema',
+            'getListaTipoIdentificacion'
         )),
         '#title' => 'Seleccione las operaciones en los cuales desea actualizar la codificación del Web Service (Estos valores serán almacendados como variables enel sistema de Drupal)',
     );
@@ -223,6 +224,7 @@ function _save_results_as_drupal($data, $op) {
     if ($op === 'getListaEntidadesDistritales') $op = 'lista_entidades';
     if ($op === 'getListaTipoPeticion') $op = 'lista_tipo_peticion';
     if ($op === 'getListaTema') $op = 'lista_tema';
+    if ($op === 'getListaTipoIdentificacion') $op = 'lista_tipos_id';
 
     variable_set('govi_sdqs_'.$op, $data['return']);
 
