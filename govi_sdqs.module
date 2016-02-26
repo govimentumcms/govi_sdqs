@@ -44,6 +44,8 @@ function govi_sdqs_theme($existing, $type, $theme, $path) {
 }
 
 function theme_govi_sdqs_form ($variables) {
+
+    drupal_flush_all_caches();
     $form = $variables['form'];
     return $form;
 }
@@ -109,24 +111,6 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     $entidades = variable_get('govi_sdqs_lista_entidades');
     $tipos_peticion = variable_get('govi_sdqs_lista_tipo_peticion');
     $tipos_id = variable_get('govi_sdqs_lista_tipos_id');
-
-    if (empty($temas)
-        || empty($entidades)
-        || empty($tipos_peticion)
-        || empty($tipos_id)) {
-
-        $msg = '<p>Uno o varios códigos del SDQS no se han cargado en el sistema. <br/>';
-        $msg .= 'Ingrese a la configuración del Webservice del módulo ';
-        $msg .= '<a href="/admin/config/features/sdqs-client" title="Configurar SDQS">govi_sdqs</a> para ';
-        $msg .= 'configurar las descripciones y obtener los datos de los selectores de ';
-        $msg .= 'este formulario.';
-
-        $form['pqr_crear']['aviso_sdqs'] = array(
-            '#prefix' => '<div class="sdqs-form-msg">',
-            '#markup' => $msg,
-            '#suffix' => '</div>'
-        );
-    }
 
     $form['datos_personales'] = array(
         '#type' => 'fieldset',
