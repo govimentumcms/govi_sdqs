@@ -60,7 +60,10 @@ if (empty($temas)
     </div>
 </fieldset>
 <div class="pure-g">
-    <div class="pure-1-1 pure-u-md-1-1">
+    <div class="pure-1-2 pure-u-md-1-1">
+	<?php print render($form['captcha']); ?>
+    </div>
+    <div class="pure-1-2 pure-u-md-1-1">
 	<?php print render($form['submit']); ?>
     </div>
 </div>
