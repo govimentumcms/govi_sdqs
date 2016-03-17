@@ -256,56 +256,6 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     return $form;
 }
 
-// Deshabilita formularios debido que el alcance para la 
-// primera versión redireccionará directamente al SDQS
-// hasta que exista un servicio que permita consultar
-// el detalle de la petición
-/*
-function govi_sdqs_consultar_peticion_form($form, &$form_state) {
-
-    $form = array();
-
-    $form['pqr_consultar'] = array(
-        '#type' => 'fieldset',
-        '#title' => 'Consultar petición',
-    );
-
-    $form['pqr_consultar']['tipo_peticion'] = array(
-        '#type' => 'textfield',
-        '#title' => 'Número de radicado',
-        '#required' => TRUE
-    );
-
-    $form['pqr_consultar']['submit'] = array(
-        '#type' => 'submit',
-        '#value' => 'Consultar',
-        '#ajax' => array(
-            'callback' => 'govi_sdqs_consultar_peticion_ajax_submit',
-            'wrapper' => 'govi-sdqs-consultar-peticion-form',
-            'method' => 'replaceWith',
-            'effect' => 'fade',
-        ),
-        '#attributes' => array(
-            'class' => array(
-                'pure-button',
-                'pure-button-primary'
-            ),
-        ),
-    );
-
-    $form['#popup'] = TRUE;
-    $form['#attributes']['class'][] = 'pure-form';
-    $form['#attributes']['class'][] = 'pure-form-stacked';
-
-    return $form;
-}
-
-function govi_sdqs_ver_detalles() {
-    $output = '<h1>Mostrando detalles</h1>';
-    return $output;
-}
-*/
-
 function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
 
     // TODO: Se obtienen los valores de los campos del formulario y se parametrizan
