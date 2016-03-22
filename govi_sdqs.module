@@ -258,22 +258,65 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
 
 function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
 
-    // TODO: Se obtienen los valores de los campos del formulario y se parametrizan
-    // de tal forma que puedan ser manejados por el web service durante el
-    // request
+    $output = '';
 
-    // TODO: Obtener la definición del webservice con wsclient_service_load('machine_name')
-    // y utilizar sus propiedades en a través de un parametro.
+    if ($form_state['executed']) {
+        $service = wsclient_service_load('service_radicacion');
 
+        $data = array(
+            'parameters' => array(
+                'requerimiento' => array(
+                    'apellidos' => $form_state['values']['apellido'],
+                    'nombres' => $form_state['values']['nombre'],
+                     'codigoTipoIdentificacion' => $form_state['values']['tipo_identificacion'],
+                    'numeroDocumento' => $form_state['values']['numero_identificacion'],
+                    'email' => $form_state['values']['correo_electronico'],
+                    'asunto' => $form_state['values']['asunto'],
+                    'clasificacionRequerimiento' => array(
+                        // Valores standard provisionales mientas se
+                        // validan con el SDQS con el fin de crear una clasificación
+                        // específica para los requerimientos realizados desde los sitios 
+                        // web que utilizan el servicio
+                        'codigoDependencia' => 10015,
+                        'codigoEntidad' => 100,
+                        'codigoSector' => 10,
+                        'codigoSubtema' => 35,
+                    ),
+                    'codigoCiudad' => 149,
+                    'codigoPais' => 47,
+                    'codigoDepartamento' => 3,
+                    'numeroFolios' => null,
+                    'prioridad' => null,
+                    'codigoTipoRequerimiento' => $form_state['values']['tipo_peticion'],
+                    'entidadQueIngresaRequerimiento' => 100,
+                    // Número único del log de registros del sitio web
+                    'numeroRadicado' => 100,
+                ),
+            ),
+        );
 
-    // TODO: Dependiendo de la respuesta del web service se organiza el $output y
-    // se maneja el error
+        try {
+            $result = $service->invoke('registrarRequerimiento', $data);
 
-    // if ($form_state['executed']) {
-    //    $output = '<h1>Enviado con éxito!</h1>';
-    // } else {
-    //    $output = $form;
-    // }
+            $output .= '<h3>Solicitud enviada con éxito!</h3>';
+            $output .= '<p>Respetado(a) ' .$form_state['values']['nombre']. ', por favor tome nota de los siguientes ';
+            $output .= 'datos para hacer seguimiento a su petición.' . PHP_EOL;
+            $output .= 'Esta información ha sido enviada al correo electrónico: ' . $form_state['values']['correo_electronico'];
+            $output .= '<hr/>';
+            $output .= '<ul><li>Fecha de creación: ' . $result->return->fechaCreacion . '</li>';
+            $output .= '<li>Codigo de requerimiento: ' . $result->return->codigoRequerimiento . '</li>';
+            $output .= '<li>Identificación del petición en el sitio: ' . $result->return->numeroRadicado . '</li></ul>';
+        } catch (WSClientException $exception) {
 
-    //return $output;
+            $output .= '<h3>Ha ocurrido un error inesperado</h3>';
+            $output .= '<p>Consulte con el administador para verificar el log de errores</p>';
+
+            watchdog('govi_sdqs', $exception->__toString());
+        }
+
+    } else {
+        $output = $form;
+    }
+
+    return $output;
 }

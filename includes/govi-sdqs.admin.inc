@@ -122,12 +122,30 @@ function _create_services_descriptions($user, $passwd, $env) {
     $services = array();
 
     /** 
+     * Define WS que suministra el método requerido para
+     * realizar una petición al Sistema Distrital de Quejas
+     * y Soluciones -SDQS-
+     **/
+    $service = new WSClientServiceDescription();
+
+    $service->name = 'service_registro_peticion';
+    $service->label = 'Descripción del Webservice para realizar una petición al SDQS';
+    if ($env == 'prod') {
+        $service->url = 'http://sdqs.bogota.gov.co/sdqs/servicios/WSRegistrarPeticionService?wsdl';
+    }
+    elseif($env == 'test') {
+        $service->url = 'http://www.alcaldiabogota.gov.co/sdqs/servicios/WSRegistrarPeticionService?wsdl';
+    }
+
+    $services[$service->name] = $service;
+
+    /** 
      * Define WS que suministra los métodos requeridos para
      * obtener los códigos correspondientes a la definición y 
      * tipología del SDQS, los cuales son requeridos por otros
      * métodos del sistema.
      **/
- 
+
     $service = new WSClientServiceDescription();
 
     $service->name = 'service_consulta';
