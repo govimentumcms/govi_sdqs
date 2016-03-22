@@ -57,6 +57,9 @@ if (empty($temas)
 	<div class="pure-1-1 pure-u-md-23-24">
 	    <?php print render($form['pqr_crear']['asunto']); ?>
 	</div>
+	<div class="pure-1-1 pure-u-md-23-24">
+	    <?php print render($form['pqr_crear']['archivo']); ?>
+	</div>
     </div>
 </fieldset>
 <div class="pure-g">

@@ -210,7 +210,8 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#title' => 'Entidad',
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#options' => !empty($opts_entidades) ? $opts_entidades : array(),
-        '#required' => TRUE
+        '#required' => TRUE,
+        '#default_value' => variable_get('sdqs_entidad'),
     );
 
     $form['pqr_crear']['asunto'] = array(
@@ -221,7 +222,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     );
 
     $form['pqr_crear']['archivo'] = array(
-        '#type' => 'file',
+        '#type' => 'managed_file',
         '#title' => 'Seleccione un archivo',
         '#attributes' => array('class' => array('pure-u-23-24')),
     );
@@ -252,23 +253,35 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
 
     $form['#attributes']['class'][] = 'pure-form';
     $form['#attributes']['class'][] = 'pure-form-stacked';
+    dsm($form_state);
 
     return $form;
 }
 
 function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
 
+    global $base_url;
     $output = '';
 
+    dsm($form_state);
+    
     if ($form_state['executed']) {
+
         $service = wsclient_service_load('service_radicacion');
+        $obs = '';
+
+        $obs .= 'Este requerimiento ha sido realizado a través del módulo Govi SDQS ';
+        $obs .= 'de la Distribución Distrital CMS. Los datos de identificación del sitio ';
+        $obs .= 'web son los siguientes:' . PHP_EOL;
+        $obs .= 'Nombre de dominio: ' . $base_url . PHP_EOL;
+        $obs .= 'Direccion IP: ' . ip_address() . PHP_EOL;
 
         $data = array(
             'parameters' => array(
                 'requerimiento' => array(
                     'apellidos' => $form_state['values']['apellido'],
                     'nombres' => $form_state['values']['nombre'],
-                     'codigoTipoIdentificacion' => $form_state['values']['tipo_identificacion'],
+                    'codigoTipoIdentificacion' => $form_state['values']['tipo_identificacion'],
                     'numeroDocumento' => $form_state['values']['numero_identificacion'],
                     'email' => $form_state['values']['correo_electronico'],
                     'asunto' => $form_state['values']['asunto'],
@@ -276,24 +289,38 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
                         // Valores standard provisionales mientas se
                         // validan con el SDQS con el fin de crear una clasificación
                         // específica para los requerimientos realizados desde los sitios 
-                        // web que utilizan el servicio
-                        'codigoDependencia' => 10015,
-                        'codigoEntidad' => 100,
+                        // web que utilizan el servicio.
+                        // El código dependencia será gestionado desde el backend con 
+                        // base a la lista entregada por el equipo funcional de la DDSC
+                        'codigoDependencia' => 90404,
+                        'codigoEntidad' => $form_state['values']['entidad'],
                         'codigoSector' => 10,
                         'codigoSubtema' => 35,
                     ),
                     'codigoCiudad' => 149,
                     'codigoPais' => 47,
                     'codigoDepartamento' => 3,
-                    'numeroFolios' => null,
-                    'prioridad' => null,
+                    'numeroFolios' => 0,
+                    'prioridad' => 0,
                     'codigoTipoRequerimiento' => $form_state['values']['tipo_peticion'],
                     'entidadQueIngresaRequerimiento' => 100,
-                    // Número único del log de registros del sitio web
+                    // TODO: Número único del log de registros del sitio web
                     'numeroRadicado' => 100,
+                    'observaciones' => $obs,
                 ),
             ),
         );
+
+        if (!empty($form_state['values']['archivo'])) {
+
+            $data['parameters']['requerimiento']['documento'] = array();
+            $file = file_load($form_state['values']['archivo']);
+            $content = file_get_contents(file_directory_temp().'/'.$file->filename);
+
+            $data['parameters']['requerimiento']['documento']['contenidoDocumento'] = base64_encode($content);
+            $data['parameters']['requerimiento']['documento']['mimeType'] = $file->filemime;
+            $data['parameters']['requerimiento']['documento']['nombreArchivo'] = $file->filename;
+        }
 
         try {
             $result = $service->invoke('registrarRequerimiento', $data);
@@ -317,6 +344,6 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
     } else {
         $output = $form;
     }
-
+    
     return $output;
 }

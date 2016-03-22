@@ -75,6 +75,22 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
         '#title' => 'Seleccione las operaciones en los cuales desea actualizar la codificación del Web Service (Estos valores serán almacendados como variables enel sistema de Drupal)',
     );
 
+    $entidades = variable_get('govi_sdqs_lista_entidades');
+    $opts_entidades = array();
+
+    foreach ($entidades as $entidad) {
+        $opts_entidades[$entidad['id']] = $entidad['nombre'];
+    }
+
+    $form['wsdl_config']['codigo_entidad'] = array(
+        '#type' => 'select',
+        '#title' => 'Por favor seleccione la entidad a la cual pertenece este sitio',
+        '#description' => 'Este valor será usado en la petición realizada por el ciudadano',
+        '#options' => !empty($opts_entidades) ? $opts_entidades : array(),
+        '#required' => TRUE,
+        '#default_value' => variable_get('sdqs_entidad'),
+    );
+
     $form['wsdl_config']['submit'] = array(
         '#type' => 'submit',
         '#value' => 'Guardar',
@@ -90,10 +106,12 @@ function govi_sdqs_admin_config_main_form_submit($form, &$form_state) {
     $passwd = $form_state['values']['auth_password'];
     $env = $form_state['values']['sdqs_env'];
     $opts = $form_state['values']['get_codes'];
+    $entidad = $form_state['values']['codigo_entidad'];
 
     variable_set('sdqs_user', $user);
     variable_set('sdqs_password', $passwd);
     variable_set('sdqs_env', $env);
+    variable_set('sdqs_entidad', $entidad);
 
     $services = _create_services_descriptions($user, $passwd, $env);
 
