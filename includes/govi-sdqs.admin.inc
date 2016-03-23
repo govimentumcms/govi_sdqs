@@ -4,6 +4,10 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
 
     $form = array();
 
+    $form['#attached']['css'] = array(
+        drupal_get_path('module', 'govi_sdqs').'/assets/css/govi-sdqs.admin.css',
+    );
+
     $form['wsdl_config'] = array(
         '#type' => 'fieldset',
         '#title' => 'Configuracíón Básica',
@@ -91,13 +95,53 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
         '#default_value' => variable_get('sdqs_entidad'),
     );
 
-    $form['wsdl_config']['submit'] = array(
+    $form['apariencia'] = array(
+        '#type' => 'fieldset',
+        '#title' => 'Con esta opción puede cambiar la apariencia del módulo SDQS',
+    );
+
+    $form['apariencia']['tema'] = array(
+        '#type' => 'select',
+        '#title' => 'Seleccione el tema que desea usar para la visualización del módulo',
+        '#options' => array(
+            'light' => 'light',
+            'dark' => 'dark'
+        ),
+        '#ajax' => array(
+            'event' => 'change',
+            'effect' => 'fade',
+            'wrapper' => 'govi-sdqs-tema-thumb',
+            'method' => 'replace',
+            'callback' => 'govi_sdqs_tema_cambiar_apariencia',
+        ),
+        '#default_value' => 'dark',
+        '#required' => TRUE
+
+    );
+
+    $form['apariencia']['previsualizacion'] = array(
+        '#markup' => '<div id="govi-sdqs-tema-thumb" class="'.variable_get('govi_sdqs_tema').'"></div>',
+    );
+
+    $form['submit'] = array(
         '#type' => 'submit',
         '#value' => 'Guardar',
     );
 
 
     return $form;
+}
+
+function govi_sdqs_tema_cambiar_apariencia($form, $form_state) {
+
+    $tema = $form_state['values']['tema'];
+    $output = '';
+    if ($tema === 'light') {
+        $output .= '<div id="govi-sdqs-tema-thumb" class="light"></div>';
+    } elseif ($tema === 'dark') {
+        $output .= '<div id="govi-sdqs-tema-thumb" class="dark"></div>';
+    }
+    return $output;
 }
 
 function govi_sdqs_admin_config_main_form_submit($form, &$form_state) {
@@ -107,11 +151,13 @@ function govi_sdqs_admin_config_main_form_submit($form, &$form_state) {
     $env = $form_state['values']['sdqs_env'];
     $opts = $form_state['values']['get_codes'];
     $entidad = $form_state['values']['codigo_entidad'];
+    $tema = $form_state['values']['tema'];
 
     variable_set('sdqs_user', $user);
     variable_set('sdqs_password', $passwd);
     variable_set('sdqs_env', $env);
     variable_set('sdqs_entidad', $entidad);
+    variable_set('govi_sdqs_tema', $tema);
 
     $services = _create_services_descriptions($user, $passwd, $env);
 

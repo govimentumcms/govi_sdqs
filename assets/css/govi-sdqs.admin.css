@@ -1,0 +1,15 @@
+
+/** Parte administrativa */
+#govi-sdqs-tema-thumb {
+    width: 335px;
+    height: 350px;
+    background-repeat: no-repeat;
+}
+
+#govi-sdqs-tema-thumb.dark {
+    background-image: url('../imgs/thumb-dark.png');
+}
+
+#govi-sdqs-tema-thumb.light {
+    background-image: url('../imgs/thumb-light.png');
+}

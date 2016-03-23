@@ -4,10 +4,12 @@ $css = $path . '/assets/css/govi-sdqs.css';
 $js = $path . '/assets/js/govi-sdqs.js';
 drupal_add_css($css);
 drupal_add_js($js);
+
+$tema = variable_get('govi_sdqs_tema') === 'light' ? 'class="light"' : ''; 
 ?>
 
 <div id="servicio-ciudadano">
-    <div id="sdqs">
+    <div id="sdqs" <?php print $tema; ?> >
 	<div class="title"><h3><i class="logo"></i>Sistema Distrital de Quejas y Soluciones -SDQS-</h3></div>
 	<div class="controles">
 	    <div class="boton crear">
