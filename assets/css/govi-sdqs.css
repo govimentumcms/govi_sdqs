@@ -1,3 +1,7 @@
+#servicio-ciudadano *{
+    font-family: 'robotoregular';
+}
+
 #servicio-ciudadano ul,
 #servicio-ciudadano li {
     width: 100%;
@@ -7,22 +11,25 @@
     background-color: #FFFFFF;
     border-radius: 8px;
     border: 1px solid #999999;
-    color: #0083B3;
-    font-family: Roboto Medium;
+    color: rgb(0,159,227);
+    font-family: 'robotoregular';
     font-size: 14px;
-    margin-botom: 15px;
+    margin-bottom: 15px;
     text-decoration: none;
+    transition: 0.2s all;
+
 }
 
 #servicio-ciudadano .pure-menu-link:hover {
-    background-color: #EEEEEE;
+    background-color: rgb(0,159,227);
+    color: #fff;
     border-radius: 8px;
-
+    transition: 0.2s all;
 }
 
 #servicio-ciudadano .scrollable {
     max-height: 350px;
-    height: 350px;
+    height: auto;
     overflow-y: auto;
     overflow-x: hidden;
 }
@@ -37,7 +44,7 @@
 }
 
 #sdqs .logo {
-    background-image: url('../imgs/logo-sdqs.png'); 
+    background-image: url('../imgs/logo-sdqs.png');
     background-repeat: no-repeat;
     display: block;
     float:left;
@@ -49,7 +56,6 @@
 #sdqs .boton {
     margin-bottom: 20px;
 }
-
 #sdqs .boton a {
     color: #FFFFFF;
     border-radius: 8px;
@@ -58,12 +64,14 @@
     background-position: left bottom;
     display: block;
     padding: 10px;
-    font-family: roboto bold;
+    font-family: 'robotobold';
     font-size: 1.5em;
     letter-spacing: -1px;
     text-decoration: none;
 }
-
+#sdqs .boton span{
+    font-family: 'robotobold';
+}
 #sdqs .boton i {
     background-color: red;
     background-repeat: no-repeat;
@@ -75,35 +83,52 @@
     margin-left: 20px;
     margin-right: 15px;
     position: relative;
-    top: -6px;
+    top: -3px;
     width: 60px;
 }
-
+#sdqs.light .boton.crear i{
+    background-color: rgb(0,159,227);
+}
+#sdqs.light .boton.consultar i{
+    background-color: rgb(0,62,101);
+}
+#sdqs.light .boton.crear a, #sdqs.light .boton.consultar a {
+    background-color: #fff;
+    border: 1px solid rgba(0,0,0,0.2);
+    color: rgb(0,159,227);
+    background-image: none;
+}
+#sdqs.light .boton.crear span, #sdqs.light .boton.consultar span{
+   color: rgb(0,62,101);
+}
 #sdqs .boton.crear i {
     background-color: #2E579D;
     background-image: url("../imgs/icono1.png");
 }
-
+#sdqs .boton.crear a {
+    background-color: #2E579D;
+    background-image: url("../imgs/ciudad1.png");
+}
+#sdqs .boton.crear span {
+    color: #F3A82B;
+}
 #sdqs .boton.consultar i {
     background-color: #F3A82B;
     background-image: url("../imgs/icono2.png");
 }
-
-#sdqs .boton.crear a {
-    background-color: #2E579D;
-    background-image: url("../imgs/ciudad1.png");
-
-}
-
 #sdqs .boton.consultar a {
     background-color: #F3A82B;
     background-image: url("../imgs/ciudad1.png");
 }
-
-#sdqs .boton.crear span {
-    color: #F3A82B;
-}
-
 #sdqs .boton.consultar span {
     color: #2E579D;
+}
+.info a {
+    color: rgb(0,159,227);
+    text-decoration: none;
+}
+.info a:hover{
+    color: rgb(0,62,101);
+    text-decoration: underline;
+    font-family: 'robotobold';
 }
