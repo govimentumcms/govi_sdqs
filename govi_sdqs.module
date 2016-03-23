@@ -107,6 +107,9 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
 
     $form['#theme'] = 'govi_sdqs_form';
 
+    $form['#prefix'] = '<div id="govi-sdqs-form-container">';
+    $form['#suffix'] = '</div>';
+
     $temas = variable_get('govi_sdqs_lista_tema');
     $entidades = variable_get('govi_sdqs_lista_entidades');
     $tipos_peticion = variable_get('govi_sdqs_lista_tipo_peticion');
@@ -239,7 +242,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#value' => 'Enviar',
         '#ajax' => array(
             'callback' => 'govi_sdqs_crear_peticion_ajax_submit',
-            'wrapper' => 'govi-sdqs-crear-peticion-form',
+            'wrapper' => 'govi-sdqs-form-container',
             'method' => 'replaceWith',
             'effect' => 'fade',
         ),
@@ -253,7 +256,6 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
 
     $form['#attributes']['class'][] = 'pure-form';
     $form['#attributes']['class'][] = 'pure-form-stacked';
-    dsm($form_state);
 
     return $form;
 }
@@ -262,8 +264,6 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
 
     global $base_url;
     $output = '';
-
-    dsm($form_state);
     
     if ($form_state['executed']) {
 
@@ -342,6 +342,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         }
 
     } else {
+
         $output = $form;
     }
     
