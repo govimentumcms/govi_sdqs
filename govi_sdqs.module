@@ -192,14 +192,6 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         $opts_temas[$tema['id']] = $tema['nombre'];
     }
 
-    $form['pqr_crear']['tema'] = array(
-        '#type' => 'select',
-        '#title' => 'Tema',
-        '#attributes' => array('class' => array('pure-u-23-24')),
-        '#options' => !empty($opts_temas) ? $opts_temas : array(),
-        '#required' => TRUE
-    );
-
     // TODO: implementar autocomletado controlado desde el cliente
     // con JavaScript
     $opts_entidades = array();
@@ -207,15 +199,6 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     foreach ($entidades as $entidad) {
         $opts_entidades[$entidad['id']] = $entidad['nombre'];
     }
-
-    $form['pqr_crear']['entidad'] = array(
-        '#type' => 'select',
-        '#title' => 'Entidad',
-        '#attributes' => array('class' => array('pure-u-23-24')),
-        '#options' => !empty($opts_entidades) ? $opts_entidades : array(),
-        '#required' => TRUE,
-        '#default_value' => variable_get('sdqs_entidad'),
-    );
 
     $form['pqr_crear']['asunto'] = array(
         '#type' => 'textarea',
@@ -264,7 +247,11 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
 
     global $base_url;
     $output = '';
-    
+
+    $codigo_dependencia = variable_get('sdqs_dependencia');
+    $codigo_entidad = variable_get('sdqs_entidad');
+    $id_sector = variable_get('sdqs_sector');
+
     if ($form_state['executed']) {
 
         $service = wsclient_service_load('service_radicacion');
@@ -292,9 +279,9 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
                         // web que utilizan el servicio.
                         // El código dependencia será gestionado desde el backend con 
                         // base a la lista entregada por el equipo funcional de la DDSC
-                        'codigoDependencia' => 90404,
-                        'codigoEntidad' => $form_state['values']['entidad'],
-                        'codigoSector' => 10,
+                        'codigoDependencia' => $codigo_dependencia,
+                        'codigoEntidad' => $codigo_entidad,
+                        'codigoSector' => $id_sector,
                         'codigoSubtema' => 35,
                     ),
                     'codigoCiudad' => 149,
@@ -324,6 +311,8 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
 
         try {
             $result = $service->invoke('registrarRequerimiento', $data);
+
+            dsm($result);
 
             $output .= '<h3>Solicitud enviada con éxito!</h3>';
             $output .= '<p>Respetado(a) ' .$form_state['values']['nombre']. ', por favor tome nota de los siguientes ';

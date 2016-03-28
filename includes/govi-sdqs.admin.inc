@@ -71,7 +71,7 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
     $form['wsdl_config']['get_codes'] = array(
         '#type' => 'checkboxes',
         '#options' => drupal_map_assoc(array(
-            'getListaEntidadesDistritales',
+            'getListaEntidad',
             'getListaTipoPeticion',
             'getListaTema',
             'getListaTipoIdentificacion'
@@ -82,8 +82,10 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
     $entidades = variable_get('govi_sdqs_lista_entidades');
     $opts_entidades = array();
 
-    foreach ($entidades as $entidad) {
-        $opts_entidades[$entidad['id']] = $entidad['nombre'];
+    if (!empty($entidades)) {
+        foreach ($entidades as $entidad) {
+            $opts_entidades[$entidad['id']] = $entidad['nombre'];
+        }
     }
 
     $form['wsdl_config']['codigo_entidad'] = array(
@@ -96,12 +98,16 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
         '#ajax' => array(
             'event' => 'change',
             'effect' => 'fade',
-            'callback' => 'govi_sdqs_obtener_dependencias',
+            'callback' => 'govi_sdqs_obtener_info_entidad',
             'method' => 'replace',
             'wrapper' => 'wrapper-dependencia'
         ),
         '#required' => TRUE,
+        '#validated' => TRUE
+
     );
+
+    $opts_dependencias = variable_get('govi_sdqs_lista_dependencias');
 
     $form['wsdl_config']['codigo_dependencia'] = array(
         '#prefix' => '<div id="wrapper-dependencia">',
@@ -109,7 +115,7 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
         '#type' => 'select',
         '#title' => 'Por favor seleccione la dependencia',
         '#default_value' => variable_get('sdqs_dependencia'),
-        '#options' => variable_get('govi_sdqs_lista_dependencias'),
+        '#options' => !empty($opts_dependencias) ? $opts_dependencias : array(),
         '#validated' => TRUE
     );
 
@@ -150,10 +156,10 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
     return $form;
 }
 
-function govi_sdqs_obtener_dependencias($form, $form_state) {
+function govi_sdqs_obtener_info_entidad($form, $form_state) {
 
     $entidad = $form_state['values']['codigo_entidad'];
-
+    $entidades = variable_get('govi_sdqs_lista_entidades');
     $service = wsclient_service_load('service_consulta');
 
     $data = array(
@@ -165,7 +171,6 @@ function govi_sdqs_obtener_dependencias($form, $form_state) {
     try {
 
         $opts_dependencias = array();
-
         $response = $service->invoke('getListaDependencia' , $data);
 
         if (!empty($response)) {
@@ -184,6 +189,14 @@ function govi_sdqs_obtener_dependencias($form, $form_state) {
         $form['wsdl_config']['codigo_dependencia']['#options'] = $opts_dependencias;
 
         drupal_set_message('Debe guardar el formulario para que los cambios tengan efecto', 'warning');
+
+        // Obtiene el sector al que la entidad pertenece
+        foreach ($entidades as $item) {
+            if ($item['id'] === (int)$entidad) {
+                variable_set('sdqs_sector', $item['idSector']);
+                break;
+            }
+        }
 
         return $form['wsdl_config']['codigo_dependencia'];
     } catch (WSClientException $exception) {
@@ -369,7 +382,7 @@ function _save_results_as_drupal($data, $op) {
 
     $data = object_to_array($data);
 
-    if ($op === 'getListaEntidadesDistritales') $op = 'lista_entidades';
+    if ($op === 'getListaEntidad') $op = 'lista_entidades';
     if ($op === 'getListaTipoPeticion') $op = 'lista_tipo_peticion';
     if ($op === 'getListaTema') $op = 'lista_tema';
     if ($op === 'getListaTipoIdentificacion') $op = 'lista_tipos_id';
