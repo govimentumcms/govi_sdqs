@@ -93,6 +93,24 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
         '#options' => !empty($opts_entidades) ? $opts_entidades : array(),
         '#required' => TRUE,
         '#default_value' => variable_get('sdqs_entidad'),
+        '#ajax' => array(
+            'event' => 'change',
+            'effect' => 'fade',
+            'callback' => 'govi_sdqs_obtener_dependencias',
+            'method' => 'replace',
+            'wrapper' => 'wrapper-dependencia'
+        ),
+        '#required' => TRUE,
+    );
+
+    $form['wsdl_config']['codigo_dependencia'] = array(
+        '#prefix' => '<div id="wrapper-dependencia">',
+        '#suffix' => '</div>',
+        '#type' => 'select',
+        '#title' => 'Por favor seleccione la dependencia',
+        '#default_value' => variable_get('sdqs_dependencia'),
+        '#options' => variable_get('govi_sdqs_lista_dependencias'),
+        '#validated' => TRUE
     );
 
     $form['apariencia'] = array(
@@ -114,7 +132,7 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
             'method' => 'replace',
             'callback' => 'govi_sdqs_tema_cambiar_apariencia',
         ),
-        '#default_value' => 'dark',
+        '#default_value' => variable_get('govi_sdqs_tema', 'dark'),
         '#required' => TRUE
 
     );
@@ -130,6 +148,50 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
 
 
     return $form;
+}
+
+function govi_sdqs_obtener_dependencias($form, $form_state) {
+
+    $entidad = $form_state['values']['codigo_entidad'];
+
+    $service = wsclient_service_load('service_consulta');
+
+    $data = array(
+        'parameters' => array(
+            'idEntidad' => $entidad
+        ),
+    );
+
+    try {
+
+        $opts_dependencias = array();
+
+        $response = $service->invoke('getListaDependencia' , $data);
+
+        if (!empty($response)) {
+
+            foreach ($response->return as $dep) {
+
+                $opts_dependencias[$dep->id] = $dep->nombre;
+            }
+        }
+
+        reset($opts_dependencias);
+        variable_set('govi_sdqs_lista_dependencias', $opts_dependencias);
+        variable_set('sdqs_dependencia', key($opts_dependencias));
+        variable_set('sdqs_entidad', $entidad);
+
+        $form['wsdl_config']['codigo_dependencia']['#options'] = $opts_dependencias;
+
+        drupal_set_message('Debe guardar el formulario para que los cambios tengan efecto', 'warning');
+
+        return $form['wsdl_config']['codigo_dependencia'];
+    } catch (WSClientException $exception) {
+        $output .= '<h3>Ha ocurrido un error inesperado</h3>';
+        $output .= '<p>Consulte con el administador para verificar el log de errores</p>';
+
+        watchdog('govi_sdqs', $exception->__toString());
+    }
 }
 
 function govi_sdqs_tema_cambiar_apariencia($form, $form_state) {
@@ -152,12 +214,16 @@ function govi_sdqs_admin_config_main_form_submit($form, &$form_state) {
     $opts = $form_state['values']['get_codes'];
     $entidad = $form_state['values']['codigo_entidad'];
     $tema = $form_state['values']['tema'];
+    $dependencia =  $form_state['values']['codigo_dependencia'];
+
 
     variable_set('sdqs_user', $user);
     variable_set('sdqs_password', $passwd);
     variable_set('sdqs_env', $env);
     variable_set('sdqs_entidad', $entidad);
+    variable_set('sdqs_dependencia', $dependencia);
     variable_set('govi_sdqs_tema', $tema);
+
 
     $services = _create_services_descriptions($user, $passwd, $env);
 
