@@ -1,20 +1,18 @@
-
-<?php
-$temas = variable_get('govi_sdqs_lista_tema');
-$entidades = variable_get('govi_sdqs_lista_entidades');
-$tipos_peticion = variable_get('govi_sdqs_lista_tipo_peticion');
-$tipos_id = variable_get('govi_sdqs_lista_tipos_id');
-
-if (empty($temas)
-	|| empty($entidades)
-	|| empty($tipos_peticion)
-	|| empty($tipos_id)) {
-
-        $msg = '<p>Uno o varios códigos del SDQS no se han cargado en el sistema. <br/>';
-        $msg .= 'Ingrese a la configuración del Webservice del módulo ';
-        $msg .= '<a href="/admin/config/features/sdqs-client" title="Configurar SDQS">govi_sdqs</a> para ';
-        $msg .= 'configurar las descripciones y obtener los datos de los selectores de ';
-        $msg .= 'este formulario.';
+<?php 
+if (variable_get('sdqs_env') === 'test') {
+	$msg = 'Bienvenido al Sistema Distrital de Quejas y Soluciones -SDQS- <br/>';
+	$msg .= '<hr/>';
+	$msg .= 'Este módulo está temporalmente en <b>modo de pruebas</b>, ';
+	$msg .= 'las peticiones enviadas a través de este formulario ';
+	$msg .= '<b>no</b> serán atendidas por la Dirección Distrital de ';
+	$msg .= 'Servicio al Ciudadano o entidad competente. ';
+	$msg .= 'Si tiene alguna inquietud por favor escriba al correo electrónico: ';
+	$msg .= '<a href="mailto:'.variable_get('site_mail').'" title="escribir">';
+	$msg .= variable_get('site_mail').'</a> para obtener mayor información.<br>'; 
+	$msg .= 'Si desea enviar una petición formal puede acceder al Sistema ';
+	$msg .= 'Distrital de Quejas y Soluciones SDQS haciendo click ';
+	$msg .= '<a href="http://www.bogota.gov.co/sdqs" title="Ir al Sistema Distrital de Quejas y Soluciones" target="_blank">';
+	$msg .= 'aquí</a>.';
 
 	drupal_set_message($msg, 'warning');
 }

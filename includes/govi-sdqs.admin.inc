@@ -4,6 +4,33 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
 
     $form = array();
 
+    $temas = variable_get('govi_sdqs_lista_tema');
+    $entidades = variable_get('govi_sdqs_lista_entidades');
+    $tipos_peticion = variable_get('govi_sdqs_lista_tipo_peticion');
+    $tipos_id = variable_get('govi_sdqs_lista_tipos_id');
+    
+    if (empty($temas)
+        || empty($entidades)
+        || empty($tipos_peticion)
+        || empty($tipos_id)) {
+        
+        $msg = '<p>Uno o varios códigos del SDQS no se han cargado en el sistema. <br/>';
+        $msg .= 'Seleccione las operaciones que desea cargar/actualizar ';
+        $msg .= 'y guarde la configuración para que los cambios tomen ';
+        $msg .= 'efecto.<br/>';
+        $msg .= 'Los códigos serán utilizados en los selectores de los ';
+        $msg .= 'formularios <em>Crear Petición y Configuración Básica.';
+
+        drupal_set_message($msg, 'warning');
+    }
+
+    if (variable_get('sdqs_env') === 'test') {
+        $msg = '';
+        $msg .= 'Govi SDQS está funcionando en <b>modo de pruebas</b>';
+
+        drupal_set_message($msg, 'warning');
+    }
+
     $form['#attached']['css'] = array(
         drupal_get_path('module', 'govi_sdqs').'/assets/css/govi-sdqs.admin.css',
     );
@@ -246,6 +273,9 @@ function govi_sdqs_admin_config_main_form_submit($form, &$form_state) {
     if (!empty($opts)) {
         _get_operations_data($opts, $services);
     }
+
+    drupal_set_message('La configuración ha sido almacenada', 'status');
+
 }
 
 /**
