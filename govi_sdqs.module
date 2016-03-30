@@ -321,18 +321,55 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
             $output .= '<ul><li>Fecha de creación: ' . $result->return->fechaCreacion . '</li>';
             $output .= '<li>Codigo de requerimiento: ' . $result->return->codigoRequerimiento . '</li>';
             $output .= '<li>Identificación del petición en el sitio: ' . $result->return->numeroRadicado . '</li></ul>';
+            govi_sdqs_log_event($form_state, $result);
+
         } catch (WSClientException $exception) {
 
             $output .= '<h3>Ha ocurrido un error inesperado</h3>';
             $output .= '<p>Consulte con el administador para verificar el log de errores</p>';
 
-            watchdog('govi_sdqs', $exception->__toString());
+            watchdog('govi_sdqs', $exception->__toStrig());
+            govi_sdqs_log_event($form_state, $result, $e);
+
         }
 
     } else {
 
         $output = $form;
     }
-    
+
+    govi_sdqs_log_event($form_state, $result);
+
     return $output;
+}
+
+function govi_sdqs_log_event($form_state, $result, $error = FALSE) {
+
+    drupal_set_message('Guardando log de eventos');
+
+    global $user;
+
+    $node = new stdClass();
+    $node->type = 'sdqs_logs';
+
+    // Obtener de alguna forma el último código almacenado en el sistema
+    // e incrementar 1
+    $node->title = 'govi_100_1';
+    node_object_prepare($node);
+
+
+    $node->language = LANGUAGE_NONE;
+    $node->uid = $user->uid;
+    $node->status = 0;
+    $node->promote = 0;
+    $node->comment = 0;
+
+    $node->field_sdqs_fecha_radicacion['und'][0]['value'] = "fecha rad";
+    $node->field_sdqs_correo_peticionario['und'][0]['value'] = "alquien@server";
+    $node->field_sdqs_tipo_id['und'][0]['value'] = "CC";
+    $node->field_sdqs_id_peticionario['und'][0]['value'] = "808080";
+    $node->field_sdqs_numero = "1234576";
+    $node->field_sdqs_codigo_respuesta = "OK";
+
+    node_save($node);
 }
