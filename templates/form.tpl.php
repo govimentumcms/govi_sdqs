@@ -21,21 +21,21 @@ if (variable_get('sdqs_env') === 'test') {
 <fieldset>
     <legend>Datos personales</legend>
     <div class="pure-g"> 
-	<div class="pure-u-1 pure-u-md-1-2">
+	<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
 	    <?php print render($form['datos_personales']['nombre']); ?>
 	</div>
-	<div class="pure-u-1 pure-u-md-1-2">
+	<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
 	    <?php print render($form['datos_personales']['apellido']); ?>
 	</div>
-	<div class="pure-u-1 pure-u-md-1-2">
+	<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
 	    <?php print render($form['datos_personales']['tipo_identificacion']); ?>
 	</div>
-	<div class="pure-u-1 pure-u-md-1-2">
+	<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
 	    <?php print render($form['datos_personales']['numero_identificacion']); ?>
 	</div>
     </div>
     <div class="pure-g">
-	<div class="pure-u-1 pure-u-md-1-2">
+	<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
 	    <?php print render($form['datos_personales']['correo_electronico']); ?>
 	</div>
     </div>
@@ -43,28 +43,29 @@ if (variable_get('sdqs_env') === 'test') {
 <fieldset>
     <legend>Crear Petición</legend>
     <div class="pure-g">
-	<div class="pure-1-1 pure-u-md-1-2">
+	<div class="pure-1-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
 	    <?php print render($form['pqr_crear']['tipo_peticion']); ?>
 	</div>
-	<div class="pure-1-1 pure-u-md-1-2">
+	<div class="pure-1-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
 	    <?php print render($form['pqr_crear']['tema']); ?>
 	</div>
-	<div class="pure-1-1 pure-u-md-1-2">
+	<div class="pure-1-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
 	    <?php print render($form['pqr_crear']['entidad']); ?>
 	</div>
-	<div class="pure-1-1 pure-u-md-23-24">
+	<div class="pure-1-1 pure-u-sm-1 pure-u-md-23-24 pure-u-lg-23-24 pure-u-xl-23-24">
 	    <?php print render($form['pqr_crear']['asunto']); ?>
 	</div>
-	<div class="pure-1-1 pure-u-md-23-24">
+    <div class="pure-1-1 pure-u-sm-1 pure-u-md-23-24 pure-u-lg-23-24 pure-u-xl-23-24">
+
 	    <?php print render($form['pqr_crear']['archivo']); ?>
 	</div>
     </div>
 </fieldset>
 <div class="pure-g">
-    <div class="pure-1-2 pure-u-md-1-1">
+    <div class="pure-u-1 pure-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
 	<?php print render($form['captcha']); ?>
     </div>
-    <div class="pure-1-2 pure-u-md-1-1">
+    <div class="pure-u-1 pure-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
 	<?php print render($form['submit']); ?>
     </div>
 </div>
