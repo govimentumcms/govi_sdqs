@@ -19,7 +19,7 @@ $tema = variable_get('govi_sdqs_tema') === 'light' ? 'class="light"' : '';
 	    
 	    <div class="boton consultar">
 		<i></i>
-		<a href="/govi-sdqs/consultar" class="colorbox-node">Consultar <span>Petición</span></a>
+		<a href="http://sdqs.bogota.gov.co/sdqs/login" target="_blank" >Consultar <span>Petición</span></a>
 	    </div>
 	    
 	    <div class="info">

@@ -216,9 +216,9 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
 
     $form['captcha'] = array(
         '#type' => 'captcha',
-        '#captcha_type' => 'captcha/Math',
-        /* Utilice este tipo para sitios en producción */
-        /*'#captcha_type' => 'recaptcha/reCAPTCHA',*/
+        //'#captcha_type' => 'captcha/Math',
+        // Utilice este tipo para sitios en producción */
+        '#captcha_type' => 'recaptcha/reCAPTCHA',
     );
 
     $form['submit'] = array(
