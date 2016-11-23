@@ -255,7 +255,9 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
 
     if ($form_state['executed']) {
 
-        $service = wsclient_service_load('service_radicacion');
+        $nid_log = govi_sdqs_create_log_node();
+
+        $service = wsclient_service_load('service_radicacion_canal');
         $obs = '';
 
         $obs .= 'Este requerimiento ha sido realizado a través del módulo Govi SDQS ';
@@ -291,9 +293,10 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
                     'numeroFolios' => 0,
                     'prioridad' => 0,
                     'codigoTipoRequerimiento' => $form_state['values']['tipo_peticion'],
-                    'entidadQueIngresaRequerimiento' => 100,
+                    'entidadQueIngresaRequerimiento' => $codigo_entidad,
+                    'codigoCanal' => 7,
                     // TODO: Número único del log de registros del sitio web
-                    'numeroRadicado' => 100,
+                    'numeroRadicado' => node_load($nid_log)->field_sdqs_log_count['und'][0]['value'],
                     'observaciones' => $obs,
                 ),
             ),
@@ -318,10 +321,10 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
             $output .= 'datos para hacer seguimiento a su petición.' . PHP_EOL;
             $output .= 'Esta información ha sido enviada al correo electrónico: ' . $form_state['values']['correo_electronico'];
             $output .= '<hr/>';
-            $output .= '<ul><li>Fecha de creación: ' . $result->return->fechaCreacion . '</li>';
-            $output .= '<li>Codigo de requerimiento: ' . $result->return->codigoRequerimiento . '</li>';
-            $output .= '<li>Identificación del petición en el sitio: ' . $result->return->numeroRadicado . '</li></ul>';
-            govi_sdqs_log_event($form_state, $result);
+            $output .= '<ul><li>Fecha de solicitud: ' . $result->return->fechaCreacion . '</li>';
+            $output .= '<li>Codigo de requerimiento SDQS: ' . $result->return->codigoRequerimiento . '</li>';
+            $output .= '<li>Número de identificación del requerimiento en el sitio: ' . $result->return->numeroRadicado . '</li></ul>';
+            govi_sdqs_log_event($form_state, $nid_log, $result);
 
         } catch (WSClientException $exception) {
 
@@ -329,7 +332,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
             $output .= '<p>Consulte con el administador para verificar el log de errores</p>';
 
             watchdog('govi_sdqs', $exception->__toStrig());
-            govi_sdqs_log_event($form_state, $result, $e);
+            govi_sdqs_log_event($form_state, $nid_log, $result, $e);
 
         }
 
@@ -338,25 +341,26 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         $output = $form;
     }
 
-    govi_sdqs_log_event($form_state, $result);
-
     return $output;
 }
 
-function govi_sdqs_log_event($form_state, $result, $error = FALSE) {
+/**
+ * Método que crea el nodo que almacenará
+ * los detalles de la petición. Inicialmente es creado
+ * con un nombre generico para que el módulo serial
+ * cree el numero autoincremental como identificacion
+ * del requerimiento interno del sitio.
+ */
 
-    drupal_set_message('Guardando log de eventos');
+function govi_sdqs_create_log_node() {
 
     global $user;
 
     $node = new stdClass();
     $node->type = 'sdqs_logs';
 
-    // Obtener de alguna forma el último código almacenado en el sistema
-    // e incrementar 1
-    $node->title = 'govi_100_1';
+    $node->title = 'Requerimiento sin iniciar';
     node_object_prepare($node);
-
 
     $node->language = LANGUAGE_NONE;
     $node->uid = $user->uid;
@@ -364,11 +368,30 @@ function govi_sdqs_log_event($form_state, $result, $error = FALSE) {
     $node->promote = 0;
     $node->comment = 0;
 
-    $node->field_sdqs_fecha_radicacion['und'][0]['value'] = "fecha rad";
-    $node->field_sdqs_correo_peticionario['und'][0]['value'] = "alquien@server";
-    $node->field_sdqs_tipo_id['und'][0]['value'] = "CC";
-    $node->field_sdqs_id_peticionario['und'][0]['value'] = "808080";
-    $node->field_sdqs_numero = "1234576";
+    node_save($node);
+    return $node->nid;
+}
+
+/**
+ * Método que actualiza los detalles del
+ * requerimiento en el nodo previamente creado
+ * actualizando el titulo genérico con el
+ * identificador interno del requerimiento en
+ * el sitio.
+ */
+
+function govi_sdqs_log_event($form_state, $nid_log, $result, $error = FALSE) {
+
+    drupal_set_message('Actualizando log de eventos');
+
+    $node = node_load($nid_log); 
+
+    $node->title = 'Requerimiento Radicado No.'. $node->field_sdqs_log_count['und'][0]['value'];
+    $node->field_sdqs_fecha_radicacion['und'][0]['value'] = format_date(REQUEST_TIME, 'long');
+    $node->field_sdqs_correo_peticionario['und'][0]['value'] = $form_state['values']['correo_electronico'];
+    $node->field_sdqs_tipo_id['und'][0]['value'] = $form_state['values']['tipo_identificacion'];
+    $node->field_sdqs_id_peticionario['und'][0]['value'] = $form_state['values']['numero_identificacion'];
+    $node->field_sdqs_numero['und'][0]['value'] = $result->return->codigoRequerimiento;
     $node->field_sdqs_codigo_respuesta = "OK";
 
     node_save($node);

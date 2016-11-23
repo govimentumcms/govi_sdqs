@@ -295,26 +295,8 @@ function _create_services_descriptions($user, $passwd, $env) {
     $services = array();
 
     /** 
-     * Define WS que suministra el método requerido para
-     * realizar una petición al Sistema Distrital de Quejas
-     * y Soluciones -SDQS-
-     **/
-    $service = new WSClientServiceDescription();
-
-    $service->name = 'service_registro_peticion';
-    $service->label = 'Descripción del Webservice para realizar una petición al SDQS';
-    if ($env == 'prod') {
-        $service->url = 'http://sdqs.bogota.gov.co/sdqs/servicios/WSRegistrarPeticionService?wsdl';
-    }
-    elseif($env == 'test') {
-        $service->url = 'http://www.alcaldiabogota.gov.co/sdqs/servicios/WSRegistrarPeticionService?wsdl';
-    }
-
-    $services[$service->name] = $service;
-
-    /** 
-     * Define WS que suministra los métodos requeridos para
-     * obtener los códigos correspondientes a la definición y 
+     * Define WS que suministra los métodos que permiten
+     * la radicación peticiones a traves de clientes asociados
      * tipología del SDQS, los cuales son requeridos por otros
      * métodos del sistema.
      **/
@@ -333,21 +315,25 @@ function _create_services_descriptions($user, $passwd, $env) {
     $services[$service->name] = $service;
 
     /** 
-     * Define WS que suministra los métodos que permiten
-     * la radicación peticiones a traves de clientes asociados
-     * a sistemas de gestión documental u otros sistemas
+     * Define WS dedicado para los clientes SDQS de la Distribución
+     * Distrital CMS que suministra los métodos que permiten
+     * consulta códigos y la radicación de peticiones, quejas,
+     * reclamos y felicitaciones.
+     * Además proporciona el método para la selección del canal a
+     * través del cual se realiza la petición. En ese caso el canal
+     * se define como Web.
      **/
 
     $service = new WSClientServiceDescription();
 
-    $service->name = 'service_radicacion';
-    $service->label = 'Descripción del Webservice SDQS para efectuar las operaciones de radicación';
+    $service->name = 'service_radicacion_canal';
+    $service->label = 'Descripción del Webservice SDQS para efectuar las operaciones de consulta de códigos y radicación de peticiones a través del canal web';
 
     if ($env == 'prod') {
         $service->url = 'http://sdqs.bogota.gov.co/sdqs/servicios/RadicacionService?wsdl';
     } 
     elseif ($env == 'test') {
-        $service->url = 'http://www.alcaldiabogota.gov.co/sdqs/servicios/RadicacionService?wsdl';
+        $service->url = 'http://www.alcaldiabogota.gov.co/sdqs/servicios/RadicacionPorCanalService?wsdl';
     }
 
     $services[$service->name] = $service;
@@ -368,7 +354,7 @@ function _create_services_descriptions($user, $passwd, $env) {
             $service->type = 'soap';
             $service->settings['options']['login'] = $user;
             $service->settings['options']['password'] = $passwd;
-            
+
             try {
                 $service->endpoint()->initializeMetadata();
                 $service->save();
