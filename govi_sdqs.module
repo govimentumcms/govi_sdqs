@@ -51,7 +51,7 @@ function theme_govi_sdqs_form ($variables) {
 }
 
 // Define recursos para manejar las operaciones del módulo
-// i.e: crear, consultar ... 
+// i.e: crear, consultar ...
 function govi_sdqs_menu() {
 
     $items = array();
@@ -166,6 +166,73 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#required' => TRUE
     );
+    $opts_solicitante = array();
+    $form['datos_personales']['tipo_solicitante'] = array(
+        '#type' => 'select',
+        '#title' => 'Tipo de solicitante',
+        '#attributes' => array('class' => array('pure-u-23-24')),
+        '#options' => !empty($opts_solicitante) ? $opts_solicitante : array(),
+        '#required' => TRUE
+    );
+    $opts_razon_social = array();
+    $form['datos_personales']['razon_social'] = array(
+        '#type' => 'select',
+        '#title' => 'Razon social',
+        '#attributes' => array('class' => array('pure-u-23-24')),
+        '#options' => !empty($opts_razon_social) ? $opts_razon_social : array(),
+        '#required' => TRUE
+    );
+
+    $form['datos_personales']['nit'] = array(
+        '#type' => 'textfield',
+        '#attributes' => array('class' => array('pure-u-23-24')),
+        '#title' => 'NIT',
+        '#required' => FALSE
+    );
+    $opts_pais = array();
+    $form['datos_personales']['pais'] = array(
+        '#type' => 'select',
+        '#title' => 'País',
+        '#attributes' => array('class' => array('pure-u-23-24')),
+        '#options' => !empty($opts_pais) ? $opts_pais : array(),
+        '#required' => TRUE
+    );
+    $opts_pais = array();
+    $opts_departamento = array();
+    $form['datos_personales']['departamento'] = array(
+        '#type' => 'select',
+        '#title' => 'Departamento',
+        '#attributes' => array('class' => array('pure-u-23-24')),
+        '#options' => !empty($opts_departamento) ? $opts_departamento : array(),
+        '#required' => TRUE
+    );
+    $opts_municipio = array();
+    $form['datos_personales']['municipio'] = array(
+        '#type' => 'select',
+        '#title' => 'Municipio',
+        '#attributes' => array('class' => array('pure-u-23-24')),
+        '#options' => !empty($opts_municipio) ? $opts_municipio : array(),
+        '#required' => TRUE
+    );
+    $form['datos_personales']['direccion'] = array(
+        '#type' => 'textfield',
+        '#attributes' => array('class' => array('pure-u-23-24')),
+        '#title' => 'Dirección',
+        '#required' => TRUE
+    );
+    $form['datos_personales']['telefono_fijo'] = array(
+        '#type' => 'textfield',
+        '#attributes' => array('class' => array('pure-u-23-24')),
+        '#title' => 'Teléfono Fijo',
+        '#required' => TRUE
+    );
+    $form['datos_personales']['telefono_movil'] = array(
+        '#type' => 'textfield',
+        '#attributes' => array('class' => array('pure-u-23-24')),
+        '#title' => 'Teléfono Móvil',
+        '#required' => TRUE
+    );
+
 
     $form['pqr_crear'] = array(
         '#type' => 'fieldset',
@@ -212,6 +279,22 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#type' => 'managed_file',
         '#title' => 'Seleccione un archivo',
         '#attributes' => array('class' => array('pure-u-23-24')),
+    );
+    $opts_respuesta = array();
+    $form['pqr_crear']['respuesta'] = array(
+        '#type' => 'select',
+        '#title' => 'Medio de respuesta',
+        '#description' => '¿Cómo deseas recibir la respuesta?',
+        '#attributes' => array('class' => array('pure-u-23-24')),
+        '#options' => !empty($opts_respuesta) ? $opts_respuesta : array(),
+        '#required' => TRUE
+    );
+    $form['pqr_crear']['costo_respuesta'] = array(
+        '#type' => 'textfield',
+        '#attributes' => array('class' => array('pure-u-23-24')),
+        '#title' => 'Costo asociado a respuesta',
+        '#description' => 'Información sobre posibles costos asociados a la respuesta',
+        '#required' => FALSE
     );
 
     $form['captcha'] = array(
@@ -278,9 +361,9 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
                     'clasificacionRequerimiento' => array(
                         // Valores standard provisionales mientas se
                         // validan con el SDQS con el fin de crear una clasificación
-                        // específica para los requerimientos realizados desde los sitios 
+                        // específica para los requerimientos realizados desde los sitios
                         // web que utilizan el servicio.
-                        // El código dependencia será gestionado desde el backend con 
+                        // El código dependencia será gestionado desde el backend con
                         // base a la lista entregada por el equipo funcional de la DDSC
                         'codigoDependencia' => $codigo_dependencia,
                         'codigoEntidad' => $codigo_entidad,
@@ -384,7 +467,7 @@ function govi_sdqs_log_event($form_state, $nid_log, $result, $error = FALSE) {
 
     drupal_set_message('Actualizando log de eventos');
 
-    $node = node_load($nid_log); 
+    $node = node_load($nid_log);
 
     $node->title = 'Requerimiento Radicado No.'. $node->field_sdqs_log_count['und'][0]['value'];
     $node->field_sdqs_fecha_radicacion['und'][0]['value'] = format_date(REQUEST_TIME, 'long');
