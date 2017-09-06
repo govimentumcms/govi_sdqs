@@ -114,13 +114,29 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     $entidades = variable_get('govi_sdqs_lista_entidades');
     $tipos_peticion = variable_get('govi_sdqs_lista_tipo_peticion');
     $tipos_id = variable_get('govi_sdqs_lista_tipos_id');
-
+    $paises = variable_get('govi_sdqs_lista_paises');
+    $departamentos = variable_get('govi_sdqs_lista_departamentos');
+    $path = drupal_get_path('module', 'govi_sdqs');
+    $css = $path . '/assets/css/govi-sdqs-form.css';
+    $js = $path . '/assets/js/govi-sdqs-form.js';
+    drupal_add_js($js);
+    drupal_add_css($css);
     $form['datos_personales'] = array(
         '#type' => 'fieldset',
         '#title' => 'Datos persona natural',
         '#weight' => -1
     );
-
+    $form['datos_personales']['tipo_solicitante'] = array(
+        '#type' => 'radios',
+        '#title' => 'Tipo de solicitante',
+        '#attributes' => array('class' => array('pure-u-23-24')),
+        '#options' => Array(#options' => array(
+          'natural' => t('Persona Natural'),
+          'juridica' => t('Persona Jurídica'),
+       ),
+        '#default_value' => 'natural',
+        '#required' => TRUE
+    );
     $form['datos_personales']['nombre'] = array(
         '#type' => 'textfield',
         '#title' => 'Nombre',
@@ -150,6 +166,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#title' => 'Tipo de identificación',
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#options' => !empty($opts_ids) ? $opts_ids : array(),
+        '#default_value' => 'CC',
         '#required' => TRUE
     );
 
@@ -166,53 +183,62 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#required' => TRUE
     );
-    $opts_solicitante = array();
-    $form['datos_personales']['tipo_solicitante'] = array(
-        '#type' => 'select',
-        '#title' => 'Tipo de solicitante',
-        '#attributes' => array('class' => array('pure-u-23-24')),
-        '#options' => !empty($opts_solicitante) ? $opts_solicitante : array(),
-        '#required' => TRUE
-    );
-    $opts_razon_social = array();
+    $opts_razon_social = array('colectiva'=>'Colectiva','comanditaria'=>'Comanditaria','anonima'=>'Anónima');
     $form['datos_personales']['razon_social'] = array(
         '#type' => 'select',
-        '#title' => 'Razon social',
+        '#title' => 'Razón social',
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#options' => !empty($opts_razon_social) ? $opts_razon_social : array(),
-        '#required' => TRUE
-    );
-
-    $form['datos_personales']['nit'] = array(
-        '#type' => 'textfield',
-        '#attributes' => array('class' => array('pure-u-23-24')),
-        '#title' => 'NIT',
         '#required' => FALSE
     );
     $opts_pais = array();
+
+    foreach ($paises as $pais) {
+        $opts_pais[$pais['id']] = ucfirst(mb_strtolower($pais['nombre'],'UTF-8'));
+    }
     $form['datos_personales']['pais'] = array(
         '#type' => 'select',
         '#title' => 'País',
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#options' => !empty($opts_pais) ? $opts_pais : array(),
+        '#default_value' => 42,
+
         '#required' => TRUE
     );
-    $opts_pais = array();
+
     $opts_departamento = array();
+    foreach ($departamentos as $departamento) {
+        $opts_departamento[$departamento['id']] = ucfirst(mb_strtolower($departamento['nombre'], 'UTF-8'));
+    }
     $form['datos_personales']['departamento'] = array(
         '#type' => 'select',
         '#title' => 'Departamento',
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#options' => !empty($opts_departamento) ? $opts_departamento : array(),
-        '#required' => TRUE
+        '#ajax' => array(
+            'event' => 'change',
+            'effect' => 'fade',
+            'callback' => 'govi_sdqs_obtener_info_ciudades',
+            'method' => 'replace',
+            'wrapper' => 'wrapper-ciudades',
+        ),
+        '#default_value' => 3,
+        '#required' => FALSE,
+        '#validated' => TRUE,
     );
-    $opts_municipio = array();
-    $form['datos_personales']['municipio'] = array(
+
+
+    $form['datos_personales']['ciudad'] = array(
         '#type' => 'select',
-        '#title' => 'Municipio',
+        '#prefix' => '<div id="wrapper-ciudades">',
+        '#suffix' => '</div>',
+        '#title' => 'Ciudad',
         '#attributes' => array('class' => array('pure-u-23-24')),
-        '#options' => !empty($opts_municipio) ? $opts_municipio : array(),
-        '#required' => TRUE
+        '#options' => Array(0 => 'Bogotá D.C.'),
+        '#required' => FALSE,
+        '#default_value' => 0,
+        '#validated' => TRUE,
+
     );
     $form['datos_personales']['direccion'] = array(
         '#type' => 'textfield',
@@ -242,7 +268,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     $opts_peticion = array();
 
     foreach ($tipos_peticion as $tipo) {
-        $opts_peticion[$tipo['id']] = $tipo['nombre'];
+        $opts_peticion[$tipo['id']] = ucfirst(mb_strtolower($tipo['nombre'], 'UTF-8'));
     }
 
     $form['pqr_crear']['tipo_peticion'] = array(
@@ -280,23 +306,16 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#title' => 'Seleccione un archivo',
         '#attributes' => array('class' => array('pure-u-23-24')),
     );
-    $opts_respuesta = array();
+    $opts_respuesta = array('email'=>'Correo electrónico','correspondencia'=>'Correspondencia');
     $form['pqr_crear']['respuesta'] = array(
         '#type' => 'select',
         '#title' => 'Medio de respuesta',
         '#description' => '¿Cómo deseas recibir la respuesta?',
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#options' => !empty($opts_respuesta) ? $opts_respuesta : array(),
+        '#default_value' => 'email',
         '#required' => TRUE
     );
-    $form['pqr_crear']['costo_respuesta'] = array(
-        '#type' => 'textfield',
-        '#attributes' => array('class' => array('pure-u-23-24')),
-        '#title' => 'Costo asociado a respuesta',
-        '#description' => 'Información sobre posibles costos asociados a la respuesta',
-        '#required' => FALSE
-    );
-
     $form['captcha'] = array(
         '#type' => 'captcha',
         //'#captcha_type' => 'captcha/Math',
@@ -454,7 +473,23 @@ function govi_sdqs_create_log_node() {
     node_save($node);
     return $node->nid;
 }
+function govi_sdqs_obtener_info_ciudades($form, $form_state) {
 
+    $departamento = $form_state['values']['departamento'];
+    
+    $ciudades = variable_get('govi_sdqs_lista_ciudades');
+    $ciudades=array_filter($ciudades, function($value) use ($departamento) { return is_array($value) &&  $value['idDepartamento'] == $departamento; });
+    $opts_ciudades = array();
+    foreach ($ciudades as $ciudad) {
+        if(!empty($ciudad['id'])) {
+            $opts_ciudades[ $ciudad['id'] ] = ucfirst(mb_strtolower($ciudad['nombre']));
+        }  
+    }
+    sort($opts_ciudades);
+    kpr($opts_ciudades);
+    $form['datos_personales']['ciudad']['#options'] = $opts_ciudades;
+    return $form['datos_personales']['ciudad'];
+}
 /**
  * Método que actualiza los detalles del
  * requerimiento en el nodo previamente creado

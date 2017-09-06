@@ -101,7 +101,11 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
             'getListaEntidad',
             'getListaTipoPeticion',
             'getListaTema',
-            'getListaTipoIdentificacion'
+            'getListaTipoIdentificacion',
+            'getListaPais',
+            'getListaDepatamento',
+            'getListaCiudad',
+
         )),
         '#title' => 'Seleccione las operaciones en los cuales desea actualizar la codificación del Web Service (Estos valores serán almacendados como variables enel sistema de Drupal)',
     );
@@ -272,6 +276,9 @@ function govi_sdqs_admin_config_main_form_submit($form, &$form_state) {
 
     if (!empty($opts)) {
         _get_operations_data($opts, $services);
+    } else {
+        print 'empty';
+        exit();
     }
 
     drupal_set_message('La configuración ha sido almacenada', 'status');
@@ -374,24 +381,64 @@ function _create_services_descriptions($user, $passwd, $env) {
 
     return $services;
 }
+function _getOperationgetListaCiudad($services){
+    $consultaWS = wsclient_service_load($services['service_consulta']->name);
+    $dptos = _getOperationgetListaDepatamento($services);
+    $departamentos = array_map(create_function('$o', 'return $o->id;'), $dptos->return);
+    $ciudades = array();
+    foreach($departamentos as $departamento) {
+        $arguments = array(
+            'parameters' => array(
+              'idDepartamento' => $departamento
+            ), 
+        );
+        $result = $consultaWS->invoke('getListaCiudad', $arguments);
+        if(!is_array($result->return)){
+            $result->return = array( 0 => $result->return);
+        }
 
+        $ciudades = array_merge((array)$result->return, $ciudades);
+        
+    }
+    return Array('return' => $ciudades);
+}
+function _getOperationgetListaDepatamento($services){
+    $consultaWS = wsclient_service_load($services['service_consulta']->name);
+    $arguments = array(
+        'parameters' => array(
+          'idPais' => 42
+        ),
+    );
+    $results = $consultaWS->invoke('getListaDepatamento', $arguments);
+    return $results;
+}
 function _get_operations_data($opts, $services) {
 
     $consultaWS = wsclient_service_load($services['service_consulta']->name);
-    //dsm($consultaWS);
-
     foreach ($opts as $op) {
         if (!empty($op)) {
-
+            $results = NULL;
+            $arguments = array();
             try {
-                $results = $consultaWS->invoke($op, array());
+                switch ($op) {
+                    case 'getListaDepatamento':
+                        $results = _getOperationgetListaDepatamento($services);
+                        break;
+                    case 'getListaCiudad':
+                        $results = _getOperationgetListaCiudad($services);
+                        break;
+                    default:
+                        $results = $consultaWS->invoke($op, $arguments);
+                        break;
+                }
+
                 _save_results_as_drupal($results, $op);
             } catch (WSClientexception $e) {
                 watchdog('wsclient', $e->__toString());
                 drupal_set_message('Ha ocurrido un error, verifique el log de errores para obtener mayor detalle', 'error');
             }
         }
-    }
+    } 
 }
 
 function _save_results_as_drupal($data, $op) {
@@ -402,7 +449,9 @@ function _save_results_as_drupal($data, $op) {
     if ($op === 'getListaTipoPeticion') $op = 'lista_tipo_peticion';
     if ($op === 'getListaTema') $op = 'lista_tema';
     if ($op === 'getListaTipoIdentificacion') $op = 'lista_tipos_id';
-
+    if ($op === 'getListaPais') $op = 'lista_paises';
+    if ($op === 'getListaDepatamento') $op = 'lista_departamentos';
+    if ($op === 'getListaCiudad') $op = 'lista_ciudades';
     variable_set('govi_sdqs_'.$op, $data['return']);
 
 }
@@ -415,15 +464,12 @@ function _save_results_as_drupal($data, $op) {
  */
 function object_to_array ($o) {
     if(is_object($o)) {
-
         $o = get_object_vars($o);
     }
 
     if(is_array($o)){
-
         return array_map(__FUNCTION__, $o);
     } else {
-
         return $o;
     }
 }

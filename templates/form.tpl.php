@@ -1,5 +1,10 @@
+<?php //dsm(get_defined_vars()); 
+
+$tema = variable_get('govi_sdqs_tema') === 'light' ? 'class="light"' : ''; 
+?>
+
 <?php
-if (variable_get('sdqs_env') === 'test') {
+if (variable_get('sdqs_env') === 'nada') {
 	$msg = 'Bienvenido al Sistema Distrital de Quejas y Soluciones -SDQS- <br/>';
 	$msg .= '<hr/>';
 	$msg .= 'Este módulo está temporalmente en <b>modo de pruebas</b>, ';
@@ -15,6 +20,12 @@ if (variable_get('sdqs_env') === 'test') {
 	$msg .= 'aquí</a>.';
 
 	drupal_set_message($msg, 'warning');
+
+   $path = drupal_get_path('module', 'govi_sdqs');
+   $css = $path . '/assets/css/govi-sdqs-form.css';
+   $js = $path . '/assets/js/govi-sdqs-form.js';
+   drupal_add_js($js);
+   drupal_add_css($css);
 }
 
 ?>
@@ -22,7 +33,13 @@ if (variable_get('sdqs_env') === 'test') {
 
 <fieldset>
    <legend>Datos personales</legend>
+      <div class="pure-g">
+         <div class="pure-1-1 pure-u-sm-1 pure-u-md-23-24 pure-u-lg-23-24 pure-u-xl-23-24">
+         <?php print render($form['datos_personales']['tipo_solicitante']); ?>
+      </div>
+   </div>
    <div class="pure-g">
+
       <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
          <?php print render($form['datos_personales']['nombre']); ?>
       </div>
@@ -41,14 +58,9 @@ if (variable_get('sdqs_env') === 'test') {
          <?php print render($form['datos_personales']['correo_electronico']); ?>
       </div>
       <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
-         <?php print render($form['datos_personales']['tipo_solicitante']); ?>
-      </div>
-      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
          <?php print render($form['datos_personales']['razon_social']); ?>
       </div>
-      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
-         <?php print render($form['datos_personales']['nit']); ?>
-      </div>
+
       <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
          <?php print render($form['datos_personales']['pais']); ?>
       </div>
@@ -56,7 +68,7 @@ if (variable_get('sdqs_env') === 'test') {
          <?php print render($form['datos_personales']['departamento']); ?>
       </div>
       <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
-         <?php print render($form['datos_personales']['municipio']); ?>
+         <?php print render($form['datos_personales']['ciudad']); ?>
       </div>
       <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
          <?php print render($form['datos_personales']['direccion']); ?>
@@ -89,9 +101,6 @@ if (variable_get('sdqs_env') === 'test') {
       </div>
       <div class="pure-1-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
          <?php print render($form['pqr_crear']['respuesta']); ?>
-      </div>
-      <div class="pure-1-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
-         <?php print render($form['pqr_crear']['costo_respuesta']); ?>
       </div>
    </div>
 </fieldset>
