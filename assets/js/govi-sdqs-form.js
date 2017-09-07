@@ -1,7 +1,6 @@
 (function($) {
 
     function cambiarTipoIdentificacion(t) {
-        console.log(t);
         if (t.val() == 'juridica') {
             jQuery('[name="tipo_identificacion"]').val('NI');
         } else if (t.val() == 'natural') {
