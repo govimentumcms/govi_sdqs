@@ -199,7 +199,6 @@ function govi_sdqs_obtener_info_entidad($form, $form_state) {
         ),
     );
 
-    try {
 
         $opts_dependencias = array();
         $response = $service->invoke('getListaDependencia' , $data);
@@ -230,12 +229,7 @@ function govi_sdqs_obtener_info_entidad($form, $form_state) {
         }
 
         return $form['wsdl_config']['codigo_dependencia'];
-    } catch (WSClientException $exception) {
-        $output .= '<h3>Ha ocurrido un error inesperado</h3>';
-        $output .= '<p>Consulte con el administador para verificar el log de errores</p>';
 
-        watchdog('govi_sdqs', $exception->__toString());
-    }
 }
 
 function govi_sdqs_tema_cambiar_apariencia($form, $form_state) {

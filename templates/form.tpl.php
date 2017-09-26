@@ -29,15 +29,23 @@ if (variable_get('sdqs_env') === 'nada') {
 }
 
 ?>
+<fieldset>
+   <legend>Datos de la solicitud</legend>
+<div class="pure-g">
 
+<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+   <?php print render($form['pqr_crear']['tipo_peticion']); ?>
+</div>
+<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+      <?php print render($form['datos_personales']['tipo_solicitante']); ?>
+   </div>
+</div>
+
+</fieldset>
 
 <fieldset>
-   <legend>Datos personales</legend>
-      <div class="pure-g">
-         <div class="pure-1-1 pure-u-sm-1 pure-u-md-23-24 pure-u-lg-23-24 pure-u-xl-23-24">
-         <?php print render($form['datos_personales']['tipo_solicitante']); ?>
-      </div>
-   </div>
+   <legend>Datos de identificación</legend>
+
    <div class="pure-g">
 
       <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
@@ -52,14 +60,16 @@ if (variable_get('sdqs_env') === 'nada') {
       <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
          <?php print render($form['datos_personales']['numero_identificacion']); ?>
       </div>
+      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1">
+          <?php print render($form['datos_personales']['razon_social']); ?>
+      </div>
    </div>
-   <div class="pure-g">
-      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
-         <?php print render($form['datos_personales']['correo_electronico']); ?>
-      </div>
-      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
-         <?php print render($form['datos_personales']['razon_social']); ?>
-      </div>
+
+
+
+<fieldset>
+   <legend>Ubicación y contacto</legend>
+      <div class="pure-g">
 
       <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
          <?php print render($form['datos_personales']['pais']); ?>
@@ -74,6 +84,9 @@ if (variable_get('sdqs_env') === 'nada') {
          <?php print render($form['datos_personales']['direccion']); ?>
       </div>
       <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+          <?php print render($form['datos_personales']['correo_electronico']); ?>
+      </div>
+      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
          <?php print render($form['datos_personales']['telefono_fijo']); ?>
       </div>
       <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
@@ -82,12 +95,9 @@ if (variable_get('sdqs_env') === 'nada') {
    </div>
 </fieldset>
 <fieldset>
-   <legend>Crear Petición</legend>
+   <legend>Solicitud</legend>
    <div class="pure-g">
-      <div class="pure-1-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
-         <?php print render($form['pqr_crear']['tipo_peticion']); ?>
-      </div>
-      <div class="pure-1-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+       <div class="pure-1-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
          <?php print render($form['pqr_crear']['tema']); ?>
       </div>
       <div class="pure-1-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
@@ -103,12 +113,20 @@ if (variable_get('sdqs_env') === 'nada') {
          <?php print render($form['pqr_crear']['respuesta']); ?>
       </div>
    </div>
-</fieldset>
+
+   </fieldset>
+   <fieldset>
+   <legend>Información sobre posibles costos asociados a la respuesta</legend>
+
+      <div class="pure-1-1 pure-u-sm-1 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1">
+         <p>La solicitud de información puede generar costos de reproducción de la información pública los cuales puede consultar en la sección de transparencia, instrumentos de gestión de la información, costos de reproducción.</p>
+      </div>
+   </fieldset>
 <div class="pure-g">
-   <div class="pure-u-1 pure-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+   <div class="pure-u-1 pure-sm-1 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1">
       <?php print render($form['captcha']); ?>
    </div>
-   <div class="pure-u-1 pure-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+   <div class="pure-u-1 pure-sm-1 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1">
       <?php print render($form['submit']); ?>
    </div>
 </div>
@@ -117,5 +135,6 @@ if (variable_get('sdqs_env') === 'nada') {
 <?php print render($form['form_build_id']); ?>
 <?php print render($form['form_token']); ?>
 <?php print render($form['form_id']); ?>
+</br>
 
 <?php drupal_render_children($form); ?>

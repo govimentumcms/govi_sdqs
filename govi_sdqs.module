@@ -68,6 +68,7 @@ function govi_sdqs_menu() {
     $items['govi-sdqs/crear'] = array(
         'title' => 'Crear petición',
         'page callback' => 'drupal_get_form',
+
         'page arguments' => array('govi_sdqs_crear_peticion_form'),
         'access callback' => TRUE,
     );
@@ -127,12 +128,14 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#weight' => -1
     );
     $form['datos_personales']['tipo_solicitante'] = array(
-        '#type' => 'radios',
+        '#type' => 'select',
         '#title' => 'Tipo de solicitante',
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#options' => Array(#options' => array(
           'natural' => t('Persona Natural'),
           'juridica' => t('Persona Jurídica'),
+          'infantil' => t('Niños, niñas y adolescentes'),
+          'apoderado' => t('Apoderado'),
        ),
         '#default_value' => 'natural',
         '#required' => TRUE
@@ -183,12 +186,10 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#required' => TRUE
     );
-    $opts_razon_social = array('colectiva'=>'Colectiva','comanditaria'=>'Comanditaria','anonima'=>'Anónima');
     $form['datos_personales']['razon_social'] = array(
-        '#type' => 'select',
+        '#type' => 'textfield',
         '#title' => 'Razón social',
         '#attributes' => array('class' => array('pure-u-23-24')),
-        '#options' => !empty($opts_razon_social) ? $opts_razon_social : array(),
         '#required' => FALSE
     );
     $opts_pais = array();
@@ -232,7 +233,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#type' => 'select',
         '#prefix' => '<div id="wrapper-ciudades">',
         '#suffix' => '</div>',
-        '#title' => 'Ciudad',
+        '#title' => 'Municipio/Ciudad',
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#options' => Array(0 => 'Bogotá D.C.'),
         '#required' => FALSE,
@@ -262,7 +263,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
 
     $form['pqr_crear'] = array(
         '#type' => 'fieldset',
-        '#title' => 'Crear petición',
+        '#title' => 'Solicitud',
     );
 
     $opts_peticion = array();
@@ -295,7 +296,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
 
     $form['pqr_crear']['asunto'] = array(
         '#type' => 'textarea',
-        '#title' => 'Asunto',
+        '#title' => 'Contenido de la solicitud',
         '#cols' => 30,
         '#attributes' => array('class' => array('pure-u-1')),
         '#required' => TRUE,
@@ -303,10 +304,10 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
 
     $form['pqr_crear']['archivo'] = array(
         '#type' => 'managed_file',
-        '#title' => 'Seleccione un archivo',
+        '#title' => 'Archivos o documentos',
         '#attributes' => array('class' => array('pure-u-23-24')),
     );
-    $opts_respuesta = array('email'=>'Correo electrónico','correspondencia'=>'Correspondencia');
+    $opts_respuesta = array('email'=>'Correo electrónico','correspondencia'=>'Correo físico');
     $form['pqr_crear']['respuesta'] = array(
         '#type' => 'select',
         '#title' => 'Medio de respuesta',
@@ -380,9 +381,9 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
                     'clasificacionRequerimiento' => array(
                         // Valores standard provisionales mientas se
                         // validan con el SDQS con el fin de crear una clasificación
-                        // específica para los requerimientos realizados desde los sitios
+                        // específica para los requerimientos realizados desde los sitios 
                         // web que utilizan el servicio.
-                        // El código dependencia será gestionado desde el backend con
+                        // El código dependencia será gestionado desde el backend con 
                         // base a la lista entregada por el equipo funcional de la DDSC
                         'codigoDependencia' => $codigo_dependencia,
                         'codigoEntidad' => $codigo_entidad,
@@ -398,7 +399,8 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
                     'entidadQueIngresaRequerimiento' => $codigo_entidad,
                     'codigoCanal' => 7,
                     // TODO: Número único del log de registros del sitio web
-                    'numeroRadicado' => node_load($nid_log)->field_sdqs_log_count['und'][0]['value'],
+//                    'numeroRadicado' => node_load($nid_log)->field_sdqs_log_count['und'][0]['value'],
+                    'numeroRadicado' => 0, 
                     'observaciones' => $obs,
                 ),
             ),
@@ -432,9 +434,11 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
 
             $output .= '<h3>Ha ocurrido un error inesperado</h3>';
             $output .= '<p>Consulte con el administador para verificar el log de errores</p>';
+            $output .= print_r($exception, TRUE);
 
-            watchdog('govi_sdqs', $exception->__toStrig());
-            govi_sdqs_log_event($form_state, $nid_log, $result, $e);
+            print $exception->__toString(); 
+            watchdog('govi_sdqs', $exception->__toString());
+            govi_sdqs_log_event($form_state, $nid_log, $result, $exception);
 
         }
 
@@ -486,7 +490,6 @@ function govi_sdqs_obtener_info_ciudades($form, $form_state) {
         }  
     }
     sort($opts_ciudades);
-    kpr($opts_ciudades);
     $form['datos_personales']['ciudad']['#options'] = $opts_ciudades;
     return $form['datos_personales']['ciudad'];
 }

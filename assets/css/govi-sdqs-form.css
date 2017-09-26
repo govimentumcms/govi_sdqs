@@ -11,6 +11,9 @@ div.form-item-tipo-solicitante input {
 #govi-sdqs-form-container select {
     background: url(/sites/all/themes/govi_tema/assets/imagenes/navegacion_aba_a.png) no-repeat right 14px #fff !important;
 }
+.form-item input.error, .form-item textarea.error, .form-item input.error {
+    border: 2px solid red !important;
+}
 
 @media only screen and (max-width: 400px) {
     div.form-item-tipo-solicitante  div.form-item-tipo-solicitante{

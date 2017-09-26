@@ -3,8 +3,11 @@
     function cambiarTipoIdentificacion(t) {
         if (t.val() == 'juridica') {
             jQuery('[name="tipo_identificacion"]').val('NI');
-        } else if (t.val() == 'natural') {
+        } else if (t.val() == 'natural' ||  t.val() == 'apoderado') {
             jQuery('[name="tipo_identificacion"]').val('CC');
+        }
+        else if (t.val() == 'infantil') {
+            jQuery('[name="tipo_identificacion"]').val('RC');
         }
     }
 
