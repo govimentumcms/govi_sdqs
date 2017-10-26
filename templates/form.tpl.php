@@ -4,7 +4,7 @@ $tema = variable_get('govi_sdqs_tema') === 'light' ? 'class="light"' : '';
 ?>
 
 <?php
-if (variable_get('sdqs_env') === 'nada') {
+if (variable_get('sdqs_env') === '') {
 	$msg = 'Bienvenido al Sistema Distrital de Quejas y Soluciones -SDQS- <br/>';
 	$msg .= '<hr/>';
 	$msg .= 'Este módulo está temporalmente en <b>modo de pruebas</b>, ';

@@ -9,27 +9,102 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
     $tipos_peticion = variable_get('govi_sdqs_lista_tipo_peticion');
     $tipos_id = variable_get('govi_sdqs_lista_tipos_id');
     
-    if (empty($temas)
-        || empty($entidades)
-        || empty($tipos_peticion)
-        || empty($tipos_id)) {
-        
-        $msg = '<p>Uno o varios códigos del SDQS no se han cargado en el sistema. <br/>';
-        $msg .= 'Seleccione las operaciones que desea cargar/actualizar ';
-        $msg .= 'y guarde la configuración para que los cambios tomen ';
-        $msg .= 'efecto.<br/>';
-        $msg .= 'Los códigos serán utilizados en los selectores de los ';
-        $msg .= 'formularios <em>Crear Petición y Configuración Básica.';
+    $actual_argument =arg();
 
-        drupal_set_message($msg, 'warning');
-    }
-
-    if (variable_get('sdqs_env') === 'test') {
+    if (variable_get('sdqs_env') === 'test' && end(($actual_argument)) != 'ajax') {
         $msg = '';
         $msg .= 'Govi SDQS está funcionando en <b>modo de pruebas</b>';
 
         drupal_set_message($msg, 'warning');
     }
+    
+    if (empty(variable_get('sdqs_env') && end(($actual_argument)) != 'ajax')) {
+        $msg = '';
+        $msg .= 'Seleccione un ambiente.';
+        drupal_set_message($msg, 'warning');
+    }
+
+    if (empty(variable_get('sdqs_user') && end(($actual_argument)) != 'ajax')) {
+        $msg = '';
+        $msg .= 'Defina un usuario válido.';
+
+        drupal_set_message($msg, 'warning');
+    }
+
+    if (empty(variable_get('sdqs_password') && end(($actual_argument)) != 'ajax')) {
+        $msg = '';
+        $msg .= 'Defina una contraseña válida.';
+
+        drupal_set_message($msg, 'warning');
+    }
+
+
+    if (empty(variable_get('sdqs_entidad') && end(($actual_argument)) != 'ajax')) {
+        $msg = '';
+        $msg .= 'Seleccione una entidad.';
+
+        drupal_set_message($msg, 'warning');
+    }
+
+    if (empty(variable_get('sdqs_dependencia') && end(($actual_argument)) != 'ajax')) {
+        $msg = '';
+        $msg .= 'Seleccione una Dependencia.';
+
+        drupal_set_message($msg, 'warning');
+    }
+
+    if (empty(variable_get('sdqs_tema') && end(($actual_argument)) != 'ajax')) {
+        $msg = '';
+        $msg .= 'Seleccione Tema Principal.';
+
+        drupal_set_message($msg, 'warning');
+    }
+
+    if (empty(variable_get('govi_sdqs_lista_entidades')) || empty(variable_get('govi_sdqs_lista_dependencias')) && end(($actual_argument)) != 'ajax') {
+        $msg = '';
+        $msg .= 'Seleccione getListaEntidad para actualizar.';
+
+        drupal_set_message($msg, 'warning');
+    }
+
+
+    if (empty(variable_get('govi_sdqs_lista_ciudades') && end(($actual_argument)) != 'ajax')) {
+        $msg = '';
+        $msg .= 'Seleccione getListaCiudad para actualizar.';
+
+        drupal_set_message($msg, 'warning');
+    }
+
+    if (empty(variable_get('govi_sdqs_lista_departamentos') && end(($actual_argument)) != 'ajax')) {
+        $msg = '';
+        $msg .= 'Seleccione getListaDepatamento para actualizar.';
+
+        drupal_set_message($msg, 'warning');
+    }    
+    if (empty(variable_get('govi_sdqs_lista_paises') && end(($actual_argument)) != 'ajax')) {
+        $msg = '';
+        $msg .= 'Seleccione getListaPais para actualizar.';
+
+        drupal_set_message($msg, 'warning');
+    }
+    if (empty(variable_get('govi_sdqs_lista_tema') && end(($actual_argument)) != 'ajax')) {
+        $msg = '';
+        $msg .= 'Seleccione getListaTema para actualizar.';
+
+        drupal_set_message($msg, 'warning');
+    }
+    if (empty(variable_get('govi_sdqs_lista_tipos_id') && end(($actual_argument)) != 'ajax')) {
+        $msg = '';
+        $msg .= 'Seleccione getListaTipoIdentificacion para actualizar.';
+
+        drupal_set_message($msg, 'warning');
+    } 
+    if (empty(variable_get('govi_sdqs_lista_tipo_peticion') && end(($actual_argument)) != 'ajax')) {
+        $msg = '';
+        $msg .= 'Seleccione getListaTipoPeticion para actualizar.';
+
+        drupal_set_message($msg, 'warning');
+    }    
 
     $form['#attached']['css'] = array(
         drupal_get_path('module', 'govi_sdqs').'/assets/css/govi-sdqs.admin.css',
@@ -62,6 +137,21 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
         '#description' => 'Contraseña del usuario SDQS asignado para la autenticación básica en el ambiente de producción del web service',
         '#required' => TRUE,
         '#default_value' => variable_get('sdqs_password'),
+    );
+    $form['wsdl_config']['validar_conexion'] = array(
+        '#type' => 'button',
+        '#prefix' => '<div id="test-connection-btn">',
+        '#suffix' => '</br>Se validará la conexión con la contraseña previamente almacenada. Si desea probar con una nueva contraseña guarde los cambios primero y luego si ejecute</div>',
+        '#value' => 'Probar Conexión',
+        '#description' => 'Se validará la conexión con la contraseña previamente almacenada. Si desea probar con una nueva contraseña guarde los cambios primero.',
+
+        '#ajax' => array(
+            'callback' => 'test_connection',
+            'event' => 'click',
+            'method' => 'replace',
+            'effect' => 'fade',
+            'wrapper' => 'test-connection-btn'
+        ),
     );
 
     /**
@@ -98,13 +188,13 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
     $form['wsdl_config']['get_codes'] = array(
         '#type' => 'checkboxes',
         '#options' => drupal_map_assoc(array(
-            'getListaEntidad' => 'Entidades',
-            'getListaTipoPeticion' => 'Tipos de peticiones',
-            'getListaTema' => 'Actualizar Tipos de Temas',
-            'getListaTipoIdentificacion' => 'Tipos de Identificaciones',
-            'getListaPais'=> 'Paises',
-            'getListaDepatamento' => 'Departamentos',
-            'getListaCiudad' => 'Ciudad',
+            'getListaEntidad',
+            'getListaTipoPeticion',
+            'getListaTema',
+            'getListaTipoIdentificacion',
+            'getListaPais',
+            'getListaDepatamento',
+            'getListaCiudad',
 
         )),
         '#title' => 'Seleccione la lista de valores a actualizar. Esta opción consulta y trae los siguientes contenidos del servicio web y luego los almacena  localmente .(Estos valores serán almacendados como variables en el sistema de Drupal)',
@@ -307,6 +397,30 @@ function govi_sdqs_admin_config_main_form_submit($form, &$form_state) {
 }
 */
 
+function test_connection ($form, &$form_state) {
+ 
+    $consultaWS = wsclient_service_load('service_consulta');
+    try {
+      $results = $consultaWS->invoke('getListaRedSocial', Array());
+      if(!empty($results->return)){
+        return ' <div class="messages status">
+        <h2 class="element-invisible">Status message</h2>
+            La conexión con el servicio web SDQS está funcionando correctamente.
+        </div>
+        ';
+      }
+
+    } catch (WSClientException $e) {
+      watchdog('wsclient', $e->__toString());
+      return '<div class="messages error">
+              <h2 class="element-invisible">Error message</h2>
+               No se puede conectar con el servicio web SDQS. Valide sus credenciales.
+              </div>';
+    }
+
+
+}
+
 function _create_services_descriptions($user, $passwd, $env) {
 
     $services = array();
@@ -317,17 +431,22 @@ function _create_services_descriptions($user, $passwd, $env) {
      * tipología del SDQS, los cuales son requeridos por otros
      * métodos del sistema.
      **/
-
-    $service = new WSClientServiceDescription();
-
-    $service->name = 'service_consulta';
+    $name='service_consulta';
+    $service = wsclient_service_load($name);
+    if(empty($service->settings)) {
+      $service = new WSClientServiceDescription();
+    }
+    $service->name = $name;
     $service->label = 'Descripción del Webservice SDQS con los bindings para las consultas';
+
     if ($env == 'prod') {
         $service->url = 'http://sdqs.bogota.gov.co/sdqs/servicios/WSConsultasService?wsdl';
     } 
     elseif ($env == 'test') {
         $service->url = 'http://www.alcaldiabogota.gov.co/sdqs/servicios/WSConsultasService?wsdl';
     }
+    $service->settings['options']['login'] = $user;
+    $service->settings['options']['password'] = $passwd;
 
     $services[$service->name] = $service;
 
@@ -341,9 +460,12 @@ function _create_services_descriptions($user, $passwd, $env) {
      * se define como Web.
      **/
 
-    $service = new WSClientServiceDescription();
-
-    $service->name = 'service_radicacion_canal';
+    $name='service_radicacion_canal';
+    $service = wsclient_service_load($name);
+    if(empty($service->settings)) {
+      $service = new WSClientServiceDescription();
+    }
+    $service->name = $name;
     $service->label = 'Descripción del Webservice SDQS para efectuar las operaciones de consulta de códigos y radicación de peticiones a través del canal web';
 
     if ($env == 'prod') {
@@ -352,42 +474,16 @@ function _create_services_descriptions($user, $passwd, $env) {
     elseif ($env == 'test') {
         $service->url = 'http://www.alcaldiabogota.gov.co/sdqs/servicios/RadicacionPorCanalService?wsdl';
     }
+    
+    $service->settings['options']['login'] = $user;
+    $service->settings['options']['password'] = $passwd;
 
     $services[$service->name] = $service;
-
     foreach ($services as $service) {
-
-        // Verifica que no exista un webservice con el mismo nombre para evitar
-        // el romper la integridad de la base de datos.
-
-        $ws_check = db_select('wsclient_service', 'n')
-                  ->fields('n')
-                  ->condition('name', $service->name, '=')
-                  ->execute()
-                  ->fetchAssoc();
-
-        if ($ws_check['name'] !== $service->name) {
-
-            $service->type = 'soap';
-            $service->settings['options']['login'] = $user;
-            $service->settings['options']['password'] = $passwd;
-
-            try {
-                $service->endpoint()->initializeMetadata();
-                $service->save();
-            }
-            catch (WSClientException $e) {
-                watchdog('wsclient', $e->__toString());
-            }
-        } else {
-            // Notificar validación de existencia y redireccionar a la 
-            // administración del WS en el modulo wsclient
-            drupal_set_message('Existe una descripción de '. $service->name .' en la base de datos, diríjase a la <b><a href = "'. WSCLIENT_UI_PATH .'/manage/'. $service->name .'">administración del webservice</a></b> para mayor información.', 'warning');
-
-            // TODO: Actualizar la descripción del WS con los datos del 
-            // formulario y notificar
-        }
+      $service->save();
     }
+
+
 
     return $services;
 }
@@ -438,6 +534,7 @@ function _get_operations_data($opts, $services) {
                         $results = _getOperationgetListaCiudad($services);
                         break;
                     default:
+
                         $results = $consultaWS->invoke($op, $arguments);
                         break;
                 }
