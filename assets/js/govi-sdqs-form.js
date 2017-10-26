@@ -3,11 +3,16 @@
     function cambiarTipoIdentificacion(t) {
         if (t.val() == 'juridica') {
             jQuery('[name="tipo_identificacion"]').val('NI');
+            jQuery('.form-item-razon-social').css('display','block');
         } else if (t.val() == 'natural' ||  t.val() == 'apoderado') {
             jQuery('[name="tipo_identificacion"]').val('CC');
+            jQuery('.form-item-razon-social').css('display','none');
+
         }
         else if (t.val() == 'infantil') {
             jQuery('[name="tipo_identificacion"]').val('RC');
+            jQuery('.form-item-razon-social').css('display','none');
+
         }
     }
 

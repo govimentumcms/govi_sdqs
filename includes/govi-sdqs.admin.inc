@@ -98,16 +98,16 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
     $form['wsdl_config']['get_codes'] = array(
         '#type' => 'checkboxes',
         '#options' => drupal_map_assoc(array(
-            'getListaEntidad',
-            'getListaTipoPeticion',
-            'getListaTema',
-            'getListaTipoIdentificacion',
-            'getListaPais',
-            'getListaDepatamento',
-            'getListaCiudad',
+            'getListaEntidad' => 'Entidades',
+            'getListaTipoPeticion' => 'Tipos de peticiones',
+            'getListaTema' => 'Actualizar Tipos de Temas',
+            'getListaTipoIdentificacion' => 'Tipos de Identificaciones',
+            'getListaPais'=> 'Paises',
+            'getListaDepatamento' => 'Departamentos',
+            'getListaCiudad' => 'Ciudad',
 
         )),
-        '#title' => 'Seleccione las operaciones en los cuales desea actualizar la codificación del Web Service (Estos valores serán almacendados como variables enel sistema de Drupal)',
+        '#title' => 'Seleccione la lista de valores a actualizar. Esta opción consulta y trae los siguientes contenidos del servicio web y luego los almacena  localmente .(Estos valores serán almacendados como variables en el sistema de Drupal)',
     );
 
     $entidades = variable_get('govi_sdqs_lista_entidades');
@@ -150,6 +150,20 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
         '#validated' => TRUE
     );
 
+    if (!empty($temas)) {
+        foreach ($temas as $tema) {
+            $opts_temas[$tema['id']] = $tema['nombre'];
+        }
+    }
+    $form['wsdl_config']['codigo_tema'] = array(
+        '#prefix' => '<div id="wrapper-tema">',
+        '#suffix' => '</div>',
+        '#type' => 'select',
+        '#title' => 'Por favor seleccione el tema principal de su dependencia',
+        '#default_value' => variable_get('sdqs_tema'),
+        '#options' => !empty($opts_temas) ? $opts_temas : array(),
+        '#validated' => TRUE
+    );
     $form['apariencia'] = array(
         '#type' => 'fieldset',
         '#title' => 'Con esta opción puede cambiar la apariencia del módulo SDQS',
@@ -253,6 +267,7 @@ function govi_sdqs_admin_config_main_form_submit($form, &$form_state) {
     $entidad = $form_state['values']['codigo_entidad'];
     $tema = $form_state['values']['tema'];
     $dependencia =  $form_state['values']['codigo_dependencia'];
+    $tema_principal = $form_state['values']['codigo_tema'];
 
 
     variable_set('sdqs_user', $user);
@@ -261,6 +276,7 @@ function govi_sdqs_admin_config_main_form_submit($form, &$form_state) {
     variable_set('sdqs_entidad', $entidad);
     variable_set('sdqs_dependencia', $dependencia);
     variable_set('govi_sdqs_tema', $tema);
+    variable_set('sdqs_tema', $tema_principal);
 
 
     $services = _create_services_descriptions($user, $passwd, $env);
@@ -331,7 +347,7 @@ function _create_services_descriptions($user, $passwd, $env) {
     $service->label = 'Descripción del Webservice SDQS para efectuar las operaciones de consulta de códigos y radicación de peticiones a través del canal web';
 
     if ($env == 'prod') {
-        $service->url = 'http://sdqs.bogota.gov.co/sdqs/servicios/RadicacionService?wsdl';
+        $service->url = 'http://sdqs.bogota.gov.co/sdqs/servicios/RadicacionPorCanalService?wsdl';
     } 
     elseif ($env == 'test') {
         $service->url = 'http://www.alcaldiabogota.gov.co/sdqs/servicios/RadicacionPorCanalService?wsdl';
