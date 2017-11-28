@@ -136,16 +136,16 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
           'juridica' => t('Persona Jurídica'),
           'infantil' => t('Niños, niñas y adolescentes'),
           'apoderado' => t('Apoderado'),
+          'anonimo' => t('Persona Anónima'),
+
        ),
         '#default_value' => 'natural',
-        '#required' => TRUE
     );
     $form['datos_personales']['nombre'] = array(
         '#type' => 'textfield',
         '#title' => 'Nombre',
         '#description' => 'Ingrese su primer nombre',
         '#attributes' => array('class' => array('pure-u-23-24')),
-        '#required' => TRUE,
         '#size' => 60,
     );
 
@@ -154,7 +154,6 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#title' => 'Apellido',
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#description' => 'Ingrese su primer apellido',
-        '#required' => TRUE,
         '#size' => 60
     );
 
@@ -177,14 +176,12 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#type' => 'textfield',
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#title' => 'Numero identificación',
-        '#required' => TRUE
     );
 
     $form['datos_personales']['correo_electronico'] = array(
         '#type' => 'textfield',
         '#title' => 'Correo electrónico',
         '#attributes' => array('class' => array('pure-u-23-24')),
-        '#required' => TRUE
     );
     $form['datos_personales']['razon_social'] = array(
         '#type' => 'textfield',
@@ -224,7 +221,6 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
             'wrapper' => 'wrapper-ciudades',
         ),
         '#default_value' => 3,
-        '#required' => FALSE,
         '#validated' => TRUE,
     );
 
@@ -245,19 +241,16 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#type' => 'textfield',
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#title' => 'Dirección',
-        '#required' => TRUE
     );
     $form['datos_personales']['telefono_fijo'] = array(
         '#type' => 'textfield',
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#title' => 'Teléfono Fijo',
-        '#required' => TRUE
     );
     $form['datos_personales']['telefono_movil'] = array(
         '#type' => 'textfield',
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#title' => 'Teléfono Móvil',
-        '#required' => TRUE
     );
 
 
@@ -348,26 +341,73 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
 }
 function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
     
+    $nombre = $form_state['values']['nombre'];
+    $apellido = $form_state['values']['apellido'];
+    $tipo_solicitante = $form_state['values']['tipo_solicitante'];
+    $tipo_peticion = $form_state['values']['tipo_peticion'];
+    $correo_electronico = $form_state['values']['correo_electronico'];
+
+
     $tipo_identificacion = $form_state['values']['tipo_identificacion'];
     $numero_identificacion = $form_state['values']['numero_identificacion'];
     $telefono_fijo = $form_state['values']['telefono_fijo'];
     $telefono_movil = $form_state['values']['telefono_movil'];
-    $correo_electronico = $form_state['values']['correo_electronico'];
+    $direccion = $form_state['values']['direccion'];
+
+    //Si el tipo de petición es un usuario anónimo
+    if(!empty($tipo_solicitante) && $tipo_solicitante=='anonimo'  ) {
 
 
-
-    if($tipo_identificacion =='NI' && !preg_match("/([0-9]).*.-([0-9])/",$numero_identificacion)) {
-        form_set_error('tipo_identificacion','Número de NIT inválido. Use el formato : 123456789-3');
-    } 
-    if(!empty($telefono_fijo) && strlen($telefono_fijo) < 7 ) {
-        form_set_error('telefono_fijo','El número de teléfono fijo debe tener al menos 7 dígitos');
+    } else {
+        if($tipo_identificacion =='NI' && !preg_match("/([0-9]).*.-([0-9])/",$numero_identificacion)) {
+            form_set_error('tipo_identificacion','Número de NIT inválido. Use el formato : 123456789-3');
+        } 
+        if(!empty($telefono_fijo) && strlen($telefono_fijo) < 7 ) {
+            form_set_error('telefono_fijo','El número de teléfono fijo debe tener al menos 7 dígitos');
+        }
+        if(!empty($telefono_movil) && strlen($telefono_movil) < 10 ) {
+            form_set_error('telefono_movil','El número de teléfono móvil debe tener al menos 10 dígitos');
+        }
+      if(empty($nombre)) {
+        form_set_error('nombre','El campo Nombre es requerido.');
+      }
+      if(empty($apellido)) {
+        form_set_error('apellido','El campo Apellido es requerido.');
+      }
+      if(empty($correo_electronico)) {
+        form_set_error('correo_electronico','El campo Correo electrónico es requerido.');
+      }
+      if(empty($tipo_identificacion)) {
+        form_set_error('tipo_identificacion','El campo Tipo de identificación es requerido.');
+      }
+      if(empty($numero_identificacion)) {
+        form_set_error('numero_identificacion','El campo Número identificación es requerido.');
+      }
+      if(empty($telefono_fijo)) {
+        form_set_error('telefono_fijo','El campo Teléfono fijo es requerido.');
+      }
+      if(empty($telefono_movil)) {
+        form_set_error('telefono_movil','El campo Teléfono móvil es requerido.');
+      }
+      if(empty($direccion)) {
+        form_set_error('direccion','El campo Dirección es requerido.');
+      }
     }
-    if(!empty($telefono_movil) && strlen($telefono_movil) < 10 ) {
-        form_set_error('telefono_movil','El número de teléfono móvil debe tener al menos 10 dígitos');
+
+    if(empty($tipo_peticion)) {
+      form_set_error('tipo_peticion','El campo Tipo de petición es requerido.');
+    }
+    if(empty($tipo_solicitante)) {
+      form_set_error('tipo_solicitante','El campo Tipo de solicitante es requerido.');
     }
     if(!empty($correo_electronico) && !valid_email_address($correo_electronico)  ) {
-        form_set_error('correo_electronico','El correo electrónico debe ser una dirección de correo válida.');
+      form_set_error('correo_electronico','El correo electrónico debe ser una dirección de correo válida.');
     }
+
+
+
+
+
 }
 
 function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
@@ -399,14 +439,10 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         $obs .= 'Razón Social: ' . $form_state['values']['razon_social'] . PHP_EOL;
         $obs .= 'Medio de Respuesta: ' . $form_state['values']['respuesta'] . PHP_EOL;
 
+
         $data = array(
             'parameters' => array(
                 'requerimiento' => array(
-                    'apellidos' => $form_state['values']['apellido'],
-                    'nombres' => $form_state['values']['nombre'],
-                    'codigoTipoIdentificacion' => $form_state['values']['tipo_identificacion'],
-                    'numeroDocumento' => $form_state['values']['numero_identificacion'],
-                    'email' => $form_state['values']['correo_electronico'],
                     'asunto' => $form_state['values']['asunto'],
                     'clasificacionRequerimiento' => array(
                         // Valores standard provisionales mientas se
@@ -415,14 +451,10 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
                         // web que utilizan el servicio.
                         // El código dependencia será gestionado desde el backend con 
                         // base a la lista entregada por el equipo funcional de la DDSC
-                        'codigoDependencia' => $codigo_dependencia,
                         'codigoEntidad' => $codigo_entidad,
                         'codigoSector' => $id_sector,
                         'codigoSubtema' => $codigo_tema, 
                     ),
-                    'codigoCiudad' => $form_state['values']['ciudad'],
-                    'codigoPais' => $form_state['values']['pais'],
-                    'codigoDepartamento' => $form_state['values']['pais'],
                     'numeroFolios' => 0,
                     'prioridad' => 0,
                     'codigoTipoRequerimiento' => $form_state['values']['tipo_peticion'],
@@ -432,14 +464,52 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
 //                    'numeroRadicado' => node_load($nid_log)->field_sdqs_log_count['und'][0]['value'],
                     'numeroRadicado' => node_load($nid_log)->field_sdqs_log_count['und'][0]['value'], 
                     'observaciones' => $obs,
-                    'telefonoCasa' => $form_state['values']['telefono_fijo'],
-                    'telefonoCelular' => $form_state['values']['telefono_movil'],
-                    'telefonoOficina' => $form_state['values']['telefono_fijo'],
-
                 ),
 
             ),
         );
+
+        if(!empty($form_state['values']['apellido'])){
+          $data['parameters']['requerimiento']['apellidos']= $form_state['values']['apellido'];
+        }
+        if(!empty($form_state['values']['nombre'])){
+          $data['parameters']['requerimiento']['nombres']= $form_state['values']['nombre'];
+        }
+        if(!empty($form_state['values']['tipo_identificacion'])){
+          $data['parameters']['requerimiento']['codigoTipoIdentificacion']= $form_state['values']['tipo_identificacion'];
+        }
+        if(!empty($form_state['values']['numero_identificacion'])){
+          $data['parameters']['requerimiento']['numeroDocumento']= $form_state['values']['numero_identificacion'];
+        }
+        if(!empty($form_state['values']['apellido'])){
+          $data['parameters']['requerimiento']['apellidos']= $form_state['values']['apellido'];
+        }        
+        if(!empty($form_state['values']['correo_electronico'])){
+          $data['parameters']['requerimiento']['email']= $form_state['values']['correo_electronico'];
+        }     
+        if(!empty($form_state['values']['ciudad'])){
+          $data['parameters']['requerimiento']['codigoCiudad']= $form_state['values']['ciudad'];
+        }
+        if(!empty($form_state['values']['pais'])){
+          $data['parameters']['requerimiento']['codigoPais']= $form_state['values']['pais'];
+        }        
+        if(!empty($form_state['values']['departamento'])){
+          $data['parameters']['requerimiento']['codigoDepartamento']= $form_state['values'][''];
+        }     
+
+        if(!empty($form_state['values']['telefono_fijo'])){
+          $data['parameters']['requerimiento']['telefonoCasa']= $form_state['values']['telefono_fijo'];
+          $data['parameters']['requerimiento']['telefonoOficina']= $form_state['values']['telefono_fijo'];
+
+        }
+        if(!empty($form_state['values']['telefono_movil'])){
+        }        
+        if($codigo_dependencia!=0){
+          $data['parameters']['requerimiento']['clasificacionRequerimiento']['codigoDependencia']= $codigo_dependencia;
+        }        
+
+
+
         //Si el tipo de documento es NIT se agrega el dígito de verificación
         if($form_state['values']['tipo_identificacion']=='NI'){
           $identificacion = explode("-",$form_state['values']['numero_identificacion']);
@@ -480,8 +550,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         } catch (WSClientException $exception) {
 
             $output .= '<h3>Ha ocurrido un error inesperado</h3>';
-            $output .= '<p>Consulte con el administador para verificar el log de errores</p>';
-            $output .= print_r($exception, TRUE);
+            $output .= '<p>Comuníquese con el administrador o ingrese directamente a </br> </br><a href="http://sdqs.bogota.gov.co/sdqs/publico/registrarPeticion/?language=es">Registrar Petición</a> </p>';
 
             print $exception->__toString(); 
             watchdog('govi_sdqs', $exception->__toString());

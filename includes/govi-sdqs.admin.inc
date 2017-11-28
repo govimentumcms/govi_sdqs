@@ -188,6 +188,7 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
     $form['wsdl_config']['get_codes'] = array(
         '#type' => 'checkboxes',
         '#options' => drupal_map_assoc(array(
+
             'getListaEntidad',
             'getListaTipoPeticion',
             'getListaTema',
@@ -244,7 +245,9 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
         foreach ($temas as $tema) {
             $opts_temas[$tema['id']] = $tema['nombre'];
         }
+
     }
+
     $form['wsdl_config']['codigo_tema'] = array(
         '#prefix' => '<div id="wrapper-tema">',
         '#suffix' => '</div>',
@@ -306,6 +309,7 @@ function govi_sdqs_obtener_info_entidad($form, $form_state) {
 
         $opts_dependencias = array();
         $response = $service->invoke('getListaDependencia' , $data);
+        $opts_dependencias[0] = 'NO SELECCIONAR DEPENDENCIA';
 
         if (!empty($response)) {
 
@@ -358,8 +362,35 @@ function govi_sdqs_admin_config_main_form_submit($form, &$form_state) {
     $tema = $form_state['values']['tema'];
     $dependencia =  $form_state['values']['codigo_dependencia'];
     $tema_principal = $form_state['values']['codigo_tema'];
+    $actual_env = variable_get('sdqs_env');
 
 
+    //Si hay cambio de entorno actualiza los registros de las listas
+    if($actual_env != $env) {
+        variable_del('govi_sdqs_lista_tema');
+        variable_del('govi_sdqs_lista_entidades');
+        variable_del('govi_sdqs_lista_tipo_peticion');
+        variable_del('govi_sdqs_lista_tipos_id');
+        variable_del('govi_sdqs_lista_paises');
+        variable_del('govi_sdqs_lista_departamentos');
+        variable_del('govi_sdqs_lista_dependencias');
+        variable_del('govi_sdqs_lista_ciudades');
+        variable_del('govi_sdqs_getListaDependencia');
+        variable_del('sdqs_entidad');
+        variable_del('sdqs_dependencia');
+        variable_del('govi_sdqs_tema');
+        variable_del('sdqs_sector');
+        $opts = Array(
+          'getListaEntidad'=>'getListaEntidad',
+          'getListaTipoPeticion'=>'getListaTipoPeticion',
+          'getListaTema'=>'getListaTema',
+          'getListaTipoIdentificacion'=>'getListaTipoIdentificacion',
+          'getListaPais'=>'getListaPais',
+          'getListaDepatamento'=>'getListaDepatamento',
+          'getListaCiudad'=>'getListaCiudad',
+        );
+    }
+    
     variable_set('sdqs_user', $user);
     variable_set('sdqs_password', $passwd);
     variable_set('sdqs_env', $env);
@@ -368,12 +399,10 @@ function govi_sdqs_admin_config_main_form_submit($form, &$form_state) {
     variable_set('govi_sdqs_tema', $tema);
     variable_set('sdqs_tema', $tema_principal);
 
-
     $services = _create_services_descriptions($user, $passwd, $env);
 
     // TODO: Services debería ser una variable con la lista de 
     // servicios disponibles
-
     if (!empty($opts)) {
         _get_operations_data($opts, $services);
     } else {

@@ -1,0 +1,12 @@
+<?php
+
+function hook_uninstall() {
+  variable_del('sdqs_dependencia');
+  variable_del('sdqs_entidad');
+  variable_del('sdqs_env');
+  variable_del('sdqs_password');
+  variable_del('sdqs_sector');
+  variable_del('sdqs_dependencia');
+  variable_del('sdqs_tema');
+  variable_del('sdqs_user');
+}
