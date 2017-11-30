@@ -476,7 +476,7 @@ function _create_services_descriptions($user, $passwd, $env) {
       $service = new WSClientServiceDescription();
     }
     $service->name = $name;
-    $service->label = 'Descripción del Webservice SDQS con los bindings para las consultas';
+    $service->label = 'service_consulta_sdqs';
 
     if ($env == 'prod') {
         $service->url = 'http://sdqs.bogota.gov.co/sdqs/servicios/WSConsultasService?wsdl';
@@ -484,6 +484,7 @@ function _create_services_descriptions($user, $passwd, $env) {
     elseif ($env == 'test') {
         $service->url = 'http://www.alcaldiabogota.gov.co/sdqs/servicios/WSConsultasService?wsdl';
     }
+    $service->type="soap";
     $service->settings['options']['login'] = $user;
     $service->settings['options']['password'] = $passwd;
 
@@ -505,7 +506,7 @@ function _create_services_descriptions($user, $passwd, $env) {
       $service = new WSClientServiceDescription();
     }
     $service->name = $name;
-    $service->label = 'Descripción del Webservice SDQS para efectuar las operaciones de consulta de códigos y radicación de peticiones a través del canal web';
+    $service->label = 'service_radicacion_canal_sdqs';
 
     if ($env == 'prod') {
         $service->url = 'http://sdqs.bogota.gov.co/sdqs/servicios/RadicacionPorCanalService?wsdl';
@@ -513,13 +514,22 @@ function _create_services_descriptions($user, $passwd, $env) {
     elseif ($env == 'test') {
         $service->url = 'http://www.alcaldiabogota.gov.co/sdqs/servicios/RadicacionPorCanalService?wsdl';
     }
+    $service->type="soap";
     
     $service->settings['options']['login'] = $user;
     $service->settings['options']['password'] = $passwd;
 
+ 
     $services[$service->name] = $service;
+
     foreach ($services as $service) {
-      $service->save();
+      try {
+        $service->endpoint()->initializeMetaData();
+        $service->save();
+      }
+      catch (WSClientException $e) {
+        watchdog('wsclient', $e->__toString());
+      }
     }
 
 
