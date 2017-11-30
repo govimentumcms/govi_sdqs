@@ -465,7 +465,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
             $obs .= 'Direccion IP: ' . ip_address() . PHP_EOL;
             $obs .= 'Tipo de Solicitante: ' . $form_state['values']['tipo_solicitante'] . PHP_EOL;
 
-            if(!empty($form_state['values']['razon_social')) {
+            if(!empty($form_state['values']['razon_social'])) {
               $obs .= 'Razón Social: ' . $form_state['values']['razon_social'] . PHP_EOL;
             }
             $obs .= 'Medio de Respuesta: ' . $form_state['values']['respuesta'] . PHP_EOL;
