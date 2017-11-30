@@ -452,21 +452,31 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         $nid_log = govi_sdqs_create_log_node();
 
         $service = wsclient_service_load('service_radicacion_canal');
+        $tipo_solicitante = $form_state['values']['tipo_solicitante'];
+
         $obs = '';
 
         $obs .= 'Este requerimiento ha sido realizado a través del módulo Govi SDQS ';
         $obs .= 'de la Distribución Distrital CMS. Los datos de identificación del sitio ';
         $obs .= 'web son los siguientes:' . PHP_EOL;
         $obs .= 'Nombre de dominio: ' . $base_url . PHP_EOL;
-        $obs .= 'Direccion IP: ' . ip_address() . PHP_EOL;
-        $obs .= 'Tipo de Solicitante: ' . $form_state['values']['tipo_solicitante'] . PHP_EOL;
-        $obs .= 'Razón Social: ' . $form_state['values']['razon_social'] . PHP_EOL;
-        $obs .= 'Medio de Respuesta: ' . $form_state['values']['respuesta'] . PHP_EOL;
-        $obs .= 'Dirección: ' . $form_state['values']['direccion'] . PHP_EOL;
-        $obs .= 'Teléfono móvil: ' . $form_state['values']['telefono_movil'] . PHP_EOL;
-        $obs .= 'Correo electrónico: ' . $form_state['values']['correo_electronico'] . PHP_EOL;
-        $obs .= 'Términos y condiciones: ' . $form_state['values']['terminos_habeas_data'] . PHP_EOL;
-        $obs .= 'Términos y condiciones correo: ' . $form_state['values']['terminos_correo'] . PHP_EOL;
+
+        if(!empty($tipo_solicitante) && $tipo_solicitante!='anonimo'  ) {
+            $obs .= 'Direccion IP: ' . ip_address() . PHP_EOL;
+            $obs .= 'Tipo de Solicitante: ' . $form_state['values']['tipo_solicitante'] . PHP_EOL;
+
+            if(!empty($form_state['values']['razon_social')) {
+              $obs .= 'Razón Social: ' . $form_state['values']['razon_social'] . PHP_EOL;
+            }
+            $obs .= 'Medio de Respuesta: ' . $form_state['values']['respuesta'] . PHP_EOL;
+            $obs .= 'Dirección: ' . $form_state['values']['direccion'] . PHP_EOL;
+            $obs .= 'Teléfono: ' . $form_state['values']['telefono_fijo'] . PHP_EOL;
+            $obs .= 'Teléfono móvil: ' . $form_state['values']['telefono_movil'] . PHP_EOL;
+
+            $obs .= 'Correo electrónico: ' . $form_state['values']['correo_electronico'] . PHP_EOL;
+            $obs .= 'Términos y condiciones: ' . $form_state['values']['terminos_habeas_data'] . PHP_EOL;
+            $obs .= 'Términos y condiciones correo: ' . $form_state['values']['terminos_correo'] . PHP_EOL;
+        }
 
         $data = array(
             'parameters' => array(
