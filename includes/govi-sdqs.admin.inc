@@ -210,6 +210,15 @@ function govi_sdqs_admin_config_main_form($form, &$form_state) {
         }
     }
 
+
+if(empty(variable_get('sdqs_entidad'))) {
+    print '<div class="messages warning">
+<h2 class="element-invisible">Warning message</h2>
+Seleccione una entidad
+</b></div>';
+}
+
+
     $form['wsdl_config']['codigo_entidad'] = array(
         '#type' => 'select',
         '#title' => 'Por favor seleccione la entidad a la cual pertenece este sitio',
@@ -431,10 +440,11 @@ function test_connection ($form, &$form_state) {
     $consultaWS = wsclient_service_load('service_consulta');
     try {
       $results = $consultaWS->invoke('getListaRedSocial', Array());
+
       if(!empty($results->return)){
         return ' <div class="messages status">
         <h2 class="element-invisible">Status message</h2>
-            La conexión con el servicio web SDQS está funcionando correctamente.
+            La conexión con el servicio web SDQS está funcionando correctamente para el usuario '.$form_state['values']['auth_user'].'.
         </div>
         ';
       }

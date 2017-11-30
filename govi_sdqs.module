@@ -308,7 +308,23 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#options' => !empty($opts_respuesta) ? $opts_respuesta : array(),
         '#default_value' => 'email',
-        '#required' => TRUE
+    );
+
+    $form['pqr_crear']['terminos_habeas_data'] = array(
+        '#type' => 'checkbox',
+        '#title' => 'He leído y estoy de acuerdo con los términos y condiciones de uso de datos, implementados por la Secretaria General de la Alcaldía Mayor de Bogotá D.C resolución 070 de 2017 (Febrero 2017). ',
+        '#attributes' => array('class' => array('pure-u-23-24')),
+        '#return_value' => 'Sí',
+        '#default_value' => 0,
+    );
+
+    $form['pqr_crear']['terminos_correo'] = array(
+        '#type' => 'checkbox',
+        '#title' => 'Certifico que el correo electrónico ingresado en mis datos personales se encuentra vigente, de igual manera autorizo al Sistema Distrital de Queja y Soluciones para el envío de la respuesta a mi solicitud por este medio. Se informa que el uso del SDQS y de lo referente a transacciones del sistema, no generan ningún costo asociado; salvo lo contenido en lo que se determine en cualquier entidad distrital en el link de transparencia y acceso a la información pública: Instrumentos de gestión de información pública, (8 costos de reproducción).
+',
+        '#attributes' => array('class' => array('pure-u-23-24')),
+        '#return_value' => 'Sí',
+        '#default_value' => 0,
     );
     $form['captcha'] = array(
         '#type' => 'captcha',
@@ -353,7 +369,8 @@ function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
     $telefono_fijo = $form_state['values']['telefono_fijo'];
     $telefono_movil = $form_state['values']['telefono_movil'];
     $direccion = $form_state['values']['direccion'];
-
+    $terminos1=$form_state['values']['terminos_habeas_data'];
+    $terminos2=$form_state['values']['terminos_correo'];
     //Si el tipo de petición es un usuario anónimo
     if(!empty($tipo_solicitante) && $tipo_solicitante=='anonimo'  ) {
 
@@ -392,7 +409,14 @@ function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
       if(empty($direccion)) {
         form_set_error('direccion','El campo Dirección es requerido.');
       }
+      if(empty($terminos1)) {
+        form_set_error('terminos_habeas_data','El campo Términos y condiciones es requerido.');
+      }
+      if(empty($terminos2)) {
+        form_set_error('terminos_correo','El campo Términos y condiciones correo es requerido.');
+      }
     }
+
 
     if(empty($tipo_peticion)) {
       form_set_error('tipo_peticion','El campo Tipo de petición es requerido.');
@@ -438,7 +462,11 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         $obs .= 'Tipo de Solicitante: ' . $form_state['values']['tipo_solicitante'] . PHP_EOL;
         $obs .= 'Razón Social: ' . $form_state['values']['razon_social'] . PHP_EOL;
         $obs .= 'Medio de Respuesta: ' . $form_state['values']['respuesta'] . PHP_EOL;
-
+        $obs .= 'Dirección: ' . $form_state['values']['direccion'] . PHP_EOL;
+        $obs .= 'Teléfono móvil: ' . $form_state['values']['telefono_movil'] . PHP_EOL;
+        $obs .= 'Correo electrónico: ' . $form_state['values']['correo_electronico'] . PHP_EOL;
+        $obs .= 'Términos y condiciones: ' . $form_state['values']['terminos_habeas_data'] . PHP_EOL;
+        $obs .= 'Términos y condiciones correo: ' . $form_state['values']['terminos_correo'] . PHP_EOL;
 
         $data = array(
             'parameters' => array(
@@ -503,7 +531,11 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
 
         }
         if(!empty($form_state['values']['telefono_movil'])){
-        }        
+          $data['parameters']['requerimiento']['telefonoCelular']= $form_state['values']['telefono_movil'];
+        } 
+        if(!empty($form_state['values']['direcion'])){
+          $data['parameters']['requerimiento']['direccion']= $form_state['values']['direccion'];
+        }            
         if($codigo_dependencia!=0){
           $data['parameters']['requerimiento']['clasificacionRequerimiento']['codigoDependencia']= $codigo_dependencia;
         }        
@@ -540,11 +572,13 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
                 $output .= '<h3>¡Solicitud enviada con éxito!</h3>';
                 $output .= '<p>Respetado(a) ' .$form_state['values']['nombre']. ', por favor tome nota de los siguientes ';
                 $output .= 'datos para hacer seguimiento a su petición.' . PHP_EOL;
-                $output .= 'Esta información ha sido enviada al correo electrónico: ' . $form_state['values']['correo_electronico'];
+                $output .= 'Esta información ha sido enviada al correo electrónico si fué registrado previamente: ' . $form_state['values']['correo_electronico'];
                 $output .= '<hr/>';
                 $output .= '<ul><li>Fecha de solicitud: ' . $result->return->fechaCreacion . '</li>';
                 $output .= '<li>Codigo de requerimiento SDQS: ' . $result->return->codigoRequerimiento . '</li>';
-                $output .= '<li>Número de identificación del requerimiento en el sitio: ' . $result->return->numeroRadicado . '</li></ul>';
+                $output .= '<br>';
+                $output .= 'Si es una solicitud anónima puede hacer seguimiento a través de la dirección <a href="http://sdqs.bogota.gov.co/sdqs/publico/hojaRuta/?language=es">Consultar hoja de ruta</a>';
+
                 govi_sdqs_log_event($form_state, $nid_log, $result);
             }
         } catch (WSClientException $exception) {

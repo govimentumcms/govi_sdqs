@@ -112,6 +112,7 @@ if (variable_get('sdqs_env') === '') {
       <div class="no-anon pure-1-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
          <?php print render($form['pqr_crear']['respuesta']); ?>
       </div>
+
    </div>
 
    </fieldset>
@@ -123,9 +124,17 @@ if (variable_get('sdqs_env') === '') {
       </div>
    </fieldset>
 <div class="pure-g">
+
+   <div class="no-anon pure-1-1 pure-u-sm-1 pure-u-md-23-24 pure-u-lg-23-24 pure-u-xl-23-24">
+     <?php print render($form['pqr_crear']['terminos_habeas_data']); ?>
+   </div>
+   <div class="no-anon pure-1-1 pure-u-sm-1 pure-u-md-23-24 pure-u-lg-23-24 pure-u-xl-23-24">
+     <?php print render($form['pqr_crear']['terminos_correo']); ?>
+   </div>
    <div class="pure-u-1 pure-sm-1 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1">
       <?php print render($form['captcha']); ?>
    </div>
+
    <div class="pure-u-1 pure-sm-1 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1">
       <?php print render($form['submit']); ?>
    </div>
