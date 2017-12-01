@@ -14,7 +14,7 @@ $tema = variable_get('govi_sdqs_tema') === 'light' ? 'class="light"' : '';
 	<div class="controles">
 	    <div class="boton crear">
 		<i></i>
-		<a href="govi-sdqs/crear" class="colorbox-load colorbox-node" >Crear <span>Petición</span></a>
+		<a href="govi-sdqs/crear" >Crear <span>Petición</span></a>
 	    </div>
 	    
 	    <div class="boton consultar">
