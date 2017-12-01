@@ -558,12 +558,15 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
           $data['parameters']['requerimiento']['numeroDocumento']= $identificacion[0];
           $data['parameters']['requerimiento']['digitoVerificacion']= $identificacion[1];
         }
-        //$output = print_r($data, TRUE);
-
-        if (!empty($form_state['values']['archivo'])) {
-
+        $fid=0;
+        if(empty($form_state['values']['archivo']) && !empty($_POST['archivo'])){
+          $fid=$_POST['archivo']['fid']; 
+	} else {
+          $fid = $form_state['values']['archivo'];	
+	}
+        if (!empty($fid)) {
             $data['parameters']['requerimiento']['documento'] = array();
-            $file = file_load($form_state['values']['archivo']);
+            $file = file_load($fid);
             $content = file_get_contents(file_directory_temp().'/'.$file->filename);
 
             $data['parameters']['requerimiento']['documento']['contenidoDocumento'] = base64_encode($content);
