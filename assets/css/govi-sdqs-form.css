@@ -1,5 +1,5 @@
 div.form-item-tipo-solicitante  div.form-item-tipo-solicitante{
-	    float: left;
+        float: left;
     width: 25%;
     margin-right: 1em;
 }
@@ -17,7 +17,7 @@ div.form-item-tipo-solicitante input {
 
 @media only screen and (max-width: 400px) {
     div.form-item-tipo-solicitante  div.form-item-tipo-solicitante{
-	float: left;
+    float: left;
     width: 44%;
     margin-right: 1em;
 }
@@ -25,4 +25,48 @@ div.form-item-tipo-solicitante input {
     float: right;
     margin-top: 10px;
 }
+}
+
+div.form-item-tipo-solicitante label:after{
+    color:#f00;
+    content:' *';
+}
+
+div.form-item-nombre label:after{
+    color:#f00;
+    content:' *';
+}
+div.form-item-apellido label:after{
+    color:#f00;
+    content:' *';
+}
+div.form-item-numero-identificacion label:after{
+    color:#f00;
+    content:' *';
+}
+
+div.form-item-departamento label:after{
+    color:#f00;
+    content:' *';
+}
+div.form-item-direccion label:after{
+    color:#f00;
+    content:' *';
+}
+div.form-item-correo-electronico label:after{
+    color:#f00;
+    content:' *';
+}
+
+div.form-item-telefono-fijo label:after{
+    color:#f00;
+    content:' *';
+}
+div.form-item-telefono-movil label:after{
+    color:#f00;
+    content:' *';
+}
+div.form-item-respuesta label:after{
+    color:#f00;
+    content:' *';
 }
