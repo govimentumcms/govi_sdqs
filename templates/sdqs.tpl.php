@@ -13,7 +13,7 @@ $tema = variable_get('govi_sdqs_tema') === 'light' ? 'class="light"' : '';
 	<div class="title"><h3>Sistema Distrital de Quejas y Soluciones -SDQS-</h3></div>
 	<div class="controles">
 	    <div class="boton crear">
-		<a href="govi-sdqs/crear" >Crear <span>Petición</span></a>
+		<a href="/govi-sdqs/crear" >Crear <span>Petición</span></a>
 	    </div>
 	    
 	    <div class="boton consultar">
