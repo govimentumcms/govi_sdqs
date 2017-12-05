@@ -10,15 +10,13 @@ $tema = variable_get('govi_sdqs_tema') === 'light' ? 'class="light"' : '';
 
 <div id="servicio-ciudadano">
     <div id="sdqs" <?php print $tema; ?> >
-	<div class="title"><h3><i class="logo"></i>Sistema Distrital de Quejas y Soluciones -SDQS-</h3></div>
+	<div class="title"><h3>Sistema Distrital de Quejas y Soluciones -SDQS-</h3></div>
 	<div class="controles">
 	    <div class="boton crear">
-		<i></i>
 		<a href="govi-sdqs/crear" >Crear <span>Petición</span></a>
 	    </div>
 	    
 	    <div class="boton consultar">
-		<i></i>
 		<a href="http://sdqs.bogota.gov.co/sdqs/login" target="_blank" >Consultar <span>Petición</span></a>
 	    </div>
 	    

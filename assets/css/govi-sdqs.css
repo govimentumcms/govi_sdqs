@@ -34,13 +34,14 @@
     overflow-x: hidden;
 }
 
-#sdqs .title h3{
-    color: #F3A82B;
+#sdqs .title h3 {
+      color: #676767;
+    text-align: center;
     font-size: 0.9em;
     font-weight: bolder;
     letter-spacing: -1px;
     line-height: 1.4em;
-    text-transform: uppercase;
+    text-transform: uppercase
 }
 
 #sdqs .logo {
@@ -57,7 +58,7 @@
     margin-bottom: 20px;
 }
 #sdqs .boton a {
-    color: #FFFFFF;
+    color: #0f9edb;
     border-radius: 8px;
     background-clip: padding-box;
     background-repeat: repeat-x;
@@ -72,56 +73,41 @@
 #sdqs .boton span{
     font-family: 'robotobold';
 }
-#sdqs .boton i {
-    background-color: red;
-    background-repeat: no-repeat;
-    background-position: 17px center;
-    border-radius: 30px;
-    display: block;
-    float: left;
-    height: 60px;
-    margin-left: 20px;
-    margin-right: 15px;
-    position: relative;
-    top: -3px;
-    width: 60px;
-}
-#sdqs.light .boton.crear i{
-    background-color: rgb(0,159,227);
-}
-#sdqs.light .boton.consultar i{
-    background-color: rgb(0,62,101);
-}
+
 #sdqs.light .boton.crear a, #sdqs.light .boton.consultar a {
     background-color: #fff;
     border: 1px solid rgba(0,0,0,0.2);
     color: rgb(0,159,227);
-    background-image: none;
+ 
 }
 #sdqs.light .boton.crear span, #sdqs.light .boton.consultar span{
    color: rgb(0,62,101);
 }
-#sdqs .boton.crear i {
-    background-color: #2E579D;
-    background-image: url("../imgs/icono1.png");
-}
+
 #sdqs .boton.crear a {
-    background-color: #2E579D;
-    background-image: url("../imgs/ciudad1.png");
+    background-image: url("../imgs/create.png");
+    background-color: #f0f0f0;
+    border: solid 1px #fcfcfc;
+    color: #19a8e5;
+    padding-left: 55px;
+    background-repeat: no-repeat;
+    background-position: 14px 10px;
 }
+
 #sdqs .boton.crear span {
-    color: #F3A82B;
+    color: #154a69;
 }
-#sdqs .boton.consultar i {
-    background-color: #F3A82B;
-    background-image: url("../imgs/icono2.png");
-}
+
 #sdqs .boton.consultar a {
-    background-color: #F3A82B;
-    background-image: url("../imgs/ciudad1.png");
+    background-image: url("../imgs/edit.png");
+    background-color: #ffffff;
+    border: solid 1px #e2e2e2;
+    background-repeat: no-repeat;
+    background-position: 12px 9px;
+    padding-left: 52px;
 }
 #sdqs .boton.consultar span {
-    color: #2E579D;
+    color: #004268;
 }
 .info a {
     color: rgb(0,159,227);
@@ -134,4 +120,35 @@
 }
 .form-item-razon-social { 
     display: none;
+}
+
+#servicio-ciudadano{
+    border: solid 1px #d3d3d3;
+    background: #eeeeee;
+    padding: 0em 1em;
+    border-radius: 11px;
+}
+#servicio-ciudadano p {
+    font-family: 'robotoregular';
+    font-size: 0.9em;
+}
+.formsdqstic{
+background: #fdfcfc;
+padding: 1em 2em;
+border: solid 1px #f3f0f0;
+border-radius: 11px;
+}
+
+.formsdqsn legend {
+   display: block;
+   padding: 0.3em 33px;
+   margin-bottom: 0px;
+   color: #fff;
+   border-bottom: 3px solid #e5e5e5;
+   background: #1177a3;
+   width: 93.6%;
+   border-radius: 7px 6px 0px 0px;
+}
+.formsdqstic .pure-button {
+   margin-top: 1em;
 }

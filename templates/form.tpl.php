@@ -29,9 +29,11 @@ if (variable_get('sdqs_env') === '') {
 }
 
 ?>
+<div class="formsdqsn">
+<p>Los campos marcados con * son obligatorios</p>
 <fieldset>
    <legend>Datos de la solicitud</legend>
-<div class="pure-g">
+<div class="pure-g formsdqstic">
 
 <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
    <?php print render($form['pqr_crear']['tipo_peticion']); ?>
@@ -46,7 +48,7 @@ if (variable_get('sdqs_env') === '') {
 <fieldset class="id-data">
    <legend>Datos de identificación</legend>
 
-   <div class="pure-g">
+   <div class="pure-g formsdqstic">
 
       <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
          <?php print render($form['datos_personales']['nombre']); ?>
@@ -69,7 +71,7 @@ if (variable_get('sdqs_env') === '') {
 
 <fieldset class="contact">
    <legend>Ubicación y contacto</legend>
-      <div class="pure-g">
+      <div class="pure-g formsdqstic">
 
       <div class="no-anon pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
          <?php print render($form['datos_personales']['pais']); ?>
@@ -96,7 +98,7 @@ if (variable_get('sdqs_env') === '') {
 </fieldset>
 <fieldset>
    <legend>Solicitud</legend>
-   <div class="pure-g">
+   <div class="pure-g formsdqstic">
        <div class="pure-1-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
          <?php print render($form['pqr_crear']['tema']); ?>
       </div>
@@ -123,7 +125,7 @@ if (variable_get('sdqs_env') === '') {
          <p>La solicitud de información puede generar costos de reproducción de la información pública los cuales puede consultar en la sección de transparencia, instrumentos de gestión de la información, costos de reproducción.</p>
       </div>
    </fieldset>
-<div class="pure-g">
+<div class="pure-g formsdqstic">
 
    <div class="no-anon pure-1-1 pure-u-sm-1 pure-u-md-23-24 pure-u-lg-23-24 pure-u-xl-23-24">
      <?php print render($form['pqr_crear']['terminos_habeas_data']); ?>
@@ -140,10 +142,9 @@ if (variable_get('sdqs_env') === '') {
    </div>
 </div>
 
-
+</div>
 <?php print render($form['form_build_id']); ?>
 <?php print render($form['form_token']); ?>
 <?php print render($form['form_id']); ?>
-</br>
 
 <?php drupal_render_children($form); ?>
