@@ -143,12 +143,15 @@ border-radius: 11px;
    display: block;
    padding: 0.3em 33px;
    margin-bottom: 0px;
-   color: #fff;
    border-bottom: 3px solid #e5e5e5;
    background: #1177a3;
    width: 93.6%;
    border-radius: 7px 6px 0px 0px;
+   color: #fff !important;
+   font-weight: bold !important;
+   padding: 0.5em !important;
 }
+
 .formsdqstic .pure-button {
    margin-top: 1em;
 }
