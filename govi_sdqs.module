@@ -55,8 +55,12 @@ function theme_govi_sdqs_form ($variables) {
 function govi_sdqs_menu() {
 
     $items = array();
+    $admin_url='admin/config/features/sdqs-client';
+    if(drupal_get_profile()=='govi') {
+      $admin_url='admin/config/features/sdqs-client';
+    }
 
-    $items['admin/config/features/sdqs-client'] = array(
+    $items[$admin_url] = array(
         'title' => 'Cliente Sistema Distrital de Quejas y Soluciones',
         'descriptión' => 'Configuración del Cliente SOAP del SDQS',
         'page callback' => 'drupal_get_form',

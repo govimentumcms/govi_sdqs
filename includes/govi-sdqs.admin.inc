@@ -1,7 +1,6 @@
 <?php
 
 function govi_sdqs_admin_config_main_form($form, &$form_state) {
-
     $form = array();
 
     $temas = variable_get('govi_sdqs_lista_tema');
