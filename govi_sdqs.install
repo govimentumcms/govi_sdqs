@@ -1,6 +1,6 @@
 <?php
 
-function hook_uninstall() {
+function govi_sdqs_uninstall() {
   variable_del('sdqs_dependencia');
   variable_del('sdqs_entidad');
   variable_del('sdqs_env');
@@ -9,4 +9,26 @@ function hook_uninstall() {
   variable_del('sdqs_dependencia');
   variable_del('sdqs_tema');
   variable_del('sdqs_user');
+}
+
+
+
+/**
+* Implements hook_update_N().
+* Elimina las variables de entorno definidas. Es necesario borrarlas y actualizarlas nuevamente para garantizar inegridad en los datos con el servicio web SDQS.
+*/
+function govi_sdqs_update_1002() {
+  variable_del('govi_sdqs_lista_ciudades');
+  variable_del('govi_sdqs_lista_departamentos');
+  variable_del('govi_sdqs_lista_entidades');
+  variable_del('govi_sdqs_lista_dependencias');
+  variable_del('govi_sdqs_lista_paises');
+  variable_del('govi_sdqs_lista_tema');
+  variable_del('govi_sdqs_lista_tipos_id');
+  variable_del('govi_sdqs_lista_tipo_peticion');
+  variable_del('govi_sdqs_tema');
+  variable_del('sdqs_dependencia');
+  variable_del('sdqs_entidad');
+  variable_del('sdqs_sector');
+  variable_del('sdqs_tema');
 }

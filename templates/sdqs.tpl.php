@@ -23,9 +23,7 @@ $tema = variable_get('govi_sdqs_tema') === 'light' ? 'class="light"' : '';
 	    <div class="info">
 		<p>Si usted desea registrarse en el SDQS, <a href="http://sdqs.bogota.gov.co/sdqs/login" target="_blank">ingrese aquí</a></p>
 	    </div>
-	    <div class="select servicios">
-		<?php print views_embed_view('enlaces_servicio_ciudadania','block'); ?>
-	    </div>
+
 	</div>
     </div>
 </div>
