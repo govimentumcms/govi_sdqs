@@ -55,7 +55,7 @@ function theme_govi_sdqs_form ($variables) {
 function govi_sdqs_menu() {
 
     $items = array();
-    $admin_url='admin/config/features/sdqs-client';
+    $admin_url='admin/config/system/sdqs-client';
     if(drupal_get_profile()=='govi') {
       $admin_url='admin/config/features/sdqs-client';
     }
