@@ -11,23 +11,13 @@
 function govi_sdqs_admin_settings() {
   $form['govi_sdqs_general_settings'] = array(
     '#type' => 'fieldset',
-    '#title' => t('General settings'),
+    '#description' => t('Actualiza la referencia de los datos con el servidor SDQS.').'</br>',
+    '#title' => t('Actualización de datos'),
   );
-  $form['govi_sdqs_general_settings']['govi_sdqs_site_key'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Site key'),
-    '#default_value' => variable_get('govi_sdqs_site_key', ''),
-    '#maxlength' => 40,
-    '#description' => t('The site key given to you when you <a href="@url">register for govi_sdqs</a>.', array('@url' => 'http://www.google.com/govi_sdqs/admin')),
-    '#required' => TRUE,
-  );
-  $form['govi_sdqs_general_settings']['govi_sdqs_secret_key'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Secret key'),
-    '#default_value' => variable_get('govi_sdqs_secret_key', ''),
-    '#maxlength' => 40,
-    '#description' => t('The secret key given to you when you <a href="@url">register for govi_sdqs</a>.', array('@url' => 'http://www.google.com/govi_sdqs/admin')),
-    '#required' => TRUE,
+  $form['govi_sdqs_general_settings']['govi_sdqs_update'] = array(
+    '#type' => 'submit',
+    '#value' => t('Actualizar Datos SDQS'),
+    '#submit' => array('govi_sdqs_admin_update_data'),
   );
 
   $form['govi_sdqs_widget_settings'] = array(
@@ -82,7 +72,9 @@ function govi_sdqs_admin_settings() {
 
   return system_settings_form($form);
 }
-
+function govi_sdqs_admin_update_data() {
+  drupal_goto('admin/config/features/sdqs/update');
+}
 /**
  * Validation function for govi_sdqs_admin_settings().
  *
