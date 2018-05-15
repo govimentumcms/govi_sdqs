@@ -29,7 +29,7 @@ function govi_sdqs_form_alter(&$form, &$form_state, $form_id) {
 function govi_sdqs_admin_connection() {
   $form['govi_sdqs_general_settings'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Datos de connexión'),
+    '#title' => t('Datos de conexión'),
   );
   $form['govi_sdqs_general_settings']['govi_sdqs_site_user'] = array(
     '#type' => 'textfield',
