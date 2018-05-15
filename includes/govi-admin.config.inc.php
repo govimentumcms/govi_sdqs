@@ -4,21 +4,34 @@
  * @file
  * Provides the Google No CAPTCHA administration settings.
  */
-
+function govi_sdqs_init(){
+// Define static var.
+define('DRUPAL_ROOT', getcwd());
+// Include bootstrap.
+include_once('./includes/bootstrap.inc');
+// Initialize stuff.
+drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+// Clear cache.
+drupal_flush_all_caches();
+}
 /**
- * Form callback; administrative settings for Google No CAPTCHA.
+ * Form callback
  */
 function govi_sdqs_admin_settings() {
-  $form['govi_sdqs_general_settings'] = array(
-    '#type' => 'fieldset',
-    '#description' => t('Actualiza la referencia de los datos con el servidor SDQS.').'</br>',
-    '#title' => t('Actualización de datos'),
-  );
-  $form['govi_sdqs_general_settings']['govi_sdqs_update'] = array(
-    '#type' => 'submit',
-    '#value' => t('Actualizar Datos SDQS'),
-    '#submit' => array('govi_sdqs_admin_update_data'),
-  );
+
+  $sdqs =  SdqsClient::getInstance();
+  if($sdqs->isConnectionConfigured()) {
+    $form['govi_sdqs_general_settings'] = array(
+      '#type' => 'fieldset',
+      '#title' => t('Actualización de datos'),
+    );
+    $form['govi_sdqs_general_settings']['govi_sdqs_update'] = array(
+      '#type' => 'submit',
+      '#value' => t('Actualizar SDQS'),
+      '#submit' => array('govi_sdqs_admin_update_data'),
+    );
+  }
+
 
   $form['govi_sdqs_widget_settings'] = array(
     '#type' => 'fieldset',
