@@ -1,4 +1,6 @@
 <?php
+$path = drupal_get_path('module', 'govi_sdqs');
+require_once DRUPAL_ROOT . "/$path/handlers/sdqs_handler.inc";
 
 // Definición del bloque
 
@@ -9,7 +11,6 @@ function govi_sdqs_block_info() {
         'info' => 'Govi SDQS',
         'cache' => DRUPAL_CACHE_PER_PAGE,
     );
-
     return $block;
 }
 
@@ -50,61 +51,108 @@ function theme_govi_sdqs_form ($variables) {
     return $form;
 }
 
-// Define recursos para manejar las operaciones del módulo
-// i.e: crear, consultar ...
+/**
+* Implements hook_menu().
+*/
 function govi_sdqs_menu() {
 
-    $items = array();
-    $admin_url='admin/config/system/sdqs-client';
-    if(drupal_get_profile()=='govi') {
-      $admin_url='admin/config/features/sdqs-client';
-    }
-
-    $items[$admin_url] = array(
-        'title' => 'Cliente Sistema Distrital de Quejas y Soluciones',
-        'descriptión' => 'Configuración del Cliente SOAP del SDQS',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array('govi_sdqs_admin_config_main_form'),
-        'access arguments' => array('access administration pages'),
-        'file' => 'includes/govi-sdqs.admin.inc'
+  $items['admin/config/features/sdqs'] = array(
+    'title' => 'Datos de la conexión con SDQS',
+    'descriptión' => 'Configuración del Cliente SOAP del SDQS',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('govi_sdqs_admin_connection'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'includes/govi-sdqs.admin.connection.inc',
+    'weight' => 1
+  );
+  $items['admin/config/features/sdqs/connection'] = array(
+    'title' => 'Datos de la conexión con SDQS',
+    'descriptión' => 'Configuración del Cliente SOAP del SDQS',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('govi_sdqs_admin_connection'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'includes/govi-sdqs.admin.connection.inc',
+    'weight' => 2
+  );
+  $items['admin/config/features/sdqs/configure'] = array(
+    'title' => 'Configuración',
+    'descriptión' => 'Configuración del Cliente SOAP del SDQS',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('govi_sdqs_admin_settings'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_LOCAL_TASK,
+    'file' => 'includes/govi-admin.config.inc.php',
+    'weight' => 3
+  );
+  $items['admin/config/features/sdqs/update'] = array(
+      'title' => 'Actualizar datos con Servicio web',
+      'page callback' => 'govi_sdqs_batch_update_data',
+      'access arguments' => array('administer users'),
     );
-
-    $items['govi-sdqs/crear'] = array(
-        'title' => 'Crear petición',
-        'page callback' => 'drupal_get_form',
-
-        'page arguments' => array('govi_sdqs_crear_peticion_form'),
-        'access callback' => TRUE,
-    );
-
-    // Deshabilita recurso debido que el alcance para la
-    // primera versión redireccionará directamente al SDQS
-    // hasta que exista un servicio que permita consultar
-    // el detalle de la petición
-    /*
-    $items['govi-sdqs/consultar'] = array(
-        'title' => 'Consultar petición',
-        'page callback' => 'drupal_get_form',
-        'page arguments' => array('govi_sdqs_consultar_peticion_form'),
-        'access arguments' => array('access content'),
-        'access callback' => TRUE,
-        //'theme callback' => 'govi_form_popup',
-        //'type' => MENU_CALLBACK
-    );
-
-
-    $items['govi-sdqs/detalle-peticion'] = array(
-        'title' => 'Detalles de la consulta',
-        'page callback' => 'govi_sdqs_ver_detalles',
-        'access arguments' => array('access content'),
-        'access callback' => TRUE,
-        'theme callback' => 'govi_sdqs_details',
-        'type' => MENU_CALLBACK
-    );
-    */
-
-    return $items;
+  $items['govi-sdqs/crear'] = array(
+    'title' => 'Crear petición',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('govi_sdqs_crear_peticion_form'),
+    'access callback' => TRUE,
+  );
+  return $items;
 }
+
+/**
+ * Batch update callback.
+ */
+function govi_sdqs_batch_update_data() {
+  $batch = array(
+    'operations' => array(),
+    'finished' => 'govi_sdqs_batch_update_data_finished',
+    'title' => t('Obteniendo información del servicio web'),
+    'init_message' => t('El proceso está comenzando...'),
+    'progress_message' => t('Processed @current out of @total.'),
+    'error_message' => t('Se  ha presentado un error')
+  );
+  $results = array(
+    "updateEntities",
+    "updateCountries"
+  );
+  foreach ($results as $result) {
+    $batch['operations'][] = array('govi_sdqs_batch_update_data_process', array($result));
+  }
+  $sdqs = SdqsClient::getInstance();
+  batch_set($batch);
+  batch_process('admin/config/features/sdqs/configure'); // The path to redirect to when done.
+}
+
+/**
+ * Batch processor.
+ */
+function govi_sdqs_batch_update_data_process($method, &$context) {
+  $sdqs =  SdqsClient::getInstance();
+  $sdqs->$method();
+
+  $context['message'] = "Obteniendo información $method...";
+}
+
+/**
+ * The batch finish handler.
+ */
+function govi_sdqs_batch_update_data_finished($success, $results, $operations) {
+  if ($success) {
+    drupal_set_message('La actualización de datos se ha completado');
+  }
+  else {
+    $error_operation = reset($operations);
+    $message = t('An error occurred while processing %error_operation with arguments: @arguments', array(
+      '%error_operation' => $error_operation[0],
+      '@arguments' => print_r($error_operation[1], TRUE)
+    ));
+    drupal_set_message($message, 'error');
+  }
+  drupal_set_message('Actualización de datos exitosa');
+}
+
+
 
 function govi_sdqs_crear_peticion_form($form, &$form_state) {
 
@@ -360,7 +408,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     return $form;
 }
 function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
-    
+
     $nombre = $form_state['values']['nombre'];
     $apellido = $form_state['values']['apellido'];
     $tipo_solicitante = $form_state['values']['tipo_solicitante'];
@@ -382,7 +430,7 @@ function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
     } else {
         if($tipo_identificacion =='NI' && !preg_match("/([0-9]).*.-([0-9])/",$numero_identificacion)) {
             form_set_error('tipo_identificacion','Número de NIT inválido. Use el formato : 123456789-3');
-        } 
+        }
         if(!empty($telefono_fijo) && strlen($telefono_fijo) < 7 ) {
             form_set_error('telefono_fijo','El número de teléfono fijo debe tener al menos 7 dígitos');
         }
@@ -450,7 +498,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
 
 
 
-    
+
     if ($form_state['executed']) {
 
         $nid_log = govi_sdqs_create_log_node();
@@ -489,13 +537,13 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
                     'clasificacionRequerimiento' => array(
                         // Valores standard provisionales mientas se
                         // validan con el SDQS con el fin de crear una clasificación
-                        // específica para los requerimientos realizados desde los sitios 
+                        // específica para los requerimientos realizados desde los sitios
                         // web que utilizan el servicio.
-                        // El código dependencia será gestionado desde el backend con 
+                        // El código dependencia será gestionado desde el backend con
                         // base a la lista entregada por el equipo funcional de la DDSC
                         'codigoEntidad' => $codigo_entidad,
                         'codigoSector' => $id_sector,
-                        'codigoSubtema' => $codigo_tema, 
+                        'codigoSubtema' => $codigo_tema,
                     ),
                     'numeroFolios' => 0,
                     'prioridad' => 0,
@@ -504,7 +552,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
                     'codigoCanal' => 7,
                     // TODO: Número único del log de registros del sitio web
 //                    'numeroRadicado' => node_load($nid_log)->field_sdqs_log_count['und'][0]['value'],
-                    'numeroRadicado' => node_load($nid_log)->field_sdqs_log_count['und'][0]['value'], 
+                    'numeroRadicado' => node_load($nid_log)->field_sdqs_log_count['und'][0]['value'],
                     'observaciones' => $obs,
                 ),
 
@@ -525,19 +573,19 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         }
         if(!empty($form_state['values']['apellido'])){
           $data['parameters']['requerimiento']['apellidos']= $form_state['values']['apellido'];
-        }        
+        }
         if(!empty($form_state['values']['correo_electronico'])){
           $data['parameters']['requerimiento']['email']= $form_state['values']['correo_electronico'];
-        }     
+        }
         if(!empty($form_state['values']['ciudad'])){
           $data['parameters']['requerimiento']['codigoCiudad']= $form_state['values']['ciudad'];
         }
         if(!empty($form_state['values']['pais'])){
           $data['parameters']['requerimiento']['codigoPais']= $form_state['values']['pais'];
-        }        
+        }
         if(!empty($form_state['values']['departamento'])){
           $data['parameters']['requerimiento']['codigoDepartamento']= $form_state['values'][''];
-        }     
+        }
 
         if(!empty($form_state['values']['telefono_fijo'])){
           $data['parameters']['requerimiento']['telefonoCasa']= $form_state['values']['telefono_fijo'];
@@ -546,13 +594,13 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         }
         if(!empty($form_state['values']['telefono_movil'])){
           $data['parameters']['requerimiento']['telefonoCelular']= $form_state['values']['telefono_movil'];
-        } 
+        }
         if(!empty($form_state['values']['direcion'])){
           $data['parameters']['requerimiento']['direccion']= $form_state['values']['direccion'];
-        }            
+        }
         if($codigo_dependencia!=0){
           $data['parameters']['requerimiento']['clasificacionRequerimiento']['codigoDependencia']= $codigo_dependencia;
-        }        
+        }
 
 
 
@@ -564,9 +612,9 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         }
         $fid=0;
         if(empty($form_state['values']['archivo']) && !empty($_POST['archivo'])){
-          $fid=$_POST['archivo']['fid']; 
+          $fid=$_POST['archivo']['fid'];
 	} else {
-          $fid = $form_state['values']['archivo'];	
+          $fid = $form_state['values']['archivo'];
 	}
         if (!empty($fid)) {
             $data['parameters']['requerimiento']['documento'] = array();
@@ -603,7 +651,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
             $output .= '<h3>Ha ocurrido un error inesperado</h3>';
             $output .= '<p>Comuníquese con el administrador o ingrese directamente a </br> </br><a href="http://sdqs.bogota.gov.co/sdqs/publico/registrarPeticion/?language=es">Registrar Petición</a> </p>';
 
-            print $exception->__toString(); 
+            print $exception->__toString();
             watchdog('govi_sdqs', $exception->__toString());
             govi_sdqs_log_event($form_state, $nid_log, $result, $exception);
 
@@ -647,14 +695,14 @@ function govi_sdqs_create_log_node() {
 function govi_sdqs_obtener_info_ciudades($form, $form_state) {
 
     $departamento = $form_state['values']['departamento'];
-    
+
     $ciudades = variable_get('govi_sdqs_lista_ciudades');
     $ciudades=array_filter($ciudades, function($value) use ($departamento) { return is_array($value) &&  $value['idDepartamento'] == $departamento; });
     $opts_ciudades = array();
     foreach ($ciudades as $ciudad) {
         if(!empty($ciudad['id'])) {
             $opts_ciudades[ $ciudad['id'] ] = ucfirst(mb_strtolower($ciudad['nombre']));
-        }  
+        }
     }
     print_r($opts_ciudades);
     $form['datos_personales']['ciudad']['#options'] = $opts_ciudades;

@@ -67,17 +67,44 @@ class SdqsClient implements SingletonInterface {
   private $enviroment;
 
   function __construct() {
-    $this->service = wsclient_service_load('service_radicacion_canal');
+    $this->enviroment = variable_get('govi_sdqs_site_env');
+    if(isset($this->enviroment)) {
+      $this->service = $this->loadWebservice();
+    }
   }
 
   public function isConnectionConfigured() {
     $user = variable_get('govi_sdqs_site_user');
     $password = variable_get('govi_sdqs_secret_password');
     $enviroment = variable_get('govi_sdqs_site_env');
-    if(isset($user) && isset($password) && isset($enviroment)) {
+    $s = $this->loadWebservice();
+    if(isset($user) && isset($password) && isset($enviroment) && isset($s)) {
       return true;
     }
     return false;
+  }
+  public function updateDataOperation($operation, $variable, $arguments =  Array()) {
+    $response = $this->service->invoke($operation, $arguments);
+    variable_set($variable, $response->return->list);
+    return $response->return->list;
+  }
+
+  public function updateEntities() {
+    return $this->updateDataOperation('consultarEntidadesDistritales','sdqs_entities');
+  }
+  public function updateCountries() {
+    return $this->updateDataOperation('consultarPaises','sdqs_countries');
+  }
+  public function loadWebservice(){
+    $name = 'sdqs_'.$this->enviroment;
+    $ws = wsclient_service_load($name);
+    if(!empty($ws)) {
+      return $ws;
+    }
+    return NULL;
+  }
+  public function getService() {
+    return $this->service;
   }
 
   public function getEndpoint() {
