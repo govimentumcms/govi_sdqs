@@ -76,7 +76,7 @@ function govi_sdqs_admin_settings() {
   $form['govi_sdqs_widget_settings']['govi_sdqs_dependency'] = array(
     '#type' => 'select',
     '#title' => t('Dependencia'),
-    '#description' => t('Entidad a la cuál van a ser enviadas las solicitudes'),
+    '#description' => t('Dependencia a la cuál van a ser enviadas las solicitudes'),
     '#prefix' => '<div id="wrapper-dependency">',
     '#suffix' => '</div>',
     '#options' => $sdqs->getDependencyList(variable_get('govi_sdqs_entity')),

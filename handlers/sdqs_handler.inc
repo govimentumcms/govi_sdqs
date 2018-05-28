@@ -176,11 +176,16 @@ class SdqsClient implements SingletonInterface {
    */
 
   public function checkConnection($user, $pasword, $enviroment) {
-    $this->enviroment = $enviroment;
+    $name = 'sdqs_'.$this->enviroment;
 
+   $service = wsclient_service_load($name);
+    if(empty($service->settings)) {
+      $s = new WSClientServiceDescription();
+    } else {
+      $s = $service;
+    }
 
-    $s = new WSClientServiceDescription();
-    $s->name = 'sdqs_'.$this->enviroment;
+    $s->name = $name;
     $s->label = 'sdqs_'.$this->enviroment;
     $s->url = $this->getEndpoint();
     $s->type="soap";
@@ -193,7 +198,7 @@ class SdqsClient implements SingletonInterface {
       $this->service =  $s;
       return true;
     }
-    catch (WSClientException $e) {f-
+    catch (WSClientException $e) {
       watchdog('wsclient', $e->__toString());
       return false;
     }
