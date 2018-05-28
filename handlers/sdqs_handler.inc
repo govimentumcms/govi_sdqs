@@ -121,9 +121,12 @@ class SdqsClient implements SingletonInterface {
         )
       ),
     );
-    
+
     $dependencies = $this->service->invoke('consultarDependencia', $arguments)->return->list;
     $dependency_list = Array(0 => 'NO SELECCIONADA');
+    if(empty($ent)) {
+      return $dependency_list;
+    }
     foreach ($dependencies as $dependency) {
       $dependency_list[$dependency->id] = $dependency->nombre;
     }
@@ -131,7 +134,24 @@ class SdqsClient implements SingletonInterface {
 
 
   }
+  public function getThemeList($ent) {
+    $arguments = array(
+      'parameters' => array(
+        'codigoEntidad' => Array(
+          'codigoEntidad' => $ent,
+        )
+      ),
+    );
 
+    $themes = $this->service->invoke('consultarTemas', $arguments)->return->list;
+    $theme_list = Array(0 => 'NO SELECCIONADO');
+
+    foreach ($themes as $theme) {
+      $theme_list[$theme->id] = $theme->nombre;
+    }
+    return $theme_list;
+
+  }
   public function loadWebservice(){
     $name = 'sdqs_'.$this->enviroment;
     $ws = wsclient_service_load($name);
