@@ -78,23 +78,60 @@ class SdqsClient implements SingletonInterface {
     $password = variable_get('govi_sdqs_secret_password');
     $enviroment = variable_get('govi_sdqs_site_env');
     $s = $this->loadWebservice();
-    if(isset($user) && isset($password) && isset($enviroment) && isset($s)) {
+    if(!empty($user) && !empty($password) && !empty($enviroment) && !empty($s)) {
       return true;
     }
     return false;
   }
   public function updateDataOperation($operation, $variable, $arguments =  Array()) {
     $response = $this->service->invoke($operation, $arguments);
-    variable_set($variable, $response->return->list);
+
     return $response->return->list;
   }
 
   public function updateEntities() {
-    return $this->updateDataOperation('consultarEntidadesDistritales','sdqs_entities');
+    $entities = $this->updateDataOperation('consultarEntidadesDistritales');
+    $entitiy_list = Array(0 => 'NO SELECCIONADA');
+    foreach ($entities as $entity) {
+      $entitiy_list[$entity->id] = $entity->nombre;
+    }
+    variable_set('sdqs_entities', $entitiy_list);
+  }
+  public function updateRequestTypes() {
+    $response = $this->updateDataOperation('consultarTipoPeticion');
+    variable_set('sdqs_requests', $response);
+
   }
   public function updateCountries() {
-    return $this->updateDataOperation('consultarPaises','sdqs_countries');
+    $response = $this->updateDataOperation('consultarPaises');
+    variable_set('sdqs_countries', $response);
+
   }
+  public function updateIdentificationTypes() {
+    $response = $this->updateDataOperation('consultarTiposIdentificacion');
+    variable_set('sdqs_identification_types', $response);
+
+
+  }
+  public function getDependencyList($ent) {
+    $arguments = array(
+      'parameters' => array(
+        'codigoEntidad' => Array(
+          'codigoEntidad' => $ent,
+        )
+      ),
+    );
+    
+    $dependencies = $this->service->invoke('consultarDependencia', $arguments)->return->list;
+    $dependency_list = Array(0 => 'NO SELECCIONADA');
+    foreach ($dependencies as $dependency) {
+      $dependency_list[$dependency->id] = $dependency->nombre;
+    }
+    return $dependency_list;
+
+
+  }
+
   public function loadWebservice(){
     $name = 'sdqs_'.$this->enviroment;
     $ws = wsclient_service_load($name);
@@ -111,7 +148,7 @@ class SdqsClient implements SingletonInterface {
     if($this->enviroment == 'prod'){
       return 'http://sdqs.bogota.gov.co/sdqs/servicios/RadicacionPorCanalService?wsdl';
     }
-    return 'http://www.alcaldiabogota.gov.co/sdqs/servicios/RadicacionPorCanalService?wsdl';
+    return 'http://200.75.50.41:8080/sdqs/servicios/RadicacionPorCanalService?wsdl';
   }
 
   /**
@@ -120,6 +157,8 @@ class SdqsClient implements SingletonInterface {
 
   public function checkConnection($user, $pasword, $enviroment) {
     $this->enviroment = $enviroment;
+
+
     $s = new WSClientServiceDescription();
     $s->name = 'sdqs_'.$this->enviroment;
     $s->label = 'sdqs_'.$this->enviroment;
@@ -134,7 +173,7 @@ class SdqsClient implements SingletonInterface {
       $this->service =  $s;
       return true;
     }
-    catch (WSClientException $e) {
+    catch (WSClientException $e) {f-
       watchdog('wsclient', $e->__toString());
       return false;
     }

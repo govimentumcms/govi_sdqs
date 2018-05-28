@@ -14,6 +14,18 @@ drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 // Clear cache.
 drupal_flush_all_caches();
 }
+
+
+function govi_sdqs_obtener_info_entidad($form, $form_state) {
+  $sdqs =  SdqsClient::getInstance();
+  $entity = $form_state['values']['govi_sdqs_entity'];
+  $entities_list = $sdqs->getDependencyList($entity);
+  reset($entities_list);
+  $form['govi_sdqs_widget_settings']['govi_sdqs_dependency']['#options'] = $entities_list;
+  return $form['govi_sdqs_widget_settings']['govi_sdqs_dependency'];
+}
+
+
 /**
  * Form callback
  */
@@ -35,29 +47,34 @@ function govi_sdqs_admin_settings() {
 
   $form['govi_sdqs_widget_settings'] = array(
     '#type' => 'fieldset',
-    '#title' => t('Widget settings'),
+    '#title' => t('Datos '),
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
   );
-  $form['govi_sdqs_widget_settings']['govi_sdqs_theme'] = array(
+
+  $form['govi_sdqs_widget_settings']['govi_sdqs_entity'] = array(
     '#type' => 'select',
-    '#title' => t('Theme'),
-    '#description' => t('Defines which theme to use for govi_sdqs.'),
-    '#options' => array(
-      'light' => t('Light (default)'),
-      'dark' => t('Dark'),
-    ),
-    '#default_value' => variable_get('govi_sdqs_theme', 'light'),
+    '#title' => t('Entidad'),
+    '#description' => t('Entidad a la cuál van a ser enviadas las solicitudes'),
+    '#options' => variable_get('sdqs_entities'),
+    '#ajax' => array(
+            'event' => 'change',
+            'effect' => 'fade',
+            'callback' => 'govi_sdqs_obtener_info_entidad',
+            'method' => 'replace',
+            'wrapper' => 'wrapper-dependencia'
+        ),
+    '#default_value' => variable_get('govi_sdqs_entity', 0),
   );
-  $form['govi_sdqs_widget_settings']['govi_sdqs_type'] = array(
+  $form['govi_sdqs_widget_settings']['govi_sdqs_dependency'] = array(
     '#type' => 'select',
-    '#title' => t('Type'),
-    '#description' => t('The type of CAPTCHA to serve.'),
-    '#options' => array(
-      'image' => t('Image (default)'),
-      'audio' => t('Audio'),
-    ),
-    '#default_value' => variable_get('govi_sdqs_type', 'image'),
+    '#title' => t('Dependencia'),
+    '#description' => t('Entidad a la cuál van a ser enviadas las solicitudes'),
+    '#prefix' => '<div id="wrapper-dependencia">',
+    '#suffix' => '</div>',
+    '#options' => array(),
+    '#validated' => TRUE,
+    '#default_value' => variable_get('govi_sdqs_dependency', 0),
   );
   $form['govi_sdqs_widget_settings']['govi_sdqs_size'] = array(
     '#default_value' => variable_get('govi_sdqs_size', ''),
@@ -86,7 +103,7 @@ function govi_sdqs_admin_settings() {
   return system_settings_form($form);
 }
 function govi_sdqs_admin_update_data() {
-  drupal_goto('admin/config/features/sdqs-update');
+  drupal_goto('admin/config/service-sdqs-update');
 }
 /**
  * Validation function for govi_sdqs_admin_settings().
