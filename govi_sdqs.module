@@ -58,7 +58,7 @@ function govi_sdqs_menu() {
 
   $items['admin/config/services/sdqs'] = array(
     'title' => 'Cliente SDQS',
-    'descriptión' => 'Configuración del Cliente SOAP del SDQS',
+    'description' => 'Configuración del Cliente SOAP del Sistema Distrital de Quejas y Soluciones. Bogotá te escucha.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('govi_sdqs_admin_connection'),
     'access arguments' => array('access administration pages'),
@@ -68,7 +68,7 @@ function govi_sdqs_menu() {
   );
   $items['admin/config/services/sdqs/connection'] = array(
     'title' => 'Datos de la conexión con SDQS',
-    'descriptión' => 'Configuración del Cliente SOAP del SDQS',
+    'description' => 'Configuración del Cliente SOAP del Sistema Distrital de Quejas y Soluciones. Bogotá te escucha.',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('govi_sdqs_admin_connection'),
     'access arguments' => array('access administration pages'),
@@ -78,7 +78,7 @@ function govi_sdqs_menu() {
   );
   $items['admin/config/services/sdqs/configure'] = array(
     'title' => 'Configuración',
-    'descriptión' => 'Configuración del Cliente SOAP del SDQS',
+    'description' => 'Configuración del Cliente SOAP del SDQS',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('govi_sdqs_admin_settings'),
     'access arguments' => array('access administration pages'),
