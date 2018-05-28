@@ -71,6 +71,7 @@ function govi_sdqs_admin_settings() {
       'method' => 'replace',
       'wrapper' => 'wrapper-dependency'
     ),
+    '#required' => TRUE,
     '#default_value' => variable_get('govi_sdqs_entity', 0),
   );
   $form['govi_sdqs_widget_settings']['govi_sdqs_dependency'] = array(
