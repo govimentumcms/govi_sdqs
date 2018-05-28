@@ -86,7 +86,7 @@ function govi_sdqs_admin_settings() {
   return system_settings_form($form);
 }
 function govi_sdqs_admin_update_data() {
-  drupal_goto('admin/config/features/sdqs/update');
+  drupal_goto('admin/config/features/sdqs-update');
 }
 /**
  * Validation function for govi_sdqs_admin_settings().

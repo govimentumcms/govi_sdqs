@@ -56,27 +56,27 @@ function theme_govi_sdqs_form ($variables) {
 */
 function govi_sdqs_menu() {
 
-  $items['admin/config/features/sdqs'] = array(
-    'title' => 'Datos de la conexión con SDQS',
+  $items['admin/config/services/sdqs'] = array(
+    'title' => 'Cliente SDQS',
     'descriptión' => 'Configuración del Cliente SOAP del SDQS',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('govi_sdqs_admin_connection'),
     'access arguments' => array('access administration pages'),
-    'type' => MENU_LOCAL_TASK,
+    'type' => MENU_NORMAL_ITEM,
     'file' => 'includes/govi-sdqs.admin.connection.inc',
     'weight' => 1
   );
-  $items['admin/config/features/sdqs/connection'] = array(
+  $items['admin/config/services/sdqs/connection'] = array(
     'title' => 'Datos de la conexión con SDQS',
     'descriptión' => 'Configuración del Cliente SOAP del SDQS',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('govi_sdqs_admin_connection'),
     'access arguments' => array('access administration pages'),
-    'type' => MENU_LOCAL_TASK,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
     'file' => 'includes/govi-sdqs.admin.connection.inc',
     'weight' => 2
   );
-  $items['admin/config/features/sdqs/configure'] = array(
+  $items['admin/config/services/sdqs/configure'] = array(
     'title' => 'Configuración',
     'descriptión' => 'Configuración del Cliente SOAP del SDQS',
     'page callback' => 'drupal_get_form',
@@ -86,10 +86,11 @@ function govi_sdqs_menu() {
     'file' => 'includes/govi-admin.config.inc.php',
     'weight' => 3
   );
-  $items['admin/config/features/sdqs/update'] = array(
-      'title' => 'Actualizar datos con Servicio web',
+  $items['admin/config/services/sdqs-update'] = array(
       'page callback' => 'govi_sdqs_batch_update_data',
       'access arguments' => array('administer users'),
+      'type' => MENU_CALLBACK,
+
     );
   $items['govi-sdqs/crear'] = array(
     'title' => 'Crear petición',
@@ -114,7 +115,9 @@ function govi_sdqs_batch_update_data() {
   );
   $results = array(
     "updateEntities",
-    "updateCountries"
+    "updateCountries",
+    "updateRequestTypes",
+    "updateIdentificationTypes"
   );
   foreach ($results as $result) {
     $batch['operations'][] = array('govi_sdqs_batch_update_data_process', array($result));
