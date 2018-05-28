@@ -60,6 +60,11 @@ function govi_sdqs_admin_connection() {
   $form['govi_sdqs_general_settings']['help'] = array(
     '#markup' => t('Las credenciales de acceso deben ser solicitadas a través del <a href="mailto:@email">canal de soporte</a> de la Dirección Distrital de Calidad del Servicio.', array('@email' => 'sdqssoporte@alcaldiabogota.gov.co')),
   );
+  global $base_url;
+  global $base_path;
+  $form['govi_sdqs_general_settings']['sdqs_form'] = array(
+    '#markup' => t('<p><a href="@url">Formulario SDQS</a>.</p>', array('@url' => $base_url . $base_path . 'govi-sdqs/crear')),
+  );
   $form['#validate'][] = 'govi_sdqs_admin_connection_validate';
   return system_settings_form($form);
 }
