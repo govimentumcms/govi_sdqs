@@ -88,6 +88,9 @@ class SdqsClient implements SingletonInterface {
 
     return $response->return->list;
   }
+  public function register($data){
+    return $this->service->invoke('registrarRequerimiento', $data);
+  }
 
   public function updateEntities() {
     $entities = $this->updateDataOperation('consultarEntidadesDistritales');
@@ -96,6 +99,22 @@ class SdqsClient implements SingletonInterface {
       $entitiy_list[$entity->id] = $entity->nombre;
     }
     variable_set('sdqs_entities', $entitiy_list);
+  }
+  public function updateSectors() {
+    $sectors = $this->updateDataOperation('consultarSectores');
+    $sector_list = Array(0 => 'NO SELECCIONADO');
+    foreach ($sectors as $sector) {
+      $sector_list[$sector->codigoSector] = $sector->nombre;
+    }
+    variable_set('sdqs_sectors', $sector_list);
+  }
+  public function updateGenres() {
+    $genres = $this->updateDataOperation('consultarGeneros');
+    $genres_list = Array();
+    foreach ($genres as $genre) {
+      $genres_list[$genre->id] = $genre->nombre;
+    }
+    variable_set('sdqs_genres', $genres_list);
   }
   public function updateRequestTypes() {
     $response = $this->updateDataOperation('consultarTipoPeticion');
@@ -158,7 +177,7 @@ class SdqsClient implements SingletonInterface {
     $response = $this->updateDataOperation('consultarTiposIdentificacion');
     $id_types =  Array();
     foreach ($response as $type) {
-      $id_types[$type->abreviatura] = $type->nombre;
+      $id_types[$type->id] = $type->nombre;
     }
     variable_set('sdqs_identification_types', $id_types);
   }

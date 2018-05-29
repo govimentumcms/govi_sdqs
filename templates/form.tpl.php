@@ -1,6 +1,6 @@
-<?php //dsm(get_defined_vars()); 
+<?php //dsm(get_defined_vars());
 
-$tema = variable_get('govi_sdqs_tema') === 'light' ? 'class="light"' : ''; 
+$tema = variable_get('govi_sdqs_tema') === 'light' ? 'class="light"' : '';
 ?>
 
 <?php
@@ -59,6 +59,9 @@ if (variable_get('sdqs_env') === '') {
       <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
          <?php print render($form['datos_personales']['tipo_identificacion']); ?>
       </div>
+			<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+				 <?php print render($form['datos_personales']['genero']); ?>
+			</div>
       <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
          <?php print render($form['datos_personales']['numero_identificacion']); ?>
       </div>

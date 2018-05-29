@@ -58,10 +58,25 @@ function govi_sdqs_admin_settings() {
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
   );
-
+  $form['govi_sdqs_widget_settings']['govi_sdqs_sector'] = array(
+    '#type' => 'select',
+    '#title' => t('Sector'),
+    '#description' => t('Sector a la cuál van a ser enviadas las solicitudes'),
+    '#options' => variable_get('sdqs_sectors'),
+    '#ajax' => array(
+      'event' => 'change',
+      'effect' => 'fade',
+      'callback' => 'govi_sdqs_sector_info',
+      'method' => 'replace',
+      'wrapper' => 'wrapper-entities'
+    ),
+    '#default_value' => variable_get('govi_sdqs_sector', 0),
+  );
   $form['govi_sdqs_widget_settings']['govi_sdqs_entity'] = array(
     '#type' => 'select',
     '#title' => t('Entidad'),
+    '#prefix' => '<div id="wrapper-entities">',
+    '#suffix' => '</div>',
     '#description' => t('Entidad a la cuál van a ser enviadas las solicitudes'),
     '#options' => variable_get('sdqs_entities'),
     '#ajax' => array(

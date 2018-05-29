@@ -120,7 +120,9 @@ function govi_sdqs_batch_update_data() {
     "updateIdentificationTypes",
     "updateComplaintType",
     "updateDepartments",
-    "updateCities"
+    "updateCities",
+    "updateGenres",
+    "updateSectors"
   );
   foreach ($results as $result) {
     $batch['operations'][] = array('govi_sdqs_batch_update_data_process', array($result));
@@ -174,6 +176,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     $tipos_peticion = variable_get('sdqs_complaint_types');
     $tipos_id = variable_get('sdqs_identification_types');
     $paises = variable_get('govi_sdqs_lista_paises');
+    $genres = variable_get('sdqs_genres');
     $departamentos = variable_get('sdqs_departments');
     $path = drupal_get_path('module', 'govi_sdqs');
     $css = $path . '/assets/css/govi-sdqs-form.css';
@@ -226,7 +229,13 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#default_value' => 'CC',
         '#required' => TRUE
     );
-
+    $form['datos_personales']['genero'] = array(
+        '#type' => 'select',
+        '#title' => 'Género',
+        '#attributes' => array('class' => array('pure-u-23-24')),
+        '#options' => $genres,
+        '#required' => TRUE,
+    );
     $form['datos_personales']['numero_identificacion'] = array(
         '#type' => 'textfield',
         '#attributes' => array('class' => array('pure-u-23-24')),
@@ -403,6 +412,7 @@ function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
 
     $tipo_identificacion = $form_state['values']['tipo_identificacion'];
     $numero_identificacion = $form_state['values']['numero_identificacion'];
+
     $telefono_fijo = $form_state['values']['telefono_fijo'];
     $telefono_movil = $form_state['values']['telefono_movil'];
     $direccion = $form_state['values']['direccion'];
@@ -476,10 +486,10 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
     global $base_url;
     $output = '';
 
-    $codigo_dependencia = variable_get('sdqs_dependencia');
-    $codigo_entidad = variable_get('sdqs_entidad');
+    $codigo_dependencia = variable_get('govi_sdqs_dependency');
+    $codigo_entidad = variable_get('govi_sdqs_entity');
     $id_sector = variable_get('sdqs_sector');
-    $codigo_tema = variable_get('sdqs_tema');
+    $codigo_tema = variable_get('sdqs_theme');
 
 
 
@@ -517,83 +527,95 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
 
         $data = array(
             'parameters' => array(
-                'requerimiento' => array(
+                'datos' => array(
                     'asunto' => $form_state['values']['asunto'],
-                    'clasificacionRequerimiento' => array(
-                        // Valores standard provisionales mientas se
-                        // validan con el SDQS con el fin de crear una clasificación
-                        // específica para los requerimientos realizados desde los sitios
-                        // web que utilizan el servicio.
-                        // El código dependencia será gestionado desde el backend con
-                        // base a la lista entregada por el equipo funcional de la DDSC
-                        'codigoEntidad' => $codigo_entidad,
-                        'codigoSector' => $id_sector,
-                        'codigoSubtema' => $codigo_tema,
-                    ),
-                    'numeroFolios' => 0,
-                    'prioridad' => 0,
                     'codigoTipoRequerimiento' => $form_state['values']['tipo_peticion'],
-                    'entidadQueIngresaRequerimiento' => $codigo_entidad,
-                    'codigoCanal' => 7,
-                    // TODO: Número único del log de registros del sitio web
-//                    'numeroRadicado' => node_load($nid_log)->field_sdqs_log_count['und'][0]['value'],
-                    'numeroRadicado' => node_load($nid_log)->field_sdqs_log_count['und'][0]['value'],
+                    'entidadQueIngresaRequerimiento' => variable_get('govi_sdqs_entity'),
+                    'codigoCanal' => 1,
                     'observaciones' => $obs,
+                    'confirmacionEmail' => false,
+                    'codigoTipoPersona' => 1,
+                    'terminosCondiciones' => 1,
+                    'codigoOpcion' => 1,
+
                 ),
 
             ),
         );
 
+        //if(!empty( variable_get('govi_sdqs_theme') )){
+          //$data['parameters']['datos']['codigoTema']= variable_get('govi_sdqs_theme');
+        //}
+        $data['parameters']['datos']['fechaNacimiento']= '1992-05-15T19:58:31.319-05:00';
+
+        if(!empty($form_state['values']['tipo_solicitante']) || $form_state['values']['tipo_solicitante'] == 'natural') {
+          $data['parameters']['datos']['codigoTipoPersona']= 1;
+
+        } else {
+          $data['parameters']['datos']['codigoTipoPersona']= 2;
+
+        }
+
         if(!empty($form_state['values']['apellido'])){
-          $data['parameters']['requerimiento']['apellidos']= $form_state['values']['apellido'];
+          $data['parameters']['datos']['primerApellido']= $form_state['values']['apellido'];
+
         }
         if(!empty($form_state['values']['nombre'])){
-          $data['parameters']['requerimiento']['nombres']= $form_state['values']['nombre'];
+          $data['parameters']['datos']['primerNombre']= $form_state['values']['nombre'];
         }
-        if(!empty($form_state['values']['tipo_identificacion'])){
-          $data['parameters']['requerimiento']['codigoTipoIdentificacion']= $form_state['values']['tipo_identificacion'];
+        if(!empty($form_state['values']['genero'])){
+          $data['parameters']['datos']['codigoGenero']= $form_state['values']['genero'];
+        }
+        if(!empty($form_state['values']['genero'])){
+          $data['parameters']['datos']['codigoTipoIdentificacion']= $form_state['values']['tipo_identificacion'];
         }
         if(!empty($form_state['values']['numero_identificacion'])){
-          $data['parameters']['requerimiento']['numeroDocumento']= $form_state['values']['numero_identificacion'];
+          $data['parameters']['datos']['numeroDocumento']= $form_state['values']['numero_identificacion'];
         }
         if(!empty($form_state['values']['apellido'])){
-          $data['parameters']['requerimiento']['apellidos']= $form_state['values']['apellido'];
+          $data['parameters']['datos']['apellidos']= $form_state['values']['apellido'];
         }
         if(!empty($form_state['values']['correo_electronico'])){
-          $data['parameters']['requerimiento']['email']= $form_state['values']['correo_electronico'];
+          $data['parameters']['datos']['email']= $form_state['values']['correo_electronico'];
         }
         if(!empty($form_state['values']['ciudad'])){
-          $data['parameters']['requerimiento']['codigoCiudad']= $form_state['values']['ciudad'];
+          $data['parameters']['datos']['codigoCiudad']= $form_state['values']['ciudad'];
         }
         if(!empty($form_state['values']['pais'])){
-          $data['parameters']['requerimiento']['codigoPais']= $form_state['values']['pais'];
+          $data['parameters']['datos']['codigoPais']= $form_state['values']['pais'];
         }
         if(!empty($form_state['values']['departamento'])){
-          $data['parameters']['requerimiento']['codigoDepartamento']= $form_state['values'][''];
+          $data['parameters']['datos']['codigoDepartamento']= $form_state['values']['departamento'];
         }
 
         if(!empty($form_state['values']['telefono_fijo'])){
-          $data['parameters']['requerimiento']['telefonoCasa']= $form_state['values']['telefono_fijo'];
-          $data['parameters']['requerimiento']['telefonoOficina']= $form_state['values']['telefono_fijo'];
-
+          $data['parameters']['datos']['telefonoCasa']= $form_state['values']['telefono_fijo'];
+          $data['parameters']['datos']['telefonoOficina']= $form_state['values']['telefono_fijo'];
+          $data['parameters']['datos']['pbx']= $form_state['values']['telefono_fijo'];
         }
         if(!empty($form_state['values']['telefono_movil'])){
-          $data['parameters']['requerimiento']['telefonoCelular']= $form_state['values']['telefono_movil'];
-        }
-        if(!empty($form_state['values']['direcion'])){
-          $data['parameters']['requerimiento']['direccion']= $form_state['values']['direccion'];
-        }
-        if($codigo_dependencia!=0){
-          $data['parameters']['requerimiento']['clasificacionRequerimiento']['codigoDependencia']= $codigo_dependencia;
+          $data['parameters']['datos']['telefonoCelular']= $form_state['values']['telefono_movil'];
         }
 
+        if(!empty($form_state['values']['telefono_movil'])){
+          $data['parameters']['datos']['telefonoCelular']= $form_state['values']['telefono_movil'];
+        }
+        if(!empty($form_state['values']['direcion'])){
+            $data['parameters']['datos']['direccionResidencia']= $form_state['values']['direccion'];
+        }
+        if($codigo_dependencia!=0){
+          $data['parameters']['datos']['codigoDependencia']= $codigo_dependencia;
+        }
+        if($id_sector!=0){
+          $data['parameters']['datos']['codigoSector']= $id_sector;
+        }
 
 
         //Si el tipo de documento es NIT se agrega el dígito de verificación
         if($form_state['values']['tipo_identificacion']=='NI'){
           $identificacion = explode("-",$form_state['values']['numero_identificacion']);
           $data['parameters']['datos']['numeroDocumento']= $identificacion[0];
-          $data['parameters']['requerimiento']['digitoVerificacion']= $identificacion[1];
+          $data['parameters']['datos']['digitoVerificacion']= $identificacion[1];
         }
         $fid=0;
         if(empty($form_state['values']['archivo']) && !empty($_POST['archivo'])){
@@ -608,16 +630,17 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
 
             $data['parameters']['datos']['documentos']['contenidoDocumento'] = base64_encode($content);
             $data['parameters']['datos']['documentos']['codigoTipoArchivo'] = 16;
-            $data['parameters']['datos']['documento']['nombreArchivo'] = $file->filename;
+            $data['parameters']['datos']['documentos']['nombreArchivo'] = $file->filename;
         }
 
         try {
+            $sdqs = SdqsClient::getInstance();
+            $result = $sdqs->register($data);
 
-            //$result = $service->invoke('registrarRequerimiento', $data);
             if( !empty($result->return->codigoError) && $result->return->codigoError > 0){
               $output .= '<h3>Se ha presentado un error</h3>';
               $output .= '<p>'.$result->return->descripcion.'</p>';
-              govi_sdqs_log_event($form_state, $nid_log, $result);
+              //govi_sdqs_log_event($form_state, $nid_log, $result);
 
             } else {
                 $output .= '<h3>¡Solicitud enviada con éxito!</h3>';
@@ -639,7 +662,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
 
             print $exception->__toString();
             watchdog('govi_sdqs', $exception->__toString());
-            govi_sdqs_log_event($form_state, $nid_log, $result, $exception);
+            //govi_sdqs_log_event($form_state, $nid_log, $result, $exception);
 
         }
 
@@ -707,4 +730,11 @@ function govi_sdqs_log_event($form_state, $nid_log, $result, $error = FALSE) {
     $node->field_sdqs_codigo_respuesta = "OK";
 
     node_save($node);
+}
+function splitName($name){
+    $names = explode(' ', $name);
+    $lastname = $names[count($names) - 1];
+    unset($names[count($names) - 1]);
+    $firstname = join(' ', $names);
+    return Array($firstname, $lastname);
 }
