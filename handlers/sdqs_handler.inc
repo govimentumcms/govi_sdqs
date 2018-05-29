@@ -105,14 +105,72 @@ class SdqsClient implements SingletonInterface {
   public function updateCountries() {
     $response = $this->updateDataOperation('consultarPaises');
     variable_set('sdqs_countries', $response);
+  }
+  public function updateCities(){
+    $arguments = array(
+      'parameters' => array(
+        'codigoPais' => Array(
+          'codigoPais' => 169,
+        )
+      ),
+    );
+    $cities_list =  Array();
+    $departments = $this->service->invoke('consultarDepartamentosPais', $arguments)->return->list;
+    foreach ($departments as $department) {
+      $cities_list[$department->codigoDepartamento] = Array();
+      $arguments = array(
+        'parameters' => array(
+          'codigoDepartamento' => Array(
+            'codigoDepartamento' => $department->codigoDepartamento,
+          )
+        ),
+      );
+      $cities = $this->service->invoke('consultarCiudadesDepartamento', $arguments)->return->list;
+      if($cities->codigoCiudad) {
+        $cities_list[$cities->codigoCiudad] = $cities->nombre;
+      } else {
+        foreach ($cities as $city) {
+          $cities_list[$department->codigoDepartamento][$city->codigoCiudad] = $city->nombre;
+        }
+      }
+    }
+    variable_set('sdqs_cities', $cities_list);
+    return $cities_list;
+  }
+
+  public function updateDepartments() {
+    $arguments = array(
+      'parameters' => array(
+        'codigoPais' => Array(
+          'codigoPais' => 169,
+        )
+      ),
+    );
+    $departments = $this->service->invoke('consultarDepartamentosPais', $arguments)->return->list;
+    $deparments_list =  Array();
+    foreach ($departments as $department) {
+      $deparments_list[$department->codigoDepartamento] = $department->nombreDepartamento;
+    }
+    variable_set('sdqs_departments', $deparments_list);
 
   }
   public function updateIdentificationTypes() {
     $response = $this->updateDataOperation('consultarTiposIdentificacion');
-    variable_set('sdqs_identification_types', $response);
-
-
+    $id_types =  Array();
+    foreach ($response as $type) {
+      $id_types[$type->abreviatura] = $type->nombre;
+    }
+    variable_set('sdqs_identification_types', $id_types);
   }
+  public function updateComplaintType() {
+    $response = $this->updateDataOperation('consultarTipoPeticion');
+    $complaintTypes =  Array();
+    foreach ($response as $type) {
+      $complaintTypes[$type->id] = $type->nombre;
+    }
+    variable_set('sdqs_complaint_types', $complaintTypes);
+  }
+
   public function getDependencyList($ent) {
     $arguments = array(
       'parameters' => array(

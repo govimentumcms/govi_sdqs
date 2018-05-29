@@ -56,6 +56,7 @@ function theme_govi_sdqs_form ($variables) {
 */
 function govi_sdqs_menu() {
 
+
   $items['admin/config/services/sdqs'] = array(
     'title' => 'Cliente SDQS',
     'description' => 'Configuración del Cliente SOAP del Sistema Distrital de Quejas y Soluciones. Bogotá te escucha.',
@@ -116,7 +117,10 @@ function govi_sdqs_batch_update_data() {
     "updateEntities",
     "updateCountries",
     "updateRequestTypes",
-    "updateIdentificationTypes"
+    "updateIdentificationTypes",
+    "updateComplaintType",
+    "updateDepartments",
+    "updateCities"
   );
   foreach ($results as $result) {
     $batch['operations'][] = array('govi_sdqs_batch_update_data_process', array($result));
@@ -167,10 +171,10 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
 
     $temas = variable_get('govi_sdqs_lista_tema');
     $entidades = variable_get('govi_sdqs_lista_entidades');
-    $tipos_peticion = variable_get('govi_sdqs_lista_tipo_peticion');
-    $tipos_id = variable_get('govi_sdqs_lista_tipos_id');
+    $tipos_peticion = variable_get('sdqs_complaint_types');
+    $tipos_id = variable_get('sdqs_identification_types');
     $paises = variable_get('govi_sdqs_lista_paises');
-    $departamentos = variable_get('govi_sdqs_lista_departamentos');
+    $departamentos = variable_get('sdqs_departments');
     $path = drupal_get_path('module', 'govi_sdqs');
     $css = $path . '/assets/css/govi-sdqs-form.css';
     $js = $path . '/assets/js/govi-sdqs-form.js';
@@ -179,7 +183,8 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     $form['datos_personales'] = array(
         '#type' => 'fieldset',
         '#title' => 'Datos persona natural',
-        '#weight' => -1
+        '#weight' => -1,
+        '#validated' => True,
     );
     $form['datos_personales']['tipo_solicitante'] = array(
         '#type' => 'select',
@@ -211,17 +216,13 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#size' => 60
     );
 
-    $opts_ids = array();
 
-    foreach ($tipos_id as $tipo) {
-        $opts_ids[$tipo['abreviatura']] = $tipo['nombre'];
-    }
 
     $form['datos_personales']['tipo_identificacion'] = array(
         '#type' => 'select',
         '#title' => 'Tipo de identificación',
         '#attributes' => array('class' => array('pure-u-23-24')),
-        '#options' => !empty($opts_ids) ? $opts_ids : array(),
+        '#options' => $tipos_id,
         '#default_value' => 'CC',
         '#required' => TRUE
     );
@@ -245,28 +246,22 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     );
     $opts_pais = array();
 
-    foreach ($paises as $pais) {
-        $opts_pais[$pais['id']] = ucfirst(mb_strtolower($pais['nombre'],'UTF-8'));
-    }
+
     $form['datos_personales']['pais'] = array(
         '#type' => 'select',
         '#title' => 'País',
         '#attributes' => array('class' => array('pure-u-23-24')),
-        '#options' => !empty($opts_pais) ? $opts_pais : array(),
-        '#default_value' => 42,
-
+        '#options' => Array(169 => 'Colombia'),
+        '#default_value' => 169,
+        '#attributes' => array('style' => 'display:none'),
         '#required' => TRUE
     );
 
-    $opts_departamento = array();
-    foreach ($departamentos as $departamento) {
-        $opts_departamento[$departamento['id']] = ucfirst(mb_strtolower($departamento['nombre'], 'UTF-8'));
-    }
     $form['datos_personales']['departamento'] = array(
         '#type' => 'select',
         '#title' => 'Departamento',
         '#attributes' => array('class' => array('pure-u-23-24')),
-        '#options' => !empty($opts_departamento) ? $opts_departamento : array(),
+        '#options' => $departamentos,
         '#ajax' => array(
             'event' => 'change',
             'effect' => 'fade',
@@ -274,20 +269,18 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
             'method' => 'replace',
             'wrapper' => 'wrapper-ciudades',
         ),
-        '#default_value' => 3,
+        '#default_value' => 11,
         '#validated' => TRUE,
     );
 
-
+    $sdqs =  SdqsClient::getInstance();
     $form['datos_personales']['ciudad'] = array(
         '#type' => 'select',
         '#prefix' => '<div id="wrapper-ciudades">',
         '#suffix' => '</div>',
         '#title' => 'Municipio/Ciudad',
         '#attributes' => array('class' => array('pure-u-23-24')),
-        '#options' => Array( 149 => 'Bogotá D.C.'),
-        '#required' => FALSE,
-        '#default_value' => 0,
+        '#options' => Array( 11001 => 'Bogotá D.C.'),
         '#validated' => TRUE,
 
     );
@@ -315,31 +308,20 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
 
     $opts_peticion = array();
 
-    foreach ($tipos_peticion as $tipo) {
-        $opts_peticion[$tipo['id']] = ucfirst(mb_strtolower($tipo['nombre'], 'UTF-8'));
-    }
-
     $form['pqr_crear']['tipo_peticion'] = array(
-        '#type' => 'select',
-        '#title' => 'Tipo de petición',
-        '#attributes' => array('class' => array('pure-u-23-24')),
-        '#options' => !empty($opts_peticion) ? $opts_peticion : array(),
-        '#required' => TRUE
+      '#type' => 'select',
+      '#title' => 'Tipo de petición',
+      '#attributes' => array('class' => array('pure-u-23-24')),
+      '#options' => $tipos_peticion,
+      '#required' => TRUE
     );
 
-    $opts_temas = array();
 
-    foreach ($temas as $tema) {
-        $opts_temas[$tema['id']] = $tema['nombre'];
-    }
+
 
     // TODO: implementar autocomletado controlado desde el cliente
     // con JavaScript
-    $opts_entidades = array();
 
-    foreach ($entidades as $entidad) {
-        $opts_entidades[$entidad['id']] = $entidad['nombre'];
-    }
 
     $form['pqr_crear']['asunto'] = array(
         '#type' => 'textarea',
@@ -417,6 +399,7 @@ function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
     $tipo_peticion = $form_state['values']['tipo_peticion'];
     $correo_electronico = $form_state['values']['correo_electronico'];
 
+    $ciudad = $form_state['values']['ciudad'];
 
     $tipo_identificacion = $form_state['values']['tipo_identificacion'];
     $numero_identificacion = $form_state['values']['numero_identificacion'];
@@ -609,7 +592,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         //Si el tipo de documento es NIT se agrega el dígito de verificación
         if($form_state['values']['tipo_identificacion']=='NI'){
           $identificacion = explode("-",$form_state['values']['numero_identificacion']);
-          $data['parameters']['requerimiento']['numeroDocumento']= $identificacion[0];
+          $data['parameters']['datos']['numeroDocumento']= $identificacion[0];
           $data['parameters']['requerimiento']['digitoVerificacion']= $identificacion[1];
         }
         $fid=0;
@@ -623,13 +606,14 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
             $file = file_load($fid);
             $content = file_get_contents(file_directory_temp().'/'.$file->filename);
 
-            $data['parameters']['requerimiento']['documento']['contenidoDocumento'] = base64_encode($content);
-            $data['parameters']['requerimiento']['documento']['mimeType'] = $file->filemime;
-            $data['parameters']['requerimiento']['documento']['nombreArchivo'] = $file->filename;
+            $data['parameters']['datos']['documentos']['contenidoDocumento'] = base64_encode($content);
+            $data['parameters']['datos']['documentos']['codigoTipoArchivo'] = 16;
+            $data['parameters']['datos']['documento']['nombreArchivo'] = $file->filename;
         }
 
         try {
-            $result = $service->invoke('registrarRequerimiento', $data);
+
+            //$result = $service->invoke('registrarRequerimiento', $data);
             if( !empty($result->return->codigoError) && $result->return->codigoError > 0){
               $output .= '<h3>Se ha presentado un error</h3>';
               $output .= '<p>'.$result->return->descripcion.'</p>';
@@ -695,19 +679,9 @@ function govi_sdqs_create_log_node() {
     return $node->nid;
 }
 function govi_sdqs_obtener_info_ciudades($form, $form_state) {
-
     $departamento = $form_state['values']['departamento'];
-
-    $ciudades = variable_get('govi_sdqs_lista_ciudades');
-    $ciudades=array_filter($ciudades, function($value) use ($departamento) { return is_array($value) &&  $value['idDepartamento'] == $departamento; });
-    $opts_ciudades = array();
-    foreach ($ciudades as $ciudad) {
-        if(!empty($ciudad['id'])) {
-            $opts_ciudades[ $ciudad['id'] ] = ucfirst(mb_strtolower($ciudad['nombre']));
-        }
-    }
-    print_r($opts_ciudades);
-    $form['datos_personales']['ciudad']['#options'] = $opts_ciudades;
+    $cities = variable_get('sdqs_cities');
+    $form['datos_personales']['ciudad']['#options'] = $cities[$departamento];
     return $form['datos_personales']['ciudad'];
 }
 /**
