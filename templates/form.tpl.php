@@ -44,30 +44,58 @@ if (variable_get('sdqs_env') === '') {
 </div>
 
 </fieldset>
-
 <fieldset class="id-data">
+   <legend>Datos de identificación del apoderado</legend>
+
+   <div class="pure-g formsdqstic">
+
+
+      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+         <?php print render($form['datos_personales_apoderado']['tipo_identificacion']); ?>
+      </div>
+
+      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+         <?php print render($form['datos_personales_apoderado']['numero_identificacion']); ?>
+      </div>
+			<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1">
+					<?php print render($form['datos_personales_apoderado']['razon_social']); ?>
+			</div>
+			<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+         <?php print render($form['datos_personales_apoderado']['nombre']); ?>
+      </div>
+      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+         <?php print render($form['datos_personales_apoderado']['apellido']); ?>
+      </div>
+   </div>
+
+</fieldset>
+
+<fieldset class="id-data identificacion">
    <legend>Datos de identificación</legend>
 
    <div class="pure-g formsdqstic">
 
+		 <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+				<?php print render($form['datos_personales']['tipo_identificacion']); ?>
+		 </div>
+		<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+			<?php print render($form['datos_personales']['numero_identificacion']); ?>
+
+		</div>
+		 <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-1">
+			 <?php print render($form['datos_personales']['genero']); ?>
+		 </div>
+		 <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1">
+				 <?php print render($form['datos_personales']['razon_social']); ?>
+		 </div>
       <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
          <?php print render($form['datos_personales']['nombre']); ?>
       </div>
       <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
          <?php print render($form['datos_personales']['apellido']); ?>
       </div>
-      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
-         <?php print render($form['datos_personales']['tipo_identificacion']); ?>
-      </div>
-			<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
-				 <?php print render($form['datos_personales']['genero']); ?>
-			</div>
-      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
-         <?php print render($form['datos_personales']['numero_identificacion']); ?>
-      </div>
-      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1">
-          <?php print render($form['datos_personales']['razon_social']); ?>
-      </div>
+
+
    </div>
 
 </fieldset>
@@ -76,7 +104,7 @@ if (variable_get('sdqs_env') === '') {
    <legend>Ubicación y contacto</legend>
       <div class="pure-g formsdqstic">
 
-      <div class="no-anon pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+      <div style="display:none" class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
          <?php print render($form['datos_personales']['pais']); ?>
       </div>
       <div class="no-anon pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
@@ -130,10 +158,10 @@ if (variable_get('sdqs_env') === '') {
    </fieldset>
 <div class="pure-g formsdqstic">
 
-   <div class="no-anon pure-1-1 pure-u-sm-1 pure-u-md-23-24 pure-u-lg-23-24 pure-u-xl-23-24">
+   <div class="pure-1-1 pure-u-sm-1 pure-u-md-23-24 pure-u-lg-23-24 pure-u-xl-23-24">
      <?php print render($form['pqr_crear']['terminos_habeas_data']); ?>
    </div>
-   <div class="no-anon pure-1-1 pure-u-sm-1 pure-u-md-23-24 pure-u-lg-23-24 pure-u-xl-23-24">
+   <div class=" pure-1-1 pure-u-sm-1 pure-u-md-23-24 pure-u-lg-23-24 pure-u-xl-23-24">
      <?php print render($form['pqr_crear']['terminos_correo']); ?>
    </div>
    <div class="pure-u-1 pure-sm-1 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1">
