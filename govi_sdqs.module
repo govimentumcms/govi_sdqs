@@ -530,7 +530,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
 
     $codigo_dependencia = variable_get('govi_sdqs_dependency');
     $codigo_entidad = variable_get('govi_sdqs_entity');
-    $id_sector = variable_get('sdqs_sector');
+    $id_sector = variable_get('govi_sdqs_sector');
     $codigo_tema = variable_get('sdqs_theme');
 
 
@@ -551,7 +551,6 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         $obs .= 'Nombre de dominio: ' . $base_url . PHP_EOL;
 
         if(!empty($tipo_solicitante) && $tipo_solicitante!='anonimo'  ) {
-            $data['parameters']['anonimo'] = false;
             $obs .= 'Direccion IP: ' . ip_address() . PHP_EOL;
             $obs .= 'Tipo de Solicitante: ' . $form_state['values']['tipo_solicitante'] . PHP_EOL;
 
@@ -566,11 +565,10 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
             $obs .= 'Correo electrónico: ' . $form_state['values']['correo_electronico'] . PHP_EOL;
             $obs .= 'Términos y condiciones: ' . $form_state['values']['terminos_habeas_data'] . PHP_EOL;
             $obs .= 'Términos y condiciones correo: ' . $form_state['values']['terminos_correo'] . PHP_EOL;
-        } else {
-          $data['parameters']['anonimo'] = true;
         }
 
         $data = array(
+            'anonimo' => false,
             'parameters' => array(
                 'datos' => array(
                     'asunto' => $form_state['values']['asunto'],
@@ -677,10 +675,32 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
             $data['parameters']['datos']['documentos']['codigoTipoArchivo'] = 2;
             $data['parameters']['datos']['documentos']['nombreArchivo'] = $file->filename;
         }
+        if($tipo_solicitante=='anonimo') {
+          unset($data['parameters']['datos']);
+          $data['parameters']['datos'] = array();
+          $data['anonimo'] = true;
+          $data['parameters']['datos']['idOpcion'] = 1;
+          $data['parameters']['datos']['codigoSector']= $id_sector;
+          $data['parameters']['datos']['idTipoPeticion'] = $form_state['values']['tipo_peticion'];
+          $data['parameters']['datos']['asunto'] = $form_state['values']['asunto'];
+          $data['parameters']['datos']['idCanal'] = 7;
+          $data['parameters']['datos']['codigoEntidad']= $codigo_entidad;
+          $data['parameters']['datos']['codigoCiudad']= '';
+          $data['parameters']['datos']['codigoTipoIdentificacionPeticionario']= '';
+          $data['parameters']['datos']['numeroIdentificacionPeticionario']= '';
+
+          if(!empty($form_state['values']['correo_electronico'])) {
+            $data['parameters']['datos']['correoElectronicoContacto'] = $form_state['values']['correo_electronico'];
+          }
+          $data['parameters']['datos']['confirmacionEmail']= true;
+
+        }
+
 
         try {
             $sdqs = SdqsClient::getInstance();
             $result = $sdqs->register($data);
+            $output.=print_r($result, TRUE);
 
             if( !empty($result->return->codigoError) && $result->return->codigoError > 0){
               $output .= '<h3>Se ha presentado un error</h3>';
@@ -688,13 +708,16 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
               //govi_sdqs_log_event($form_state, $nid_log, $result);
 
             } else {
+                $num_peticion = (isset($result->return->codigoRequerimiento)) ? $result->return->codigoRequerimiento : $result->return->numeroPeticion;
+                $fecha = (isset($result->return->fechaCreacion)) ? $result->return->fechaCreacion : date("d-m-Y H:i:sa");
+
                 $output .= '<h3>¡Solicitud enviada con éxito!</h3>';
                 $output .= '<p>Respetado(a) ' .$form_state['values']['nombre']. ', por favor tome nota de los siguientes ';
                 $output .= 'datos para hacer seguimiento a su petición.' . PHP_EOL;
                 $output .= 'Esta información ha sido enviada al correo electrónico si fué registrado previamente: ' . $form_state['values']['correo_electronico'];
                 $output .= '<hr/>';
-                $output .= '<ul><li>Fecha de solicitud: ' . $result->return->fechaCreacion . '</li>';
-                $output .= '<li>Codigo de requerimiento SDQS: ' . $result->return->codigoRequerimiento . '</li>';
+                $output .= '<ul><li>Fecha de solicitud: ' . $fecha . '</li>';
+                $output .= '<li>Codigo de requerimiento SDQS: ' . $num_peticion . '</li>';
                 $output .= '<br>';
                 $output .= 'Si es una solicitud anónima puede hacer seguimiento a través de la dirección <a href="http://sdqs.bogota.gov.co/sdqs/publico/hojaRuta/?language=es">Consultar hoja de ruta</a>';
 

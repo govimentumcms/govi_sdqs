@@ -89,9 +89,8 @@ class SdqsClient implements SingletonInterface {
     return $response->return->list;
   }
   public function register($data){
-    print_r($data['parameters']['anonimo']);
-    exit();
-    if(isset($data['parameters']['anonimo']) && $data['parameters']['anonimo']){
+    if(isset($data['anonimo']) && $data['anonimo']){
+      unset($data['anonimo']);
       return $this->service->invoke('registrarPeticion', $data);
     } else {
       return $this->service->invoke('registrarRequerimiento', $data);
