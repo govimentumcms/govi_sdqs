@@ -78,7 +78,7 @@
     background-color: #fff;
     border: 1px solid rgba(0,0,0,0.2);
     color: rgb(0,159,227);
- 
+
 }
 #sdqs.light .boton.crear span, #sdqs.light .boton.consultar span{
    color: rgb(0,62,101);
@@ -118,7 +118,7 @@
     text-decoration: underline;
     font-family: 'robotobold';
 }
-.form-item-razon-social { 
+.form-item-razon-social {
     display: none;
 }
 
