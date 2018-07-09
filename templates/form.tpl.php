@@ -75,23 +75,23 @@ if (variable_get('sdqs_env') === '') {
 
    <div class="pure-g formsdqstic">
 
-		 <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+		 <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2 no-anon">
 				<?php print render($form['datos_personales']['tipo_identificacion']); ?>
 		 </div>
-		<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+		<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2 no-anon">
 			<?php print render($form['datos_personales']['numero_identificacion']); ?>
 
 		</div>
-		 <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-1">
+		 <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-1 no-anon">
 			 <?php print render($form['datos_personales']['genero']); ?>
 		 </div>
-		 <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1">
+		 <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1 no-anon">
 				 <?php print render($form['datos_personales']['razon_social']); ?>
 		 </div>
-      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2 no-anon">
          <?php print render($form['datos_personales']['nombre']); ?>
       </div>
-      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2 no-anon">
          <?php print render($form['datos_personales']['apellido']); ?>
       </div>
 

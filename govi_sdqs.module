@@ -207,7 +207,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
     $form['datos_personales']['nombre'] = array(
         '#type' => 'textfield',
         '#title' => 'Nombre',
-        '#description' => 'Ingrese su primer nombre',
+        '#description' => 'Ingrese su nombre',
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#size' => 60,
     );
@@ -216,14 +216,14 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#type' => 'textfield',
         '#title' => 'Apellido',
         '#attributes' => array('class' => array('pure-u-23-24')),
-        '#description' => 'Ingrese su primer apellido',
+        '#description' => 'Ingrese sus apellidos',
         '#size' => 60
     );
 
     $form['datos_personales_apoderado']['nombre'] = array(
         '#type' => 'textfield',
         '#title' => 'Nombre',
-        '#description' => 'Ingrese su primer nombre',
+        '#description' => 'Ingrese su nombre',
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#size' => 60,
     );
@@ -232,7 +232,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#type' => 'textfield',
         '#title' => 'Apellido',
         '#attributes' => array('class' => array('pure-u-23-24')),
-        '#description' => 'Ingrese su primer apellido',
+        '#description' => 'Ingrese sus apellidos',
         '#size' => 60
     );
     $form['datos_personales_apoderado']['tipo_identificacion'] = array(

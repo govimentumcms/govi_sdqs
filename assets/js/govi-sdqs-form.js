@@ -1,7 +1,6 @@
 (function($) {
 
   function cambiarTipoID(t) {
-    console.log(t.val());
     if (t.val() == '2') {
       jQuery(t).closest('fieldset').find('.form-item-nombre').css('display','none');
       jQuery(t).closest('fieldset').find('.form-item-apellido').css('display','none');
@@ -38,6 +37,7 @@
             restaurarFormulario();
         }
         else if (t.val() == 'apoderado') {
+            restaurarFormulario();
             jQuery('.apoderado').css('display','block');
             jQuery('.identificacion legend').text("Datos de identificación del poderante");
         }
@@ -74,9 +74,7 @@
 
         }
 
-        else {
-            restaurarFormulario();
-        }
+
     }
 
 
