@@ -122,7 +122,8 @@ function govi_sdqs_batch_update_data() {
     "updateDepartments",
     "updateCities",
     "updateGenres",
-    "updateSectors"
+    "updateSectors",
+    "updatefileTypes"
   );
   foreach ($results as $result) {
     $batch['operations'][] = array('govi_sdqs_batch_update_data_process', array($result));

@@ -33,11 +33,13 @@ function govi_sdqs_theme_info($form, $form_state) {
   return $form['govi_sdqs_widget_settings']['govi_sdqs_theme'];
 }
 
+
+
 /**
  * Form callback
  */
 function govi_sdqs_admin_settings() {
-
+  kpr(variable_get('sdqs_files'));
   $sdqs =  SdqsClient::getInstance();
   if($sdqs->isConnectionConfigured()) {
     $form['govi_sdqs_general_settings'] = array(

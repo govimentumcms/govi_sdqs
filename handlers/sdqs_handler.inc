@@ -114,6 +114,24 @@ class SdqsClient implements SingletonInterface {
     }
     variable_set('sdqs_sectors', $sector_list);
   }
+  public function updatefileTypes() {
+    $fileTypes = $this->updateDataOperation('consultarCategoriaArchivos');
+    $files = Array();
+    foreach ($fileTypes as $type) {
+      $files[$type->id] = Array('name'=>$type->nombre, 'extensions'=> Array());
+      $arguments = array(
+        'parameters' => array(
+          'codigoCategoria' => Array(
+            'codigoCategoria' => $type->id,
+          )
+        ),
+      );
+      $extensions = $this->service->invoke('consultarTipoArchivo', $arguments)->return->list;
+      $files[$type->id]['extensions'] = (array) $extensions;
+    }
+    variable_set('sdqs_files', $files);
+  }
+
   public function updateGenres() {
     $genres = $this->updateDataOperation('consultarGeneros');
     $genres_list = Array();
