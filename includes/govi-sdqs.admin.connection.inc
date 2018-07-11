@@ -65,8 +65,14 @@ function govi_sdqs_admin_connection() {
   $form['govi_sdqs_general_settings']['sdqs_form'] = array(
     '#markup' => t('<p><a href="@url">Formulario SDQS</a>.</p>', array('@url' => $base_url . $base_path . 'govi-sdqs/crear')),
   );
+  $form = system_settings_form($form);
   $form['#validate'][] = 'govi_sdqs_admin_connection_validate';
-  return system_settings_form($form);
+  $form['#submit'][] = 'govi_sdqs_admin_connection_submit';
+  return $form;
+}
+
+function govi_sdqs_admin_connection_submit($form, &$form_state){
+  drupal_goto('/admin/config/service-sdqs-update');
 }
 
 /**
