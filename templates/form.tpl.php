@@ -44,31 +44,7 @@ if (variable_get('sdqs_env') === '') {
 </div>
 
 </fieldset>
-<fieldset class="apoderado">
-   <legend class="apoderado">Datos de identificación del apoderado</legend>
 
-   <div class="pure-g formsdqstic">
-
-
-      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2 apoderado">
-         <?php print render($form['datos_personales_apoderado']['tipo_identificacion']); ?>
-      </div>
-
-      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2 apoderado">
-         <?php print render($form['datos_personales_apoderado']['numero_identificacion']); ?>
-      </div>
-			<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1 apoderado">
-					<?php print render($form['datos_personales_apoderado']['razon_social']); ?>
-			</div>
-			<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2 apoderado">
-         <?php print render($form['datos_personales_apoderado']['nombre']); ?>
-      </div>
-      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2 apoderado">
-         <?php print render($form['datos_personales_apoderado']['apellido']); ?>
-      </div>
-   </div>
-
-</fieldset>
 
 <fieldset class="id-data identificacion">
    <legend>Datos de identificación</legend>
@@ -99,7 +75,31 @@ if (variable_get('sdqs_env') === '') {
    </div>
 
 </fieldset>
+<fieldset class="apoderado">
+   <legend class="apoderado">Datos de identificación del poderante</legend>
 
+   <div class="pure-g formsdqstic">
+
+
+      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2 apoderado">
+         <?php print render($form['datos_personales_poderante']['tipo_identificacion_poderante']); ?>
+      </div>
+
+      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2 apoderado">
+         <?php print render($form['datos_personales_poderante']['numero_identificacion_poderante']); ?>
+      </div>
+			<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1 apoderado">
+					<?php print render($form['datos_personales_poderante']['razon_social_poderante']); ?>
+			</div>
+			<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2 apoderado">
+         <?php print render($form['datos_personales_poderante']['nombre_poderante']); ?>
+      </div>
+      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2 apoderado">
+         <?php print render($form['datos_personales_poderante']['apellido_poderante']); ?>
+      </div>
+   </div>
+
+</fieldset>
 <fieldset class="contact">
    <legend>Ubicación y contacto</legend>
       <div class="pure-g formsdqstic">

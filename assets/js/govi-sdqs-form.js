@@ -2,8 +2,7 @@
 
   function cambiarTipoID(t) {
     if (t.val() == '2') {
-      jQuery(t).closest('fieldset').find('.form-item-nombre').css('display','none');
-      jQuery(t).closest('fieldset').find('.form-item-apellido').css('display','none');
+
       jQuery(t).closest('fieldset').find('.form-item-genero').parent().css('display','none');
       jQuery(t).closest('fieldset').find('.form-item-razon-social').css('display','block');
       jQuery(t).closest('fieldset').find('input').css('display','block')
@@ -28,19 +27,17 @@
 
     function cambiarTipoIdentificacion(t) {
         if (t.val() == 'juridica') {
+            restaurarFormulario();
             jQuery('[name="tipo_identificacion"]').val('2');
-            jQuery('.form-item-nombre').css('display','none');
-            jQuery('.form-item-apellido').css('display','none');
             jQuery('.form-item-genero').parent().css('display','none');
             jQuery('.form-item-razon-social').css('display','block');
             jQuery('.apoderado').css('display','none');
 
-            restaurarFormulario();
         }
         else if (t.val() == 'apoderado') {
             restaurarFormulario();
             jQuery('.apoderado').css('display','block');
-            jQuery('.identificacion legend').text("Datos de identificación del poderante");
+            jQuery('.identificacion legend').text("Datos de identificación del apoderado");
         }
         else if (t.val() == 'natural' ||  t.val() == 'apoderado') {
             jQuery('.form-item-nombre').css('display','block');
