@@ -9,7 +9,8 @@
       jQuery(t).closest('fieldset').find('input').css('display','block')
 
     } else {
-      jQuery(t).closest('fieldset').find('.form-item ').css('display','block')
+      jQuery(t).closest('fieldset').find('.form-item ').css('display','block');
+      jQuery(t).closest('fieldset').find('.form-item-razon-social').css('display','none');
 
     }
 

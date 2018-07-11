@@ -380,10 +380,11 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#attributes' => array('class' => array('pure-u-1')),
         '#required' => TRUE,
     );
-
+    $file_extensions = array_map('strtolower', array_keys(variable_get('sdqs_file_extensions')));
     $form['pqr_crear']['archivo'] = array(
         '#type' => 'managed_file',
         '#title' => 'Archivos o documentos',
+        "#upload_validators"  => array("file_validate_extensions" => Array(implode(" ", $file_extensions) )),
         '#attributes' => array('class' => array('pure-u-23-24')),
     );
     $opts_respuesta = array('email'=>'Correo electrónico','correspondencia'=>'Correo físico');
@@ -472,13 +473,13 @@ function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
         if(!empty($telefono_movil) && strlen($telefono_movil) < 10 ) {
             form_set_error('telefono_movil','El número de teléfono móvil debe tener al menos 10 dígitos');
         }
-      if(empty($nombre)) {
+      if(empty($nombre) && $tipo_solicitante!='juridica') {
         form_set_error('nombre','El campo Nombre es requerido.');
       }
-      if(empty($genero)) {
+      if(empty($genero) && $tipo_solicitante!='juridica') {
         form_set_error('genero','El campo Genero es requerido.');
       }
-      if(empty($apellido)) {
+      if(empty($apellido) && $tipo_solicitante!='juridica') {
         form_set_error('apellido','El campo Apellido es requerido.');
       }
       if(empty($correo_electronico)) {
@@ -575,7 +576,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
                     'asunto' => $form_state['values']['asunto'],
                     'codigoTipoRequerimiento' => $form_state['values']['tipo_peticion'],
                     'entidadQueIngresaRequerimiento' => variable_get('govi_sdqs_entity'),
-                    'codigoCanal' => 1,
+                    'codigoCanal' => 7,
                     'observaciones' => $obs,
                     'notificacionElectronica' => true,
                     'confirmacionEmail' => true,
@@ -660,24 +661,8 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
           $data['parameters']['datos']['numeroDocumento']= $identificacion[0];
           $data['parameters']['datos']['digitoVerificacion']= $identificacion[1];
         }
-        $fid=0;
-        if(empty($form_state['values']['archivo']) && !empty($_POST['archivo'])){
-          $fid=$_POST['archivo']['fid'];
-	} else {
-          $fid = $form_state['values']['archivo'];
-	}
-        if (!empty($fid)) {
-            $data['parameters']['requerimiento']['documento'] = array();
-            $file = file_load($fid);
-            module_load_include('inc', 'zip_archive', 'zip_archive.class');
-            $content = file_get_contents(file_directory_temp().'/'.$file->filename);
 
-            $data['parameters']['datos']['documentos']['contenidoDocumento'] = base64_encode($content);
-            $data['parameters']['datos']['documentos']['codigoTipoArchivo'] = 2;
-            $data['parameters']['datos']['documentos']['nombreArchivo'] = $file->filename;
-        }
         if($tipo_solicitante=='anonimo') {
-          unset($data['parameters']['datos']);
           $data['parameters']['datos'] = array();
           $data['anonimo'] = true;
           $data['parameters']['datos']['idOpcion'] = 1;
@@ -689,11 +674,33 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
           $data['parameters']['datos']['codigoCiudad']= '';
           $data['parameters']['datos']['codigoTipoIdentificacionPeticionario']= '';
           $data['parameters']['datos']['numeroIdentificacionPeticionario']= '';
+          $data['parameters']['observaciones']= $obs;
 
           if(!empty($form_state['values']['correo_electronico'])) {
             $data['parameters']['datos']['correoElectronicoContacto'] = $form_state['values']['correo_electronico'];
           }
           $data['parameters']['datos']['confirmacionEmail']= true;
+          if($codigo_dependencia!=0){
+            $data['parameters']['datos']['codigoDependencia']= $codigo_dependencia;
+          }
+          $data['parameters']['datos']['codigoSector']= $id_sector;
+
+        }
+        $fid=0;
+        if(empty($form_state['values']['archivo']) && !empty($_POST['archivo'])){
+          $fid=$_POST['archivo']['fid'];
+      	} else {
+          $fid = $form_state['values']['archivo'];
+      	}
+        if (!empty($fid)) {
+          $data['parameters']['requerimiento']['documento'] = array();
+          $file = file_load($fid);
+          module_load_include('inc', 'zip_archive', 'zip_archive.class');
+          $content = file_get_contents(file_directory_temp().'/'.$file->filename);
+          $contentypes = variable_get('sdqs_file_contentypes');
+          $data['parameters']['datos']['documentos']['contenidoDocumento'] = base64_encode($content);
+          $data['parameters']['datos']['documentos']['codigoTipoArchivo'] = $contentypes[$file->filemime];
+          $data['parameters']['datos']['documentos']['nombreArchivo'] = $file->filename;
 
         }
 
@@ -701,7 +708,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         try {
             $sdqs = SdqsClient::getInstance();
             $result = $sdqs->register($data);
-            $output.=print_r($result, TRUE);
+
 
             if( !empty($result->return->codigoError) && $result->return->codigoError > 0){
               $output .= '<h3>Se ha presentado un error</h3>';
@@ -721,7 +728,10 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
                 $output .= '<li>Codigo de requerimiento SDQS: ' . $num_peticion . '</li>';
                 $output .= '<br>';
                 $output .= 'Si es una solicitud anónima puede hacer seguimiento a través de la dirección <a href="http://sdqs.bogota.gov.co/sdqs/publico/hojaRuta/?language=es">Consultar hoja de ruta</a>';
-
+                if(var_get('sdqs_debug')){
+                  $output.=print_r($data, TRUE);
+                  $output.=print_r($result, TRUE);
+                }
                 govi_sdqs_log_event($form_state, $nid_log, $result);
             }
         } catch (WSClientException $exception) {

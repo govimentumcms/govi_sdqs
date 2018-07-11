@@ -118,7 +118,13 @@ function govi_sdqs_admin_settings() {
     '#validated' => TRUE,
     '#default_value' => variable_get('govi_sdqs_theme', 0),
   );
-
+  $form['govi_sdqs_widget_settings']['sdqs_debug'] = array(
+      '#type' => 'checkbox',
+      '#title' => 'Modo debug',
+      '#description' => 'Al enviar una solicitud muestra los parámetros enviados al servicio web',
+      '#return_value' => 1,
+      '#default_value' => variable_get('sdqs_debug', 0),
+  );
   return system_settings_form($form);
 }
 function govi_sdqs_admin_update_data() {
