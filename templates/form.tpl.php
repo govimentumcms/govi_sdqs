@@ -80,7 +80,6 @@ if (variable_get('sdqs_env') === '') {
 
    <div class="pure-g formsdqstic">
 
-
       <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2 apoderado">
          <?php print render($form['datos_personales_poderante']['tipo_identificacion_poderante']); ?>
       </div>

@@ -255,7 +255,7 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#title' => 'Correo electrónico',
         '#attributes' => array('class' => array('pure-u-23-24')),
     );
-    $form['datos_personales_poderante']['razon_social'] = array(
+    $form['datos_personales_poderante']['razon_social_poderante'] = array(
         '#type' => 'textfield',
         '#title' => 'Razón social/Nombre',
         '#attributes' => array('class' => array('pure-u-23-24')),
@@ -455,6 +455,7 @@ function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
 
     $tipo_identificacion = $form_state['values']['tipo_identificacion'];
     $numero_identificacion = $form_state['values']['numero_identificacion'];
+    $numero_identificacion_poderante = $form_state['values']['numero_identificacion_poderante'];
 
     $telefono_fijo = $form_state['values']['telefono_fijo'];
     $telefono_movil = $form_state['values']['telefono_movil'];
@@ -462,14 +463,44 @@ function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
     $direccion = $form_state['values']['direccion'];
     $terminos1=$form_state['values']['terminos_habeas_data'];
     $terminos2=$form_state['values']['terminos_correo'];
+    $razon_social_poderante =$form_state['values']['razon_social_poderante'];
+    $tipo_identificacion_poderante =$form_state['values']['tipo_identificacion_poderante'];
+    $numero_identificacion_poderante =$form_state['values']['numero_identificacion_poderante'];
+    $nombre_poderante =$form_state['values']['nombre_poderante'];
+    $apellido_poderante =$form_state['values']['apellido_poderante'];
+
+
+
+
+
+
     //Si el tipo de petición es un usuario anónimo
     if(!empty($tipo_solicitante) && $tipo_solicitante=='anonimo'  ) {
     } else {
-        if($tipo_identificacion =='2' && !preg_match("/([0-9]).*.-([0-9])/",$numero_identificacion)) {
-            form_set_error('tipo_identificacion','Número de NIT inválido. Use el formato : 123456789-3');
+        if($tipo_identificacion =='2' && !preg_match("/([0-9]).*.-([0-9])/",$numero_identificacion) && strlen($numero_identificacion)!=11 ) {
+            form_set_error('numero_identificacion','Número de NIT inválido. Use el formato : 123456789-3');
         }
-        if(!empty($telefono_fijo) && strlen($telefono_fijo) < 7 ) {
-            form_set_error('telefono_fijo','El número de teléfono fijo debe tener al menos 7 dígitos');
+        if($tipo_solicitante=='apoderado' && $tipo_identificacion_poderante =='2' && !preg_match("/([0-9]).*.-([0-9])/",$numero_identificacion_poderante) && strlen($numero_identificacion_poderante)!=11 ) {
+          form_set_error('numero_identificacion_poderante','Número de NIT del poderante inválido. Use el formato : 123456789-3');
+
+        }
+        if($tipo_identificacion =='2' && empty($razon_social) ) {
+            form_set_error('razon_social','La razón social es requerida');
+        }
+        if($tipo_solicitante=='apoderado' && $tipo_identificacion_poderante =='2' && empty($razon_social_poderante) ) {
+            form_set_error('razon_social_poderante','La razón social del poderante es requerida');
+        }
+        if($tipo_solicitante=='apoderado' && empty($numero_identificacion_poderante) ) {
+            form_set_error('numero_identificacion_poderante','el número de identificación del poderante es requerido');
+        }
+        if($tipo_solicitante=='apoderado' && empty($apellido_poderante) ) {
+            form_set_error('nombre_poderante','El nombre del poderante es requerido');
+        }
+        if($tipo_solicitante=='apoderado' && empty($apellido_poderante) ) {
+            form_set_error('apellido_poderante','El apellido del poderante es requerido');
+        }
+        if(!empty($telefono_fijo) && (strlen($telefono_fijo) < 7 || strlen($telefono_fijo) > 10) ) {
+            form_set_error('telefono_fijo','El número de teléfono fijo debe tener al menos 7 dígitos ');
         }
         if(!empty($telefono_movil) && strlen($telefono_movil) < 10 ) {
             form_set_error('telefono_movil','El número de teléfono móvil debe tener al menos 10 dígitos');
@@ -579,8 +610,8 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
                     'entidadQueIngresaRequerimiento' => variable_get('govi_sdqs_entity'),
                     'codigoCanal' => 7,
                     'observaciones' => $obs,
-                    'notificacionElectronica' => false,
-                    'notificacionFisica' => false,
+                    'notificacionElectronica' => ($form_state['values']['respuesta'] == 'email') ? true : false,
+                    'notificacionFisica' => ($form_state['values']['respuesta'] == 'correspondencia') ? true : false,
                     'confirmacionEmail' => true,
                     'codigoTipoPersona' => 1,
                     'terminosCondiciones' => 1,
