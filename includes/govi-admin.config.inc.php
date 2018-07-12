@@ -15,11 +15,17 @@ drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 drupal_flush_all_caches();
 }
 
+function govi_sdqs_sector_info($form, $form_state) {
+  $sdqs =  SdqsClient::getInstance();
+  $sector = $form_state['values']['govi_sdqs_sector'];
+  $entities_list = variable_get('sdqs_entities');
+  $form['govi_sdqs_widget_settings']['govi_sdqs_entity']['#options'] = $entities_list[$sector];
+  return $form['govi_sdqs_widget_settings']['govi_sdqs_entity'];
+}
 
 function govi_sdqs_entity_info($form, $form_state) {
   $sdqs =  SdqsClient::getInstance();
   $entity = $form_state['values']['govi_sdqs_entity'];
-  reset($entities_list);
   $entities_list = $sdqs->getDependencyList($entity);
   $form['govi_sdqs_widget_settings']['govi_sdqs_dependency']['#options'] = $entities_list;
   return $form['govi_sdqs_widget_settings']['govi_sdqs_dependency'];
@@ -27,7 +33,6 @@ function govi_sdqs_entity_info($form, $form_state) {
 function govi_sdqs_theme_info($form, $form_state) {
   $sdqs =  SdqsClient::getInstance();
   $entity = $form_state['values']['govi_sdqs_entity'];
-  reset($theme_list);
   $theme_list = $sdqs->getThemeList($entity);
   $form['govi_sdqs_widget_settings']['govi_sdqs_theme']['#options'] = $theme_list;
   return $form['govi_sdqs_widget_settings']['govi_sdqs_theme'];
@@ -71,6 +76,7 @@ function govi_sdqs_admin_settings() {
       'method' => 'replace',
       'wrapper' => 'wrapper-entities'
     ),
+    '#required' => TRUE,
     '#default_value' => variable_get('govi_sdqs_sector', 0),
   );
   $form['govi_sdqs_widget_settings']['govi_sdqs_entity'] = array(
@@ -79,7 +85,7 @@ function govi_sdqs_admin_settings() {
     '#prefix' => '<div id="wrapper-entities">',
     '#suffix' => '</div>',
     '#description' => t('Entidad a la cuál van a ser enviadas las solicitudes'),
-    '#options' => variable_get('sdqs_entities'),
+    '#options' => variable_get('sdqs_entities')[variable_get('govi_sdqs_sector')],
     '#ajax' => array(
       'event' => 'change',
       'effect' => 'fade',
@@ -88,6 +94,7 @@ function govi_sdqs_admin_settings() {
       'wrapper' => 'wrapper-dependency'
     ),
     '#required' => TRUE,
+    '#validated' => TRUE,
     '#default_value' => variable_get('govi_sdqs_entity', 0),
   );
   $form['govi_sdqs_widget_settings']['govi_sdqs_dependency'] = array(
@@ -125,7 +132,34 @@ function govi_sdqs_admin_settings() {
       '#return_value' => 1,
       '#default_value' => variable_get('sdqs_debug', 0),
   );
+  $form['#validate'][] = 'govi_sdqs_admin_settings_validate';
+
   return system_settings_form($form);
+}
+
+/**
+ * Validation function for govi_sdqs_admin_settings().
+ *
+ * @see govi_sdqs_admin_settings()
+ */
+function govi_sdqs_admin_settings_validate($form, &$form_state) {
+  $sdqs =  SdqsClient::getInstance();
+  $sector = $form_state['values']['govi_sdqs_sector'];
+  $entity = $form_state['values']['govi_sdqs_entity'];
+  $dependency = $form_state['values']['govi_sdqs_dependency'];
+  $theme = $form_state['values']['govi_sdqs_theme'];
+  if(empty($form['govi_sdqs_general_settings']['govi_sdqs_update'])) {
+    if($entity==0 ) {
+        form_set_error('govi_sdqs_entity','Debe seleccionar una entidad.');
+    }
+    if($entity!=0 && !in_array($entity, array_keys($sdqs->getEntityList(variable_get('govi_sdqs_sector')))) ) {
+        form_set_error('govi_sdqs_entity','La entidad seleccionada no se encuentra en ese sector.');
+    }
+    if($dependency!=0 && !in_array($entity, array_keys($sdqs->getDependencyList(variable_get('govi_sdqs_entity')))) ) {
+        form_set_error('govi_sdqs_entity','La dependencia seleccionada no es válida para la entidad.');
+    }
+  }
+
 }
 function govi_sdqs_admin_update_data() {
   drupal_goto('admin/config/service-sdqs-update');

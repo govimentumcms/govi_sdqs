@@ -109,10 +109,14 @@ class SdqsClient implements SingletonInterface {
   public function updateSectors() {
     $sectors = $this->updateDataOperation('consultarSectores');
     $sector_list = Array(0 => 'NO SELECCIONADO');
+    $entity_list = Array();
     foreach ($sectors as $sector) {
       $sector_list[$sector->codigoSector] = $sector->nombre;
+      $entity_list[$sector->codigoSector] = $this->getEntityList($sector->codigoSector);
     }
     variable_set('sdqs_sectors', $sector_list);
+    variable_set('sdqs_entities', $entity_list);
+
   }
   public function updatefileTypes() {
     $fileTypes = $this->updateDataOperation('consultarCategoriaArchivos');
@@ -223,6 +227,27 @@ class SdqsClient implements SingletonInterface {
       $complaintTypes[$type->id] = $type->nombre;
     }
     variable_set('sdqs_complaint_types', $complaintTypes);
+  }
+  public function getEntityList($ent) {
+    $arguments = array(
+      'parameters' => array(
+        'consultaEntidades' => Array(
+          'codigoSector' => $ent,
+          'codigoEntidad' => '',
+        )
+      ),
+    );
+
+    $dependencies = $this->service->invoke('consultarEntidades', $arguments)->return->list;
+    $dependency_list = Array(0 => 'NO SELECCIONADA');
+    if(empty($ent)) {
+      return $dependency_list;
+    }
+    foreach ($dependencies as $dependency) {
+      $dependency_list[$dependency->codigoEntidad] = $dependency->nombre;
+    }
+    return $dependency_list;
+
   }
 
   public function getDependencyList($ent) {
