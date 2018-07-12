@@ -476,6 +476,9 @@ function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
 
     //Si el tipo de petición es un usuario anónimo
     if(!empty($tipo_solicitante) && $tipo_solicitante=='anonimo'  ) {
+      if(!empty($correo_electronico) && !valid_email_address($correo_electronico)  ) {
+        form_set_error('correo_electronico','Debe suministrar una cuenta de correo válida para responder a su solicitud.');
+      }
     } else {
         if($tipo_identificacion =='2' && !preg_match("/([0-9]).*.-([0-9])/",$numero_identificacion) && strlen($numero_identificacion)!=11 ) {
             form_set_error('numero_identificacion','Número de NIT inválido. Use el formato : 123456789-3');
