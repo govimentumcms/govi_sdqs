@@ -67,13 +67,19 @@ function govi_sdqs_admin_connection() {
   );
   $form = system_settings_form($form);
   $form['#validate'][] = 'govi_sdqs_admin_connection_validate';
-  $form['#submit'][] = 'govi_sdqs_admin_connection_submit';
+  // $form['#submit'][] = 'govi_sdqs_admin_connection_submit';
   return $form;
 }
 
-function govi_sdqs_admin_connection_submit($form, &$form_state){
-  drupal_goto('/admin/config/service-sdqs-update');
-}
+/**
+ * FIXME: variables are not sent to this stage from previous form submit
+ * It needs to check a way to intercept submission to add variables,
+ * so this method should be disabled as the user must go to the
+ * configuration page to update webservice operations
+ */
+//function govi_sdqs_admin_connection_submit($form, &$form_state){
+//  drupal_goto('/admin/config/service-sdqs-update');
+//}
 
 /**
  * Validation function for govi_sdqs_admin_settings().
