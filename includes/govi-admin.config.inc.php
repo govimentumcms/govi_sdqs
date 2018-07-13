@@ -76,7 +76,7 @@ function govi_sdqs_admin_settings() {
       'method' => 'replace',
       'wrapper' => 'wrapper-entities'
     ),
-    '#required' => TRUE,
+    //'#required' => TRUE,
     '#default_value' => variable_get('govi_sdqs_sector', 0),
   );
   $form['govi_sdqs_widget_settings']['govi_sdqs_entity'] = array(
@@ -85,7 +85,10 @@ function govi_sdqs_admin_settings() {
     '#prefix' => '<div id="wrapper-entities">',
     '#suffix' => '</div>',
     '#description' => t('Entidad a la cuál van a ser enviadas las solicitudes'),
-    '#options' => variable_get('sdqs_entities')[variable_get('govi_sdqs_sector')],
+    // define parametro default de la primera entidad de la lista para evitar el
+    // aviso de argumento inválido en la iteración de las opciones del selector de
+    // entidad
+    '#options' => variable_get('sdqs_entities')[variable_get('govi_sdqs_sector',10)],
     '#ajax' => array(
       'event' => 'change',
       'effect' => 'fade',
