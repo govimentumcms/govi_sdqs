@@ -2,14 +2,16 @@
 
   function cambiarTipoID(t) {
     if (t.val() == '2') {
-
-      jQuery(t).closest('fieldset').find('.form-item-genero').parent().css('display','none');
       jQuery(t).closest('fieldset').find('.form-item-razon-social').css('display','block');
       jQuery(t).closest('fieldset').find('input').css('display','block')
+      jQuery(t).closest('fieldset').find('.form-item-genero').parent().css('display','none');
+      jQuery(t).closest('fieldset').find('.form-item-razon-social-poderante').css('display','block');
 
     } else {
+      jQuery(t).closest('fieldset').find('.form-item-genero').parent().css('display','block');
       jQuery(t).closest('fieldset').find('.form-item ').css('display','block');
       jQuery(t).closest('fieldset').find('.form-item-razon-social').css('display','none');
+      jQuery(t).closest('fieldset').find('.form-item-razon-social-poderante').css('display','none');
 
     }
 
@@ -18,6 +20,7 @@
     function restaurarFormulario(){
         jQuery('fieldset.id-data').css('display','block');
         jQuery('fieldset.contact').css('display','block');
+        jQuery('.form-item-razon-social-poderante').css('display','none');
         jQuery('.no-anon').css('display','block');
         jQuery('.contact legend').text("Ubicación y contacto");
         jQuery('.contact .email span.form-required').css('display','block');
@@ -90,7 +93,10 @@
                 selector_tipo_id.change(function() {
                     cambiarTipoID(jQuery(this));
                 });
-
+                var selector_tipo_id_poderante = jQuery('[name="tipo_identificacion_poderante"]');
+                selector_tipo_id_poderante.change(function() {
+                    cambiarTipoID(jQuery(this));
+                });
                 var selector_pais = jQuery('[name="pais"]');
                 selector_pais.change(function() {
                     if (jQuery(this).val() != 42) {
