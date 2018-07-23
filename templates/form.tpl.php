@@ -39,7 +39,7 @@ if (variable_get('sdqs_env') === '') {
    <?php print render($form['pqr_crear']['tipo_peticion']); ?>
 </div>
 <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
-      <?php print render($form['datos_personales']['tipo_solicitante']); ?>
+      <?php print render($form['datos_personales']['tipo_peticionario']); ?>
    </div>
 </div>
 

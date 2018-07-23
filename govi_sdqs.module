@@ -190,13 +190,14 @@ function govi_sdqs_crear_peticion_form($form, &$form_state) {
         '#weight' => -1,
         '#validated' => True,
     );
-    $form['datos_personales']['tipo_solicitante'] = array(
+    $form['datos_personales']['tipo_peticionario'] = array(
         '#type' => 'select',
-        '#title' => 'Tipo de solicitante',
+        '#title' => 'Tipo de peticionario',
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#options' => Array(#options' => array(
           'natural' => t('Persona Natural'),
           'juridica' => t('Persona Jurídica'),
+          'juridica_comercial' => t('Persona Jurídica con Establecimiento Comercial'),
           'infantil' => t('Niños, niñas y adolescentes'),
           'apoderado' => t('Apoderado'),
           'anonimo' => t('Persona Anónima'),
@@ -446,7 +447,7 @@ function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
 
     $nombre = $form_state['values']['nombre'];
     $apellido = $form_state['values']['apellido'];
-    $tipo_solicitante = $form_state['values']['tipo_solicitante'];
+    $tipo_peticionario = $form_state['values']['tipo_peticionario'];
     $tipo_peticion = $form_state['values']['tipo_peticion'];
     $correo_electronico = $form_state['values']['correo_electronico'];
     $genero = $form_state['values']['genero'];
@@ -476,7 +477,7 @@ function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
 
 
     //Si el tipo de petición es un usuario anónimo
-    if(!empty($tipo_solicitante) && $tipo_solicitante=='anonimo'  ) {
+    if(!empty($tipo_peticionario) && $tipo_peticionario=='anonimo'  ) {
       if(empty($correo_electronico) || !empty($correo_electronico) && !valid_email_address($correo_electronico)  ) {
 
         form_set_error('correo_electronico','Debe suministrar una cuenta de correo válida para responder a su solicitud.');
@@ -485,23 +486,23 @@ function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
         if($tipo_identificacion =='2' && !preg_match("/([0-9]).*.-([0-9])/",$numero_identificacion) && strlen($numero_identificacion)!=11 ) {
             form_set_error('numero_identificacion','Número de NIT inválido. Use el formato : 123456789-3');
         }
-        if($tipo_solicitante=='apoderado' && $tipo_identificacion_poderante =='2' && !preg_match("/([0-9]).*.-([0-9])/",$numero_identificacion_poderante) && strlen($numero_identificacion_poderante)!=11 ) {
+        if($tipo_peticionario=='apoderado' && $tipo_identificacion_poderante =='2' && !preg_match("/([0-9]).*.-([0-9])/",$numero_identificacion_poderante) && strlen($numero_identificacion_poderante)!=11 ) {
           form_set_error('numero_identificacion_poderante','Número de NIT del poderante inválido. Use el formato : 123456789-3');
 
         }
         if($tipo_identificacion =='2' && empty($razon_social) ) {
             form_set_error('razon_social','La razón social es requerida');
         }
-        if($tipo_solicitante=='apoderado' && $tipo_identificacion_poderante =='2' && empty($razon_social_poderante) ) {
+        if($tipo_peticionario=='apoderado' && $tipo_identificacion_poderante =='2' && empty($razon_social_poderante) ) {
             form_set_error('razon_social_poderante','La razón social del poderante es requerida');
         }
-        if($tipo_solicitante=='apoderado' && empty($numero_identificacion_poderante) ) {
+        if($tipo_peticionario=='apoderado' && empty($numero_identificacion_poderante) ) {
             form_set_error('numero_identificacion_poderante','el número de identificación del poderante es requerido');
         }
-        if($tipo_solicitante=='apoderado' && empty($apellido_poderante) ) {
+        if($tipo_peticionario=='apoderado' && empty($apellido_poderante) ) {
             form_set_error('nombre_poderante','El nombre del poderante es requerido');
         }
-        if($tipo_solicitante=='apoderado' && empty($apellido_poderante) ) {
+        if($tipo_peticionario=='apoderado' && empty($apellido_poderante) ) {
             form_set_error('apellido_poderante','El apellido del poderante es requerido');
         }
         if(!empty($telefono_fijo) && (strlen($telefono_fijo) < 7 || strlen($telefono_fijo) > 10) ) {
@@ -510,13 +511,13 @@ function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
         if(!empty($telefono_movil) && strlen($telefono_movil) < 10 ) {
             form_set_error('telefono_movil','El número de teléfono móvil debe tener al menos 10 dígitos');
         }
-      if(empty($nombre) && $tipo_solicitante!='juridica') {
+      if(empty($nombre) && $tipo_peticionario!='juridica') {
         form_set_error('nombre','El campo Nombre es requerido.');
       }
-      if(empty($genero) && $tipo_solicitante!='juridica') {
+      if(empty($genero) && $tipo_peticionario!='juridica') {
         form_set_error('genero','El campo Genero es requerido.');
       }
-      if(empty($apellido) && $tipo_solicitante!='juridica') {
+      if(empty($apellido) && $tipo_peticionario!='juridica') {
         form_set_error('apellido','El campo Apellido es requerido.');
       }
       if(empty($correo_electronico)) {
@@ -549,8 +550,8 @@ function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
     if(empty($tipo_peticion)) {
       form_set_error('tipo_peticion','El campo Tipo de petición es requerido.');
     }
-    if(empty($tipo_solicitante)) {
-      form_set_error('tipo_solicitante','El campo Tipo de solicitante es requerido.');
+    if(empty($tipo_peticionario)) {
+      form_set_error('tipo_peticionario','El campo Tipo de peticionario es requerido.');
     }
     if(!empty($correo_electronico) && !valid_email_address($correo_electronico)  ) {
       form_set_error('correo_electronico','El correo electrónico debe ser una dirección de correo válida.');
@@ -580,7 +581,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         $nid_log = govi_sdqs_create_log_node();
 
         $service = wsclient_service_load('service_radicacion_canal');
-        $tipo_solicitante = $form_state['values']['tipo_solicitante'];
+        $tipo_peticionario = $form_state['values']['tipo_peticionario'];
 
         $obs = '';
 
@@ -589,9 +590,9 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         $obs .= 'web son los siguientes:' . PHP_EOL;
         $obs .= 'Nombre de dominio: ' . $base_url . PHP_EOL;
 
-        if(!empty($tipo_solicitante) && $tipo_solicitante!='anonimo'  ) {
+        if(!empty($tipo_peticionario) && $tipo_peticionario!='anonimo'  ) {
             $obs .= 'Direccion IP: ' . ip_address() . PHP_EOL;
-            $obs .= 'Tipo de Solicitante: ' . $form_state['values']['tipo_solicitante'] . PHP_EOL;
+            $obs .= 'Tipo de Solicitante: ' . $form_state['values']['tipo_peticionario'] . PHP_EOL;
 
             if(!empty($form_state['values']['razon_social'])) {
               $obs .= 'Razón Social: ' . $form_state['values']['razon_social'] . PHP_EOL;
@@ -703,7 +704,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         }
 
 
-        if($tipo_solicitante=='anonimo') {
+        if($tipo_peticionario=='anonimo') {
           $data['parameters']['datos'] = array();
           $data['anonimo'] = true;
           $data['parameters']['datos']['idOpcion'] = 1;
@@ -729,7 +730,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         }
         //Si el tipo de solicitante es Apoderado
 
-        if($tipo_solicitante=='apoderado') {
+        if($tipo_peticionario=='apoderado') {
           $data['parameters']['datos']['poderdantes']['codigoTipoIdentificacionPod']= $form_state['values']['tipo_identificacion_poderante'];
           $data['parameters']['datos']['poderdantes']['numeroIdentificacionPod']= $form_state['values']['numero_identificacion_poderante'];
           $data['parameters']['datos']['poderdantes']['primerNombrePod']= $form_state['values']['nombre_poderante'];

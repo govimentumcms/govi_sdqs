@@ -83,7 +83,7 @@
     Drupal.behaviors.sdqsForm = {
         attach: function(context, settings) {
             jQuery(document).ready(function() {
-                var selector_tipo_persona = jQuery('[name="tipo_solicitante"]');
+                var selector_tipo_persona = jQuery('[name="tipo_peticionario"]');
                 cambiarTipoIdentificacion(selector_tipo_persona);
                 selector_tipo_persona.change(function() {
                     cambiarTipoIdentificacion(jQuery(this));
