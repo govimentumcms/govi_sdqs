@@ -464,6 +464,7 @@ function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
     $terminos1=$form_state['values']['terminos_habeas_data'];
     $terminos2=$form_state['values']['terminos_correo'];
     $razon_social_poderante =$form_state['values']['razon_social_poderante'];
+    $razon_social = $form_state['values']['razon_social'];
     $tipo_identificacion_poderante =$form_state['values']['tipo_identificacion_poderante'];
     $numero_identificacion_poderante =$form_state['values']['numero_identificacion_poderante'];
     $nombre_poderante =$form_state['values']['nombre_poderante'];
@@ -695,6 +696,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
           $data['parameters']['datos']['digitoVerificacion']= $identificacion[1];
           $data['parameters']['datos']['codigoTipoPersona']= 2;
           $data['parameters']['datos']['correoElectronicoContacto']= $form_state['values']['correo_electronico'];
+          // aquí está llegando vacía la razón social
           $data['parameters']['datos']['primerNombre']= substr($form_state['values']['razon_social'], 20);
           $data['parameters']['datos']['primerApellido']='';
           $data['parameters']['datos']['nombreCompletoContacto']= $data['parameters']['datos']['primerNombre']." ".$data['parameters']['datos']['primerApellido'];
@@ -720,7 +722,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
           }
           $data['parameters']['datos']['confirmacionEmail']= true;
           if($codigo_dependencia!=0){
-            $data['parameters']['datos']['codigoDependencia']= $codigo_dependencia;
+            $data['parameters']['datos']['codigo']= $codigo_dependencia;
           }
           $data['parameters']['datos']['codigoSector']= $id_sector;
 
