@@ -49,6 +49,7 @@ function govi_sdqs_admin_settings() {
     $form['govi_sdqs_general_settings'] = array(
       '#type' => 'fieldset',
       '#title' => t('Actualización de datos'),
+      '#description' => t('</p>Utilice este botón para sincronizar los parámetros de las operaciones del servicio. Se recomienda realizar una sincronización periódicamente (por lo menos una vez por semana), ya que algunos parámetros son actualizados con frecuencia en el servicio web.</p>')
     );
     $form['govi_sdqs_general_settings']['govi_sdqs_update'] = array(
       '#type' => 'submit',
