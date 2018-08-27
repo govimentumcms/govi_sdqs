@@ -258,8 +258,7 @@ class SdqsClient implements SingletonInterface {
         )
       ),
     );
-
-    $dependencies = $this->service->invoke('consultarDependencia', $arguments)->return->list;
+    $dependencies = (!empty($ent)) ? $this->service->invoke('consultarDependencia', $arguments)->return->list : NULL;
     $dependency_list = Array(0 => 'NO SELECCIONADA');
     if(empty($ent)) {
       return $dependency_list;
