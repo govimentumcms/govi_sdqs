@@ -243,8 +243,13 @@ class SdqsClient implements SingletonInterface {
     if(empty($ent)) {
       return $dependency_list;
     }
-    foreach ($dependencies as $dependency) {
-      $dependency_list[$dependency->codigoEntidad] = $dependency->nombre;
+
+    if(!is_array($dependencies)) {
+      $dependency_list[$dependencies->codigoEntidad] = $dependencies->nombre;
+    } else {
+      foreach ($dependencies as $dependency) {
+        $dependency_list[$dependency->codigoEntidad] = $dependency->nombre;
+      }      
     }
     return $dependency_list;
 
