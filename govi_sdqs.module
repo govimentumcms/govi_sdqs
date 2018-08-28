@@ -688,14 +688,18 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         if($id_sector!=0){
           $data['parameters']['datos']['codigoSector']= $id_sector;
         }
-
+        if($tipo_peticionario=='juridica') {
+          $data['parameters']['datos']['codigoTipoPersona']= 2;
+        }
+        if($tipo_peticionario=='juridica_comercial') {
+          $data['parameters']['datos']['codigoTipoPersona']= 0;
+        }
 
         //Si el tipo de documento es NIT se agrega el dígito de verificación
         if($form_state['values']['tipo_identificacion']=='2') {
           $identificacion = explode("-",$form_state['values']['numero_identificacion']);
           $data['parameters']['datos']['numeroDocumento']= $identificacion[0];
           $data['parameters']['datos']['digitoVerificacion']= $identificacion[1];
-          $data['parameters']['datos']['codigoTipoPersona']= 2;
           $data['parameters']['datos']['correoElectronicoContacto']= $form_state['values']['correo_electronico'];
           // aquí está llegando vacía la razón social
           $data['parameters']['datos']['primerNombre']= substr($form_state['values']['razon_social'], 20);
