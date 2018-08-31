@@ -42,7 +42,10 @@ if (variable_get('sdqs_env') === '') {
       <?php print render($form['datos_personales']['tipo_peticionario']); ?>
    </div>
 </div>
-
+<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+      <?php print render($form['datos_personales']['tipo_solicitante']); ?>
+   </div>
+</div>
 </fieldset>
 
 
@@ -75,28 +78,13 @@ if (variable_get('sdqs_env') === '') {
    </div>
 
 </fieldset>
-<fieldset class="apoderado">
-   <legend class="apoderado">Datos de identificación del poderante</legend>
+<fieldset class="poderantes">
+	 <div id="wrapper-poderantes">
+		 <?php print render($form['add_poderante']); ?>
+		 <?php print render($form['datos_personales_poderante']) ?>
 
-   <div class="pure-g formsdqstic">
-
-      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2 apoderado">
-         <?php print render($form['datos_personales_poderante']['tipo_identificacion_poderante']); ?>
-      </div>
-
-      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2 apoderado">
-         <?php print render($form['datos_personales_poderante']['numero_identificacion_poderante']); ?>
-      </div>
-			<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-1 pure-u-lg-1-1 pure-u-xl-1-1 apoderado">
-					<?php print render($form['datos_personales_poderante']['razon_social_poderante']); ?>
-			</div>
-			<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2 apoderado">
-         <?php print render($form['datos_personales_poderante']['nombre_poderante']); ?>
-      </div>
-      <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2 apoderado">
-         <?php print render($form['datos_personales_poderante']['apellido_poderante']); ?>
-      </div>
-   </div>
+	 </div>
+	 <?php print render($form['del_poderante']); ?>
 
 </fieldset>
 <fieldset class="contact">
