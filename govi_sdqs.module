@@ -709,7 +709,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
 
         $service = wsclient_service_load('service_radicacion_canal');
         $tipo_peticionario = $form_state['values']['tipo_peticionario'];
-
+        $tipo_solicitante=$form_state['values']['tipo_solicitante'];
         $obs = '';
 
         $obs .= 'Este requerimiento ha sido realizado a través del módulo Govi SDQS ';
@@ -819,7 +819,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
           $data['parameters']['datos']['codigoTipoPersona']= 2;
         }
         if($tipo_peticionario=='juridica_comercial') {
-          $data['parameters']['datos']['codigoTipoPersona']= 0;
+          $data['parameters']['datos']['codigoTipoPersona']= 3;
         }
 
         //Si el tipo de documento es NIT se agrega el dígito de verificación
@@ -838,7 +838,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         if($tipo_peticionario=='anonimo') {
           $data['parameters']['datos'] = array();
           $data['anonimo'] = true;
-          $data['parameters']['datos']['idOpcion'] = 1;
+          $data['parameters']['datos']['codigoOpcion'] = 1;
           $data['parameters']['datos']['codigoSector']= $id_sector;
           $data['parameters']['datos']['idTipoPeticion'] = $form_state['values']['tipo_peticion'];
           $data['parameters']['datos']['asunto'] = $form_state['values']['asunto'];
@@ -859,14 +859,17 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
           $data['parameters']['datos']['codigoSector']= $id_sector;
 
         }
-        //Si el tipo de solicitante es Apoderado
+        //Si el tipo de solicitante es Apoderado de
 
-        if($tipo_peticionario=='apoderado') {
-          $data['parameters']['datos']['poderdantes']['codigoTipoIdentificacionPod']= $form_state['values']['tipo_identificacion_poderante'];
-          $data['parameters']['datos']['poderdantes']['numeroIdentificacionPod']= $form_state['values']['numero_identificacion_poderante'];
-          $data['parameters']['datos']['poderdantes']['primerNombrePod']= $form_state['values']['nombre_poderante'];
-          $data['parameters']['datos']['poderdantes']['primerApellidoPod']= $form_state['values']['apellido_poderante'];
-          $data['parameters']['datos']['idOpcion'] = 5;
+        if($tipo_solicitante==5) {
+          for($i=0;$i<$form_state['pnum_names'];$i++){
+            $data['parameters']['datos']['poderdantes'][$i]['codigoTipoIdentificacionPod']= $form_state['values']['tipo_identificacion_poderante_'.$i];
+            $data['parameters']['datos']['poderdantes'][$i]['numeroIdentificacionPod']= $form_state['values']['numero_identificacion_poderante_'.$i];
+            $data['parameters']['datos']['poderdantes'][$i]['primerNombrePod']= $form_state['values']['nombre_poderante_'.$i];
+            $data['parameters']['datos']['poderdantes'][$i]['primerApellidoPod']= $form_state['values']['apellido_poderante_'.$i];
+          }
+          $data['parameters']['datos']['codigoOpcion'] = 5;
+
         }
 
 
