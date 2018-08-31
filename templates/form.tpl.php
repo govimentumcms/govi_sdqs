@@ -40,11 +40,12 @@ if (variable_get('sdqs_env') === '') {
 </div>
 <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
       <?php print render($form['datos_personales']['tipo_peticionario']); ?>
-   </div>
 </div>
 <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
       <?php print render($form['datos_personales']['tipo_solicitante']); ?>
    </div>
+ </div>
+
 </div>
 </fieldset>
 
@@ -80,11 +81,13 @@ if (variable_get('sdqs_env') === '') {
 </fieldset>
 <fieldset class="poderantes">
 	 <div id="wrapper-poderantes">
-		 <?php print render($form['add_poderante']); ?>
 		 <?php print render($form['datos_personales_poderante']) ?>
-
 	 </div>
+	 <div class="actions-poderante formsdqstic">
+
+	 <?php print render($form['add_poderante']); ?>
 	 <?php print render($form['del_poderante']); ?>
+ </div>
 
 </fieldset>
 <fieldset class="contact">

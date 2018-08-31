@@ -50,7 +50,7 @@
     function cambiarTipoIdentificacion(t) {
         if (t.val() == 'juridica') {
             restaurarFormulario();
-            actualizarTipoIdentificacion(Array('1','2'));
+            actualizarTipoIdentificacion(Array('2'));
             jQuery('[name="tipo_identificacion"]').val('2');
             jQuery('[name="tipo_identificacion"]').val('2');
 
@@ -60,7 +60,7 @@
         }
         else if (t.val() == 'juridica_comercial') {
             restaurarFormulario();
-            actualizarTipoIdentificacion(Array('2'));
+            actualizarTipoIdentificacion(Array('1','2'));
             jQuery('[name="tipo_identificacion"]').val('2');
             jQuery('[name="tipo_identificacion"]').val('2');
             jQuery('.form-item-genero').parent().css('display','none');

@@ -73,3 +73,7 @@ div.form-item-respuesta label:after{
 .poderantes{
   display: none;
 }
+.actions-poderante {
+  background: none !important;
+  border:none !important;
+}
