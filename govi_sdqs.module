@@ -1,6 +1,7 @@
 <?php
 $path = drupal_get_path('module', 'govi_sdqs');
 require_once DRUPAL_ROOT . "/$path/handlers/sdqs_handler.inc";
+require_once DRUPAL_ROOT . "/$path/handlers/utils.inc";
 
 // Definición del bloque
 
@@ -636,6 +637,10 @@ function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
         // if($tipo_peticionario=='apoderado' && $tipo_identificacion_poderante =='2' && empty($razon_social_poderante) ) {
         //     form_set_error('razon_social_poderante','La razón social del poderante es requerida');
         // }
+        if(!empty($razon_social) && strlen($razon_social) > 20) {
+            form_set_error('razon_social','La razón social no debe ser mayor a 20 caracteres');
+        }
+
         if($tipo_peticionario=='apoderado' && empty($numero_identificacion_poderante) ) {
             form_set_error('numero_identificacion_poderante','el número de identificación del poderante es requerido');
         }
@@ -762,7 +767,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
                     'codigoTipoPersona' => 1,
                     'terminosCondiciones' => 1,
                     'codigoOpcion' => 1,
-                    'idTema' => $codigo_tema,
+                    'codigoTema' => $codigo_tema,
 
                 ),
 
@@ -774,12 +779,20 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
 
 
         if(!empty($form_state['values']['apellido'])){
-          $data['parameters']['datos']['primerApellido']= $form_state['values']['apellido'];
-
+          $complete_name = splitName($form_state['values']['apellido']);
+          $data['parameters']['datos']['primerApellido']= $complete_name['firstpart'];
+          if(!empty($complete_name['secondpart'])){
+            $data['parameters']['datos']['segundoApellido']= $complete_name['secondpart'];
+          }
         }
         if(!empty($form_state['values']['nombre'])){
-          $data['parameters']['datos']['primerNombre']= $form_state['values']['nombre'];
+          $complete_name = splitName($form_state['values']['nombre']);
+          $data['parameters']['datos']['primerNombre']= $complete_name['firstpart'];
+          if(!empty($complete_name['secondpart'])){
+            $data['parameters']['datos']['segundoNombre']= $complete_name['secondpart'];
+          }
         }
+
         if(!empty($form_state['values']['genero'])){
           $data['parameters']['datos']['codigoGenero']= $form_state['values']['genero'];
         }
@@ -833,6 +846,11 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         }
         if($tipo_peticionario=='juridica_comercial') {
           $data['parameters']['datos']['codigoTipoPersona']= 3;
+          $data['parameters']['datos']['nombreCompletoContacto']= $data['parameters']['datos']['primerNombre']." ".$data['parameters']['datos']['primerApellido'];
+          $data['parameters']['datos']['telefonoFijoContacto']=  $form_state['values']['telefono_fijo'];
+          $data['parameters']['datos']['celularContacto']= $form_state['values']['telefono_movil'];
+          $data['parameters']['datos']['correoElectronicoContacto']= $correo_electronico;
+
         }
 
         //Si el tipo de documento es NIT se agrega el dígito de verificación
@@ -842,7 +860,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
           $data['parameters']['datos']['digitoVerificacion']= $identificacion[1];
           $data['parameters']['datos']['correoElectronicoContacto']= $form_state['values']['correo_electronico'];
           // aquí está llegando vacía la razón social
-          $data['parameters']['datos']['primerNombre']= substr($form_state['values']['razon_social'], 20);
+          $data['parameters']['datos']['primerNombre']= $form_state['values']['razon_social'];
           $data['parameters']['datos']['primerApellido']='';
           $data['parameters']['datos']['nombreCompletoContacto']= $data['parameters']['datos']['primerNombre']." ".$data['parameters']['datos']['primerApellido'];
         }
@@ -1021,11 +1039,4 @@ function govi_sdqs_log_event($form_state, $nid_log, $result, $error = FALSE) {
     $node->field_sdqs_codigo_respuesta = "OK";
 
     node_save($node);
-}
-function splitName($name){
-    $names = explode(' ', $name);
-    $lastname = $names[count($names) - 1];
-    unset($names[count($names) - 1]);
-    $firstname = join(' ', $names);
-    return Array($firstname, $lastname);
 }

@@ -41,7 +41,7 @@ if (variable_get('sdqs_env') === '') {
 <div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
       <?php print render($form['datos_personales']['tipo_peticionario']); ?>
 </div>
-<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2 no-anon">
       <?php print render($form['datos_personales']['tipo_solicitante']); ?>
    </div>
  </div>

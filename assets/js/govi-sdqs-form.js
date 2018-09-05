@@ -52,7 +52,6 @@
             restaurarFormulario();
             actualizarTipoIdentificacion(Array('2'));
             jQuery('[name="tipo_identificacion"]').val('2');
-            jQuery('[name="tipo_identificacion"]').val('2');
 
             jQuery('.form-item-genero').parent().css('display','none');
             jQuery('.form-item-razon-social').css('display','block');
@@ -61,7 +60,6 @@
         else if (t.val() == 'juridica_comercial') {
             restaurarFormulario();
             actualizarTipoIdentificacion(Array('1','2'));
-            jQuery('[name="tipo_identificacion"]').val('2');
             jQuery('[name="tipo_identificacion"]').val('2');
             jQuery('.form-item-genero').parent().css('display','none');
             jQuery('.form-item-razon-social').css('display','block');
@@ -79,13 +77,13 @@
 
         }
         else if (t.val() == 'infantil') {
-            jQuery('[name="tipo_identificacion"]').val('5');
+            restaurarFormulario();
+            jQuery('[name="tipo_identificacion"]').val("5");
             jQuery('.form-item-nombre').css('display','block');
             jQuery('.form-item-apellido').css('display','block');
             jQuery('.form-item-genero').parent().css('display','block');
             jQuery('.form-item-razon-social').css('display','none');
 
-            restaurarFormulario();
 
         }
         else if (t.val() == 'anonimo') {

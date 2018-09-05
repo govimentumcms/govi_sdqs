@@ -77,3 +77,6 @@ div.form-item-respuesta label:after{
   background: none !important;
   border:none !important;
 }
+#poderante-fieldset-wrapper .fieldset-wrapper {
+  border: 0px solid !important;
+}
