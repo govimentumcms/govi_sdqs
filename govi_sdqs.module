@@ -878,6 +878,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
           $data['parameters']['datos'] = array();
           $data['anonimo'] = true;
           $data['parameters']['datos']['codigoOpcion'] = 1;
+          $data['parameters']['datos']['idOpcion'] = 1;
           $data['parameters']['datos']['codigoSector']= $id_sector;
           $data['parameters']['datos']['idTipoPeticion'] = $form_state['values']['tipo_peticion'];
           $data['parameters']['datos']['asunto'] = $form_state['values']['asunto'];
