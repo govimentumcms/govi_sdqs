@@ -45,7 +45,15 @@ function govi_sdqs_theme_info($form, $form_state) {
  */
 function govi_sdqs_admin_settings() {
   $sdqs =  SdqsClient::getInstance();
+  $user = variable_get('govi_sdqs_site_user', FALSE);
+  $password = variable_get('govi_sdqs_secret_password', FALSE);
+  $enviroment = variable_get('govi_sdqs_site_env', FALSE);
+  if(isset($user) && isset($password) && isset($enviroment) && !$sdqs->checkConnection($user, $password, $enviroment)){
+    drupal_set_message(t('No se puede establecer comunicación con el servicio web'), 'error');
+    drupal_goto('admin/config/services/sdqs');
+  }
   if($sdqs->isConnectionConfigured()) {
+
     $form['govi_sdqs_general_settings'] = array(
       '#type' => 'fieldset',
       '#title' => t('Actualización de datos'),
