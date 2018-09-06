@@ -837,10 +837,6 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
           $data['parameters']['datos']['telefonoCelular']= $form_state['values']['telefono_movil'];
         }
 
-        if(!empty($form_state['values']['telefono_movil'])){
-          $data['parameters']['datos']['telefonoCelular']= $form_state['values']['telefono_movil'];
-        }
-
         if(!empty($form_state['values']['direccion'])){
 
             $data['parameters']['datos']['direccionResidencia']= $form_state['values']['direccion'];
@@ -856,7 +852,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         }
         if($tipo_peticionario=='juridica_comercial') {
           $data['parameters']['datos']['codigoTipoPersona']= 3;
-          $data['parameters']['datos']['nombreCompletoContacto']= $data['parameters']['datos']['primerNombre']." ".$data['parameters']['datos']['primerApellido'];
+          $data['parameters']['datos']['nombreCompletoContacto']= $form_state['values']['nombre']." ".$form_state['values']['apellido'];
           $data['parameters']['datos']['telefonoFijoContacto']=  $form_state['values']['telefono_fijo'];
           $data['parameters']['datos']['celularContacto']= $form_state['values']['telefono_movil'];
           $data['parameters']['datos']['correoElectronicoContacto']= $correo_electronico;
@@ -872,7 +868,9 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
           // aquí está llegando vacía la razón social
           $data['parameters']['datos']['primerNombre']= $form_state['values']['razon_social'];
           $data['parameters']['datos']['primerApellido']='';
-          $data['parameters']['datos']['nombreCompletoContacto']= $data['parameters']['datos']['primerNombre']." ".$data['parameters']['datos']['primerApellido'];
+          $data['parameters']['datos']['segundoApellido']='';
+          $data['parameters']['datos']['segundoNombre']='';
+          $data['parameters']['datos']['nombreCompletoContacto']= $form_state['values']['nombre']." ".$form_state['values']['apellido'];
         }
 
 
