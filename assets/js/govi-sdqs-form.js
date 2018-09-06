@@ -26,9 +26,7 @@
         window.sqsd_tipos_id.forEach(function(opt){
           jQuery('[name="tipo_identificacion"]').append('<option value="'+opt.id+'">'+opt.name+'</option>');
         });
-
-
-
+        jQuery('.correo_electronico').addClass('required');
     }
     function actualizarTipoIdentificacion(identificaciones_validas) {
       actual=window.sqsd_tipos_id.map(function (el) { return el.id; });
@@ -85,8 +83,7 @@
             jQuery('.contact legend').text("Contacto (opcional)");
             jQuery('.contact .email span.form-required').css('display','block');
             jQuery('fieldset.contact').css('display','block');
-
-
+            jQuery('.correo_electronico').removeClass('required');
         }
 
 

@@ -106,7 +106,7 @@ if (variable_get('sdqs_env') === '') {
       <div class="no-anon pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
          <?php print render($form['datos_personales']['direccion']); ?>
       </div>
-      <div class="email pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
+      <div class="email correo_electronico required pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">
           <?php print render($form['datos_personales']['correo_electronico']); ?>
       </div>
       <div class="no-anon pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">

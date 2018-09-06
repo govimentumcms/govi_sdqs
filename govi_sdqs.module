@@ -629,7 +629,7 @@ function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
 
     //Si el tipo de petición es un usuario anónimo
     if(!empty($tipo_peticionario) && $tipo_peticionario=='anonimo'  ) {
-      if(empty($correo_electronico) || !empty($correo_electronico) && !valid_email_address($correo_electronico)  ) {
+      if(!empty($correo_electronico) && !valid_email_address($correo_electronico)  ) {
 
         form_set_error('correo_electronico','Debe suministrar una cuenta de correo válida para responder a su solicitud.');
       }
