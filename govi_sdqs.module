@@ -849,6 +849,8 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
         }
         if($tipo_peticionario=='juridica') {
           $data['parameters']['datos']['codigoTipoPersona']= 2;
+          $data['parameters']['datos']['pbx']= '';
+
         }
         if($tipo_peticionario=='juridica_comercial') {
           $data['parameters']['datos']['codigoTipoPersona']= 3;
