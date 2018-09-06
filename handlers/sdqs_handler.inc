@@ -279,7 +279,7 @@ class SdqsClient implements SingletonInterface {
     $arguments = array(
       'parameters' => array(
         'codigoEntidad' => Array(
-          'codigoEntidad' => $ent,
+          'codigoEntidad' => '',
         )
       ),
     );

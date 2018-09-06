@@ -440,11 +440,13 @@ function govi_sdqs_crear_peticion_form($form, &$form_state, $no_js_use = FALSE) 
         '#type' => 'textfield',
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#title' => 'Teléfono Fijo',
+        '#required' => FALSE
     );
     $form['datos_personales']['telefono_movil'] = array(
         '#type' => 'textfield',
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#title' => 'Teléfono Móvil',
+        '#required' => FALSE,
     );
 
 
@@ -682,12 +684,12 @@ function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
       if(empty($numero_identificacion)) {
         form_set_error('numero_identificacion','El campo Número identificación es requerido.');
       }
-      if(empty($telefono_fijo)) {
-        form_set_error('telefono_fijo','El campo Teléfono fijo es requerido.');
-      }
-      if(empty($telefono_movil)) {
-        form_set_error('telefono_movil','El campo Teléfono móvil es requerido.');
-      }
+      //if(empty($telefono_fijo)) {
+      //  form_set_error('telefono_fijo','El campo Teléfono fijo es requerido.');
+      //}
+      //if(empty($telefono_movil)) {
+      //  form_set_error('telefono_movil','El campo Teléfono móvil es requerido.');
+      //}
       if(empty($direccion)) {
         form_set_error('direccion','El campo Dirección es requerido.');
       }
@@ -724,7 +726,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
     $codigo_dependencia = variable_get('govi_sdqs_dependency');
     $codigo_entidad = variable_get('govi_sdqs_entity');
     $id_sector = variable_get('govi_sdqs_sector');
-    $codigo_tema = variable_get('sdqs_theme');
+    $codigo_tema = variable_get('govi_sdqs_theme');
 
 
 
@@ -904,8 +906,17 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
           for($i=0;$i<$form_state['pnum_names'];$i++){
             $data['parameters']['datos']['poderdantes'][$i]['codigoTipoIdentificacionPod']= $form_state['values']['tipo_identificacion_poderante_'.$i];
             $data['parameters']['datos']['poderdantes'][$i]['numeroIdentificacionPod']= $form_state['values']['numero_identificacion_poderante_'.$i];
-            $data['parameters']['datos']['poderdantes'][$i]['primerNombrePod']= $form_state['values']['nombre_poderante_'.$i];
-            $data['parameters']['datos']['poderdantes'][$i]['primerApellidoPod']= $form_state['values']['apellido_poderante_'.$i];
+
+            $complete_name = splitName($form_state['values']['nombre_poderante_'.$i]);
+            $data['parameters']['datos']['poderdantes'][$i]['primerNombrePod']= $complete_name['firstpart'];
+            if(!empty($complete_name['secondpart'])) {
+              $data['parameters']['datos']['poderdantes'][$i]['segundoNombrePod']= $complete_name['secondpart'];
+            }
+            $complete_lastname = splitName($form_state['values']['apellido_poderante_'.$i]);
+            $data['parameters']['datos']['poderdantes'][$i]['primerApellidoPod']= $complete_lastname['firstpart'];
+            if(!empty($complete_lastname['secondpart'])) {
+              $data['parameters']['datos']['poderdantes'][$i]['segundoApellidoPod']= $complete_lastname['secondpart'];
+            }
           }
           $data['parameters']['datos']['codigoOpcion'] = 5;
 
