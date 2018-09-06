@@ -57,15 +57,6 @@ div.form-item-correo-electronico label:after{
     color:#f00;
     content:' *';
 }
-
-div.form-item-telefono-fijo label:after{
-    color:#f00;
-    content:' *';
-}
-div.form-item-telefono-movil label:after{
-    color:#f00;
-    content:' *';
-}
 div.form-item-respuesta label:after{
     color:#f00;
     content:' *';
