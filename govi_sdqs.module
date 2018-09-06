@@ -223,14 +223,14 @@ function govi_sdqs_crear_peticion_form($form, &$form_state, $no_js_use = FALSE) 
     );
     $form['datos_personales']['nombre'] = array(
         '#type' => 'textfield',
-        '#title' => 'Nombre',
+        '#title' => 'Nombres',
         '#description' => 'Ingrese su nombre',
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#size' => 60,
     );
     $form['datos_personales']['apellido'] = array(
         '#type' => 'textfield',
-        '#title' => 'Apellido',
+        '#title' => 'Apellidos',
         '#attributes' => array('class' => array('pure-u-23-24')),
         '#description' => 'Ingrese sus apellidos',
         '#size' => 60
@@ -268,24 +268,28 @@ function govi_sdqs_crear_peticion_form($form, &$form_state, $no_js_use = FALSE) 
       );
        $form['datos_personales_poderante']['poderante_fieldset'][$i]['nombre_poderante_'.$i] = array(
            '#type' => 'textfield',
-           '#title' => 'Nombre',
+           '#title' => 'Nombres',
            '#description' => 'Ingrese su nombre',
            '#attributes' => array('class' => array('pure-u-23-24')),
            '#size' => 60,
            '#validated' => TRUE,
            '#prefix' => '<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">',
            '#suffix' => '</div>',
+           '#required' => TRUE,
+
 
        );
         $form['datos_personales_poderante']['poderante_fieldset'][$i]['apellido_poderante_'.$i] = array(
             '#type' => 'textfield',
-            '#title' => 'Apellido',
+            '#title' => 'Apellidos',
             '#attributes' => array('class' => array('pure-u-23-24')),
             '#description' => 'Ingrese sus apellidos',
             '#size' => 60,
             '#validated' => TRUE,
             '#prefix' => '<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">',
             '#suffix' => '</div>',
+            '#required' => TRUE,
+
 
         );
         $form['datos_personales_poderante']['poderante_fieldset'][$i]['tipo_identificacion_poderante_'.$i] = array(
@@ -297,6 +301,8 @@ function govi_sdqs_crear_peticion_form($form, &$form_state, $no_js_use = FALSE) 
             '#validated' => TRUE,
             '#prefix' => '<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">',
             '#suffix' => '</div>',
+            '#required' => TRUE,
+
 
         );
 
@@ -307,6 +313,8 @@ function govi_sdqs_crear_peticion_form($form, &$form_state, $no_js_use = FALSE) 
             '#validated' => TRUE,
             '#prefix' => '<div class="pure-u-1 pure-u-sm-1 pure-u-md-1-2 pure-u-lg-1-2 pure-u-xl-1-2">',
             '#suffix' => '</div>',
+            '#required' => TRUE,
+
 
         );
 
@@ -637,8 +645,8 @@ function govi_sdqs_crear_peticion_form_validate($form, &$form_state) {
         // if($tipo_peticionario=='apoderado' && $tipo_identificacion_poderante =='2' && empty($razon_social_poderante) ) {
         //     form_set_error('razon_social_poderante','La razón social del poderante es requerida');
         // }
-        if(!empty($razon_social) && strlen($razon_social) > 20) {
-            form_set_error('razon_social','La razón social no debe ser mayor a 20 caracteres');
+        if(!empty($razon_social) && strlen($razon_social) > 50) {
+            form_set_error('razon_social','La razón social no debe ser mayor a 50 caracteres');
         }
 
         if($tipo_peticionario=='apoderado' && empty($numero_identificacion_poderante) ) {
