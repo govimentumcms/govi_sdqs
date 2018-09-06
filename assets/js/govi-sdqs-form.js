@@ -77,14 +77,7 @@
 
         }
         else if (t.val() == 'infantil') {
-            restaurarFormulario();
-            jQuery('[name="tipo_identificacion"]').val("5");
-            jQuery('.form-item-nombre').css('display','block');
-            jQuery('.form-item-apellido').css('display','block');
-            jQuery('.form-item-genero').parent().css('display','block');
-            jQuery('.form-item-razon-social').css('display','none');
-
-
+            window.location.replace("http://sdqs.bogota.gov.co/sdqs/publico/ninos/");
         }
         else if (t.val() == 'anonimo') {
             jQuery('fieldset.id-data').css('display','none');
