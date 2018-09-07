@@ -773,7 +773,7 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
                     'observaciones' => $obs,
                     'notificacionElectronica' => ($form_state['values']['respuesta'] == 'email') ? true : false,
                     'notificacionFisica' => ($form_state['values']['respuesta'] == 'correspondencia') ? true : false,
-                    'confirmacionEmail' => true,
+                    'confirmacionEmail' => $form_state['values']['terminos_correo'],
                     'codigoTipoPersona' => 1,
                     'terminosCondiciones' => 1,
                     'codigoOpcion' => 1,
@@ -894,7 +894,9 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
           if(!empty($form_state['values']['correo_electronico'])) {
             $data['parameters']['datos']['correoElectronicoContacto'] = $form_state['values']['correo_electronico'];
           }
-          $data['parameters']['datos']['confirmacionEmail']= true;
+          if(!empty($form_state['values']['terminos_correo'])) {
+              $data['parameters']['datos']['confirmacionEmail']= true;
+          }
           if($codigo_dependencia!=0){
             $data['parameters']['datos']['codigo']= $codigo_dependencia;
           }
