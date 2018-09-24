@@ -83,7 +83,7 @@ class SdqsClient implements SingletonInterface {
     }
     return false;
   }
-  public function updateDataOperation($operation, $variable, $arguments =  Array()) {
+public function updateDataOperation($operation, $variable = '', $arguments =  Array()) {
     $response = $this->service->invoke($operation, $arguments);
 
     return $response->return->list;
