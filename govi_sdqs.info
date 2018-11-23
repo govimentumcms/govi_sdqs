@@ -8,4 +8,4 @@ dependencies[] = colorbox
 dependencies[] = captcha
 dependencies[] = recaptcha
 project = govi_sdqs
-version = 7.x-1.0
+version = 7.x-2.0
