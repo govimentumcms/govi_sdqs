@@ -54,7 +54,7 @@ function govi_sdqs_admin_connection() {
           'test' => 'Pruebas',
       ),
       '#required' => TRUE,
-      '#default_value' => variable_get('govi_sdqs_site_env', 'test'),
+      '#default_value' => variable_set('govi_sdqs_site_env', 'test'),
   );
 
   $form['govi_sdqs_general_settings']['help'] = array(
@@ -91,6 +91,10 @@ function govi_sdqs_admin_connection_validate($form, &$form_state) {
   $user = $form_state['values']['govi_sdqs_site_user'];
   $password = $form_state['values']['govi_sdqs_secret_password'];
   $enviroment = $form_state['values']['govi_sdqs_site_env'];
+
+  if (!empty($enviroment)) {
+    variable_set('govi_sdqs_site_env', $enviroment);
+  }
 
   if(empty($password) || ! $sdqs->checkConnection($user, $password, $enviroment)){
     form_set_error('govi_sdqs_general_settings','Error estableciendo conexión con el servicio web SDQS. Revise sus credenciales.');
