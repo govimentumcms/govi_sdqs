@@ -64,7 +64,7 @@ class SdqsClient implements SingletonInterface {
   use SingletonTrait;
 
   private $service;
-  private $enviroment;
+  public $enviroment;
 
   function __construct() {
     $this->enviroment = variable_get('govi_sdqs_site_env');

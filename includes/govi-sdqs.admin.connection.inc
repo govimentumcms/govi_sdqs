@@ -54,7 +54,7 @@ function govi_sdqs_admin_connection() {
           'test' => 'Pruebas',
       ),
       '#required' => TRUE,
-      '#default_value' => variable_set('govi_sdqs_site_env', 'test'),
+      '#default_value' => variable_get('govi_sdqs_site_env', 'test'),
   );
 
   $form['govi_sdqs_general_settings']['help'] = array(
@@ -94,6 +94,7 @@ function govi_sdqs_admin_connection_validate($form, &$form_state) {
 
   if (!empty($enviroment)) {
     variable_set('govi_sdqs_site_env', $enviroment);
+    $sdqs->enviroment = $enviroment;
   }
 
   if(empty($password) || ! $sdqs->checkConnection($user, $password, $enviroment)){
