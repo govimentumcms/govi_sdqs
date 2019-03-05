@@ -64,7 +64,9 @@
 		// Set ARIA attributes
 		this._link.setAttribute('aria-haspopup', 'true');
 		this._menu.setAttribute(ARIA_ROLE, 'menu');
-		this._menu.setAttribute('aria-labelledby', this._link.getAttribute('id'));
+		if (this._link.getAttribute('id') != null) {
+		  this._menu.setAttribute('aria-labelledby', this._link.getAttribute('id'));
+		}
 		this._menu.setAttribute('aria-hidden', 'true');
 		[].forEach.call(
                     this._menu.querySelectorAll('li'),
