@@ -1,5 +1,5 @@
 #servicio-ciudadano *{
-    font-family: 'robotoregular';
+    font-family: 'gotham-roundedbook';
 }
 
 #servicio-ciudadano ul,
@@ -12,7 +12,7 @@
     border-radius: 8px;
     border: 1px solid #999999;
     color: rgb(0,159,227);
-    font-family: 'robotoregular';
+    font-family: 'gotham-roundedbook';
     font-size: 14px;
     margin-bottom: 15px;
     text-decoration: none;
@@ -65,13 +65,13 @@
     background-position: left bottom;
     display: block;
     padding: 10px;
-    font-family: 'robotobold';
+    font-family: 'gotham-roundedbold';
     font-size: 1.5em;
     letter-spacing: -1px;
     text-decoration: none;
 }
 #sdqs .boton span{
-    font-family: 'robotobold';
+    font-family: 'gotham-roundedbold';
 }
 
 #sdqs.light .boton.crear a, #sdqs.light .boton.consultar a {
@@ -116,7 +116,7 @@
 .info a:hover{
     color: rgb(0,62,101);
     text-decoration: underline;
-    font-family: 'robotobold';
+    font-family: 'gotham-roundedbold';
 }
 .form-item-razon-social {
     display: none;
@@ -129,7 +129,7 @@
     border-radius: 11px;
 }
 #servicio-ciudadano p {
-    font-family: 'robotoregular';
+    font-family: 'gotham-roundedbook';
     font-size: 0.9em;
 }
 .formsdqstic{
