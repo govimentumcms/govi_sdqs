@@ -309,7 +309,7 @@ public function updateDataOperation($operation, $variable = '', $arguments =  Ar
     if($this->enviroment == 'prod'){
         return 'http://sdqs.bogota.gov.co/sdqs/servicios/RadicacionPorCanalService?wsdl';
     } elseif ($this->enviroment == 'test') {
-        return 'http://200.75.50.41:8080/sdqs/servicios/RadicacionPorCanalService?wsdl';
+        return 'https://alcaldiabogota.gov.co/sdqs/servicios/RadicacionPorCanalService?wsdl';
     }
   }
 
