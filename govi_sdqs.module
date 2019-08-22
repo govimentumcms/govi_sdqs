@@ -832,7 +832,12 @@ function govi_sdqs_crear_peticion_ajax_submit($form, &$form_state) {
           $data['parameters']['datos']['telefonoCasa']= $form_state['values']['telefono_fijo'];
           $data['parameters']['datos']['telefonoOficina']= $form_state['values']['telefono_fijo'];
           $data['parameters']['datos']['pbx']= $form_state['values']['telefono_fijo'];
+        } else {
+          $data['parameters']['datos']['telefonoCasa']= "";
+          $data['parameters']['datos']['telefonoOficina']= "";
+          $data['parameters']['datos']['pbx']= "";
         }
+
         if(!empty($form_state['values']['telefono_movil'])){
           $data['parameters']['datos']['telefonoCelular']= $form_state['values']['telefono_movil'];
         }
